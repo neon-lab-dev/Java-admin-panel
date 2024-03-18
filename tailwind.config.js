@@ -9,6 +9,9 @@ export default {
         primary: "#FD5454",
         grey: "#202224",
       },
+      fontFamily: {
+        lato: ["Lato", "sans-serif"],
+      },
     },
   },
   plugins: [],
