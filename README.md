@@ -1,28 +1,8 @@
-# Java-admin-panel
+# React + Vite
 
-Admin Panel for JAVA Sports
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Stack used:
+Currently, two official plugins are available:
 
-- React & Javascript
-- Tailwind CSS
-- React-Router-dom
-
-## Steps to contribute:
-
-- Clone the repository
-- Branch for production `master`
-- Branch for development `develop`
-- Create new branch for each feature with type prefix (from `develop`):
-  - Types are as follows `[ feature | fix | ui | docs ]`
-    - `feature/user-authentication` - For feature branch
-    - `ui/admin-page` - For UI Pages
-
-## Commit convention to follow:
-
-- Specify the type of the commit as prefix and then write the commit message, examples as follows:
-- Types are as follows: `[ feat | docs | test | perf | chore | refactor | fix | ui | etc. ]`
-  - feat: "commit message"
-  - fix: "commit message"
-  - refactor: "commit message"
-  - etc.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
