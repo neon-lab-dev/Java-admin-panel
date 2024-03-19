@@ -1,47 +1,58 @@
-import logo from '../../assets/icon/logo.svg';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import logo from "../../assets/icon/logo.svg";
+import { Link, useLocation } from "react-router-dom";
 
 const Sidebar = () => {
-  const navigate= useNavigate();
-
-  const [selectedColor, setSelectedColor] = useState('color1');
-  const products = ['Dashboard', 'Products', 'Order', 'User','Coupons'];
-  const [logout, setlogout] = useState(false);
-
-  const handleClick = (color,label) => {
-    setSelectedColor(color);
-     navigate('/'+label);
-  };
+  const { pathname } = useLocation();
+  const links = [
+    {
+      label: "Dashboard",
+      path: "/",
+    },
+    {
+      label: "Products",
+      path: "/products",
+    },
+    {
+      label: "Orders",
+      path: "/orders",
+    },
+    {
+      label: "Users",
+      path: "/users",
+    },
+    {
+      label: "Coupons",
+      path: "/coupons",
+    },
+  ];
 
   return (
-    <aside className="lg:min-w-[242px] max-w-[242px] md:min-w-[200px] sm:min-w-[200px] border-r-black bg-white ">
-      <div className="flex justify-center">
+    <aside className="lg:min-w-[242px] max-w-[242px] md:min-w-[200px] sm:min-w-[200px] bg-white h-screen">
+      <Link to="/" className="flex justify-center">
         <img className="my-4" src={logo} />
-        </div>
-        
-      {products.map((label, index) => (
-          <div key={index} className=' justify-center items-center flex '>
-            <button
-              className={`bg-${selectedColor === `color${index + 1}` ? 'primary' : 'white'} w-5/6 h-[50px] relative rounded-md text-neutral-800 text-sm font-semibold font-['Lato'] tracking-tight `}
-              onClick={() => handleClick(`color${index + 1}`,label)}
-              >
-              
-              <div className={` text-${selectedColor === `color${index + 1}` ? 'white' : 'black'}  text-sm font-semibold font-['Lato'] tracking-tight`}>{label}</div>
-            </button>
-          </div>
-      ))}
-      <div className='bg-[#E0E0E0] h-px my-[18px]'></div>
-      <div className=' justify-center items-center flex'>
-        <button
-          className={`bg-${logout?'primary':'white'} w-5/6 h-[50px] relative rounded-md text-neutral-800 text-sm font-semibold font-['Lato'] tracking-tight `} onClick={()=>{setlogout(!logout)}}
+      </Link>
+      <div className="flex flex-col gap-3 items-center justify-center mt-6 px-5">
+        {links.map((link, index) => (
+          <Link
+            key={index}
+            to={link.path}
+            className={`w-full relative rounded-md text-neutral-800 text-sm font-semibold tracking-tight text-center py-3.5 ${
+              pathname === link.path && "bg-primary text-white"
+            }`}
           >
-          <div className={`text-${logout?'white':'black'} text-sm font-semibold font-['Lato'] tracking-tight`}>Logout</div>
+            {link.label}
+          </Link>
+        ))}
+      </div>
+      <div className="bg-[#E0E0E0] h-px my-[18px]"></div>
+      <div className=" justify-center items-center flex">
+        <button
+          className={`w-5/6 h-[50px] relative rounded-md text-neutral-800 text-sm font-semibold font-['Lato'] tracking-tight `}
+        >
+          Logout
         </button>
       </div>
-      <div className='bg-[#E0E0E0] h-px  my-[140px] '></div>
-        
-    
+      <div className="bg-[#E0E0E0] h-px  my-[140px] "></div>
     </aside>
   );
 };
