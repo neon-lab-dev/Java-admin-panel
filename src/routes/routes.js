@@ -7,10 +7,7 @@ const ROUTES = [
   {
     path: "/",
     component: lazy(async () => await import("../pages/Home/index")),
-  },
-  {
-    path: "/dashboard",
-    component: lazy(async () => await import("../pages/Home/index")),
-  },
+  }
+  
 ];
 export default ROUTES;
