@@ -14,7 +14,11 @@ export default {
         darksmoke: "#F9F9FB",
         red: "#EE3F4C",
         gray1: "#F1F4F9",
-        brown: "#565656"
+        brown: "#565656",
+        green: "#00B69B",
+        skyblue: "#42A4FF",
+        yellow: "#FCBE2D",
+        lightred: "#FD5454"
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],
