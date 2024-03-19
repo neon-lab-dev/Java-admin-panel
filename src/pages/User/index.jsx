@@ -3,8 +3,8 @@ import userData from '../../assets/data/Userdata'
 
 const User = () => {
   return (
-    <div className='bg-lightgray h-full w-full p-6 pb-11'>
-    <h1 className='font-lato text-[32px] font-bold text-black leading-[38.4px] '>Total Orders</h1>
+    <div className='bg-[#F5F6FA] h-full w-full p-6 pb-11'>
+    <h1 className='font-lato text-[32px] font-bold text-black leading-[38.4px] '>All Users</h1>
 
     <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 px-5">
 
@@ -30,26 +30,28 @@ const User = () => {
         {/* User table */}
         <div className="mt-4">
             <div className="overflow-x-auto">
-                <table className="table rounded-2xl w-full">
+                <table className="table rounded-2xl bg-salte-100  w-full">
                     {/* head */}
-                    <thead className="grid-col-5">
-                        <tr className="h-[48px] bg-slate-100 rounded-xl w-full items-center">
-                            <th className="font-bold font-lato text-black text-[14px] ">ID</th>
-                            <th className="font-bold font-lato text-black text-[14px] ">Name</th>
-                            <th className="font-bold text-center font-lato text-black text-[14px] ">Email</th>
-                            <th className="font-bold text-center font-lato text-black text-[14px] ">Mobile No</th>
-                            <th className="font-bold text-center font-lato text-black text-[14px]">DOB</th>
+                    
+                    <thead className="grid-col-5 ">
+                        <tr className="h-[48px] bg-slate-100 w-full items-center">
+                            <th className="font-bold font-lato text-black text-[14px] text-start px-3 ">ID</th>
+                            <th className="font-bold font-lato text-black text-[14px] text-center px-3 ">Name</th>
+                            <th className="font-bold text-center font-lato text-black text-[14px]  text-end px-3">Email</th>
+                            <th className="font-bold text-center font-lato text-black text-[14px]  text-end px-3">Mobile No</th>
+                            <th className="font-bold text-center font-lato text-black text-[14px]  text-center px-3">DOB</th>
                         </tr>
                     </thead>
+                   
                     <tbody className='grid-col-5'>
                         {userData.map(item => <tr className="  h-[48px]  w-full items-center">
-                            <td className="font-lato font-semibold text-[14px] text-black">{item.ID}</td>
-                            <td className="font-lato font-semibold text-[14px] text-black">₹{item.Name}</td>
-                            <td className=" font-lato font-semibold text-[14px]">{item.Email}
+                            <td className="font-lato font-semibold text-[14px] w-1/5 text-black  text-start px-3">{item.ID}</td>
+                            <td className="font-lato font-semibold text-[14px] text-center w-1/5 text-black     px-3">{item.Name}</td>
+                            <td className=" font-lato font-semibold w-1/5 text-center text-[14px]  px-3">{item.Email}
                             </td>
-                            <td className=" font-lato font-semibold text-[14px]">{item.Mobile}
+                            <td className=" font-lato font-semibold w-1/5 text-center text-[14px]  px-3">{item.Mobile}
                             </td>
-                            <td className=" font-lato font-semibold text-[14px]">{item.DOB}
+                            <td className=" font-lato font-semibold w-1/5 text-center text-[14px]   px-3">{item.DOB}
                             </td>
                         </tr>
                         )}

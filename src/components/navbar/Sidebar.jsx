@@ -15,7 +15,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="lg:w-[242px] md:w-1/4 sm:w-1/2 border-r-black bg-white ">
+    <aside className="lg:min-w-[242px] max-w-[242px] md:min-w-[200px] sm:min-w-[200px] border-r-black bg-white ">
       <div className="flex justify-center">
         <img className="my-4" src={logo} />
         </div>
@@ -31,7 +31,7 @@ const Sidebar = () => {
             </button>
           </div>
       ))}
-      <div className='bg-[#E0E0E0] h-px my-[18px] '></div>
+      <div className='bg-[#E0E0E0] h-px my-[18px]'></div>
       <div className=' justify-center items-center flex'>
         <button
           className={`bg-${logout?'primary':'white'} w-5/6 h-[50px] relative rounded-md text-neutral-800 text-sm font-semibold font-['Lato'] tracking-tight `} onClick={()=>{setlogout(!logout)}}
