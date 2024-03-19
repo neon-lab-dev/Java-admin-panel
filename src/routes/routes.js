@@ -9,8 +9,24 @@ const ROUTES = [
     component: lazy(async () => await import("../pages/Home/index")),
   },
   {
-    path: "/dashboard",
+    path: "/Dashboard",
     component: lazy(async () => await import("../pages/Home/index")),
+  },
+  {
+    path: "/Products",
+    component: lazy(async () => await import("../pages/Products/index")),
+  },
+  {
+    path: "/Order",
+    component: lazy(async () => await import("../pages/Order/index")),
+  },
+  {
+    path: "/User",
+    component: lazy(async () => await import("../pages/User/index")),
+  },
+  {
+    path: "/Coupons",
+    component: lazy(async () => await import("../pages/Coupons/index")),
   },
   {
     path: "/orders",
