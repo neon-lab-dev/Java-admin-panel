@@ -1,14 +1,26 @@
 import SeachIcon from "../../assets/icons/searchIcon.svg"
 import avatar from "../../assets/icons/avatar.svg"
 import Searchbar from "../Searchbar";
-
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
+  const [click, setclick] = useState(false)
 
   return (
     <header className="h-[70px] bg-white border-b-black w-full">
 
       <div className="flex h-[70px] items-center md:ps-11  md:pe-7 justify-between">
+        <details className="md:hidden w-[40px] rounded-xl dropdown" >
+          <summary className="m-1 btn" onClick={()=>{setclick(!click)}}>{!click?<span>&#9776;</span>:<span>&times;</span>}</summary>
+          <ul className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52">
+            <li className="hover:shadow hover:bg-primary hover:text-white rounded-xl"><Link to="/dashboard">Dashboard</Link></li>
+            <li className="hover:shadow hover:bg-primary hover:text-white rounded-xl"><Link to="/products">Products</Link></li>
+            <li className="hover:shadow hover:bg-primary hover:text-white rounded-xl"><Link to="/orders">Orders</Link></li>
+            <li className="hover:shadow hover:bg-primary hover:text-white rounded-xl"><Link to="/users">Users</Link></li>
+            <li className="hover:shadow hover:bg-primary hover:text-white rounded-xl"><Link to="/coupons">Coupons</Link></li>
+          </ul>
+        </details>
 
         {/* input with search icon */}
         <Searchbar placeholder={"Search"} />
