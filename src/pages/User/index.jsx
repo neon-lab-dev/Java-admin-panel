@@ -7,23 +7,27 @@ import rightCaret from '../../assets/icon/rightCaret.svg'
 
 const User = () => {
     const totalDataOfUsers = searchResults.length;
-    const [page, setpage] = useState(0);
+    const [page, setpage] = useState(1);
     let i=9;
-    const [filterData,setfilterData] = useState(searchResults.slice((page)*(i),(page+1)*i));
+    const [filterData,setfilterData] = useState(searchResults.slice((page-1)*(i),(page)*i));
+
+
+    const nextpage=(page)=>{
+        setfilterData(searchResults.slice((page-1)*(i),(page)*i))
+    }
 
     const handleNextPage=()=>{
-        setpage(page+1);
-        setfilterData(searchResults.slice(page*(i),(page+1)*i))
+        if(page<(totalDataOfUsers/9)){
+            setpage(page+1);
+            nextpage(page+1);  
+        }
     }
-    useEffect(() => {
-      console.log(filterData);
-    
-    }, [filterData])
-    
     const handlePrevPage=()=>{
-        setpage(page-1)
-        setfilterData(searchResults.slice(page*(i),(page+1)*i))
-    }
+        if(page>1){
+            setpage(page-1)
+            nextpage(page-1);
+        }
+    }  
     
   return (
     <div className='bg-[#F5F6FA] h-full w-full p-6 pb-11'>
@@ -53,7 +57,7 @@ const User = () => {
                             <th className="font-bold font-lato text-black text-[14px] text-start px-3 ">ID</th>
                             <th className="font-bold font-lato text-black text-[14px] text-center px-3 ">Name</th>
                             <th className="font-bold font-lato text-black text-[14px] text-start px-3">Email</th>
-                            <th className="font-bold font-lato text-black text-[14px] text-strat px-3">Mobile No</th>
+                            <th className="font-bold font-lato text-black text-[14px] text-center px-3">Mobile No</th>
                             <th className="font-bold font-lato text-black text-[14px] text-center px-3">DOB</th>
                         </tr>
                     </thead>
@@ -61,7 +65,7 @@ const User = () => {
                     <tbody className='grid-col-5'>
                         {filterData.map((item) =>{
                             return (
-                             <tr className="  h-[48px]  w-full items-center">
+                             <tr className="  h-[48px]  w-full items-center" key={item.ID}>
                             <td className="font-lato font-semibold text-[14px] w-1/5 min-w-[150px] text-black  text-start px-3">#{item.ID}</td>
                             <td className="font-lato font-semibold text-[14px] text-center w-1/5 min-w-[150px] text-black     px-3">{item.Name}</td>
                             <td className=" font-lato font-semibold w-1/5 min-w-[150px] text-satrt text-[14px] px-3">{item.Email}
@@ -78,10 +82,10 @@ const User = () => {
             </div>
             <hr />
             <div className="flex items-center justify-end   gap-3 mt-3">
-                <p className="font-lato font-semibold text-grey  text-[14px]">Showing {1+page*9}-{9+page*9} of {totalDataOfUsers}</p>
+                <p className="font-lato font-semibold text-grey  text-[14px]">Showing {page*9-8}-{(page*9<totalDataOfUsers)?(page*9):(totalDataOfUsers)} of {totalDataOfUsers}</p>
                 <div className=" border-borderColor  join ">
-                    <button disabled={page<=0} className="border-[0.6px] rounded-l-lg  p-2  px-3 bg-smoke" onClick={handlePrevPage}><img src={leftCaret} /></button>
-                    <button disabled={page>=(totalDataOfUsers/9)} className="border-[0.6px] rounded-r-lg p-2 px-3 bg-smoke"  onClick={handleNextPage}><img src={rightCaret} alt=""/></button>
+                    <button disabled={page<1} className="border-[0.6px] rounded-l-lg  p-2  px-3 bg-smoke" onClick={handlePrevPage}><img src={leftCaret} /></button>
+                    <button disabled={page>(totalDataOfUsers/9)} className="border-[0.6px] rounded-r-lg p-2 px-3 bg-smoke"  onClick={handleNextPage}><img src={rightCaret} alt=""/></button>
                 </div>
             </div>
         </div>
