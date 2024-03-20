@@ -3,9 +3,10 @@ import Header from "../navbar/Header";
 
 const RootLayout = ({ children }) => {
   return (
-    <div className="flex min-h-dvh w-dvw">
+    <div className="flex h-screen">
+      {/* 👉  w-dvw */}
       <Sidebar />
-      <div className="flex flex-col flex-grow">
+      <div className="flex flex-col flex-grow overflow-y-scroll">
         <Header />
         <main>{children}</main>
       </div>

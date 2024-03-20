@@ -12,5 +12,21 @@ const ROUTES = [
     path: "/dashboard",
     component: lazy(async () => await import("../pages/Home/index")),
   },
+  {
+    path: "/products",
+    component: lazy(async () => await import("../pages/Products/index")),
+  },
+  {
+    path: "/orders",
+    component: lazy(async () => await import("../pages/Orders/index")),
+  },
+  {
+    path: "/users",
+    component: lazy(async () => await import("../pages/User/index")),
+  },
+  {
+    path: "/coupons",
+    component: lazy(async () => await import("../pages/Coupons/index")),
+  },
 ];
 export default ROUTES;
