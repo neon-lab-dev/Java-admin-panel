@@ -6,19 +6,46 @@ import downloadIcon from "../../assets/icons/download.svg"
 import helmetImg from "../../assets/icons/helmet.svg"
 import Searchbar from "../../components/Searchbar";
 import { ORDER_DATA } from "../../assets/mock-data";
+import { useEffect, useState } from "react"
 
 
 
 
 const Orders = () => {
 
+    const [Orders, setOrders] = useState()
+    const [page, setPage] = useState(0)
+    const [limit, setLimit] = useState(9)
+
+    // modal window close code 
+    useEffect(() => {
+        const modal = document.getElementById('orderDetailModal');
+
+        const handleClickOutsideModal = (event) => {
+            if (event.target === modal) {
+                modal.close();
+            }
+        };
+
+        document.addEventListener('click', handleClickOutsideModal);
+
+        return () => {
+            document.removeEventListener('click', handleClickOutsideModal);
+        };
+    }, []);
 
 
+    useEffect(() => {
+        const temp = [];
+        for (let i = page * limit; i < page * 9 + limit; i++) {
+            if (ORDER_DATA[i]) {
+                temp.push(ORDER_DATA[i]);
+            }
+        }
+        setOrders(temp);
+    }, [page]);
 
-
-
-
-
+    console.log(page);
     return (
         <div className='bg-lightgray h-full w-full p-6 pb-11'>
             <h1 className='font-lato text-[32px] font-bold   text-black leading-[38.4px] '>Total Orders</h1>
@@ -87,8 +114,8 @@ const Orders = () => {
 
                             <tbody>
 
-                                {ORDER_DATA.map(item => <tr className="">
-                                    <td className="font-lato font-semibold text-[14px] text-black">#65f317a55deeaa0008f31cae</td>
+                                {Orders && Orders.map(item => <tr className="">
+                                    <td className="font-lato font-semibold text-[14px] text-black">#65f317a55deeaa0008f31cae .. {item.num}</td>
                                     <td className="font-lato font-semibold text-[14px] text-black">₹{item.price}</td>
                                     <td className="flex justify-center items-center font-lato font-semibold text-[14px]">
 
@@ -104,7 +131,7 @@ const Orders = () => {
 
                                     <td className=" text-center font-lato font-semibold text-[14px]"><button onClick={() => {
                                         window.orderDetailModal.showModal()
-                                    }} className="btn btn-sm btn-outline btn-primary rounded-md text-white">View Orders</button></td>
+                                    }} className="btn text-nowrap btn-sm btn-outline btn-primary rounded-md text-white">View Orders</button></td>
                                 </tr>
                                 )}
                             </tbody>
@@ -113,10 +140,10 @@ const Orders = () => {
 
                     <hr />
                     <div className="flex items-center justify-end   gap-3 mt-3">
-                        <p className="font-lato font-semibold text-grey  text-[14px]">Showing 1-09 of 78</p>
+                        <p className="font-lato font-semibold text-grey  text-[14px]">Showing {Orders && Orders[0].num} - {Orders && Orders[Orders.length - 1].num} of {ORDER_DATA.length}</p>
                         <div className=" border-borderColor  join ">
-                            <button className="border-[0.6px] rounded-l-lg  p-2  px-3  bg-smoke"><img src={leftCaret} /></button>
-                            <button className="border-[0.6px] rounded-r-lg p-2  px-3 bg-smoke"><img src={rightCaret} alt="" /></button>
+                            <button onClick={e => setPage(page === 0 ? page : page - 1)} className="border-[0.6px] rounded-l-lg  p-2  px-3  bg-smoke"><img src={leftCaret} /></button>
+                            <button onClick={e => setPage(page === 8 ? page : page + 1)} className="border-[0.6px] rounded-r-lg p-2  px-3 bg-smoke"><img src={rightCaret} alt="" /></button>
                         </div>
                     </div>
 
@@ -131,15 +158,17 @@ const Orders = () => {
             {/* Order detail modal start */}
 
 
-            <dialog id="orderDetailModal" className=" modal">
-                <form method="dialog" className="rounded-lg border shadow-lg p-3 py-5 w-[1085px] bg-white">
+            <dialog id="orderDetailModal" className=" modal ">
+
+                <form method="dialog" className="rounded-lg  relative border shadow-lg p-3 py-5 max-h-[907px] max-w-[1085px] bg-white">
+                    <div className="modal-overlay"></div>
                     <div className="">
 
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
 
                         <div className="grid  justify-center px-4 grid-cols-12">
 
                             <div className="col-span-4 overflow-y-auto px-4 py-6 h-[calc(100vh-80px)]">
+
                                 <h1 className="font-lato  font-semibold text-center text-[24px]">Order Item</h1>
                                 <div className="flex  flex-col justify-center ">
                                     <div className="">
@@ -152,32 +181,12 @@ const Orders = () => {
 
                                             <h2 className="font-semibold text-[18px] font-lato text-black">SG Optipro Cricket Helmet</h2>
                                             <div className="flex justify-between my-2  items-center">
-                                                <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Price:</h3> <span className="text-stone">₹15000</span> </div>
-                                                <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Qty:</h3> <span className="text-stone">1</span> </div>
+                                                <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Price:</h3> <span className="text-stone font-medium">₹15000</span> </div>
+                                                <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Qty:</h3> <span className="text-stone font-medium">1</span> </div>
 
                                             </div>
                                         </div>
-                                        <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Product ID:</h3> <span className="text-stone">65f317a55deeaa0008f31cae</span> </div>
-                                    </div>
-
-                                </div>
-                                <div className="flex  flex-col justify-center ">
-                                    <div className="">
-
-                                        <div className="bg-darksmoke mt-8 rounded-lg shadow-md w-full h-[317px]">
-                                            <img src={helmetImg} alt="" />
-                                        </div>
-
-                                        <div className="mt-3">
-
-                                            <h2 className="font-semibold text-[18px] font-lato text-black">SG Optipro Cricket Helmet</h2>
-                                            <div className="flex justify-between my-2  items-center">
-                                                <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Price:</h3> <span className="text-stone">₹15000</span> </div>
-                                                <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Qty:</h3> <span className="text-stone">1</span> </div>
-
-                                            </div>
-                                        </div>
-                                        <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Product ID:</h3> <span className="text-stone">65f317a55deeaa0008f31cae</span> </div>
+                                        <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Product ID:</h3> <span className="text-stone font-medium">65f317a55deeaa0008f31cae</span> </div>
                                     </div>
 
                                 </div>
@@ -187,26 +196,74 @@ const Orders = () => {
 
 
 
-                            <div className="col-span-8  border-l-2 border-dashed">
+
+
+                            <div className="col-span-8  overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)]">
                                 <h1 className="font-lato font-semibold text-center text-[24px]" >Order Information</h1>
+                                <div className="px-3 flex mt-1  justify-center flex-col ">
 
-                                <div className="p-5 flex flex-col gap-2 justify-center px-7">
+                                    <div className=" flex flex-col p-5  gap-3 border-b-2 border-dashed justify-center ">
 
-                                    <div className="font-semibold  font-lato     flex items-center gap-1"><h3 className="text-black">Address:</h3> <span className="font-medium text-lightbrown">Tulsipur 4 Banahari Dang</span> </div>
-                                    <div className="font-semibold  font-lato     flex items-center gap-1"><h3 className="text-black">Landmark:</h3> <span className="font-medium text-lightbrown">Purvanchal Campus abc</span> </div>
-                                    <div className="flex items-center font-lato  justify-between">
-                                        <div className="font-semibold  font-lato     flex items-center gap-1"><h3 className="text-black">State:</h3> <span className=" text-lightbrown font-medium">Lumbini</span> </div>
-                                        <div className="font-semibold  font-lato     flex items-center gap-1"><h3 className="text-black">City:</h3> <span className=" text-lightbrown font-medium">Tulsipur</span> </div>
-                                        <div className="font-semibold  font-lato     flex items-center gap-1"><h3 className="text-black">Country:</h3> <span className=" text-lightbrown font-medium">India</span> </div>
+                                        <div className="font-semibold  font-lato     flex items-center gap-1"><h3 className="text-black">Address:</h3> <span className="font-medium text-lightbrown">Tulsipur 4 Banahari Dang</span> </div>
+                                        <div className="font-semibold  font-lato     flex items-center gap-1"><h3 className="text-black">Landmark:</h3> <span className="font-medium text-lightbrown">Purvanchal Campus abc</span> </div>
+                                        <div className="flex items-center font-lato flex-wrap  justify-between">
+                                            <div className="font-semibold  font-lato     flex items-center gap-1"><h3 className="text-black">State:</h3> <span className=" text-lightbrown font-medium">Lumbini</span> </div>
+                                            <div className="font-semibold  font-lato     flex items-center gap-1"><h3 className="text-black">City:</h3> <span className=" text-lightbrown font-medium">Tulsipur</span> </div>
+                                            <div className="font-semibold  font-lato     flex items-center gap-1"><h3 className="text-black">Country:</h3> <span className=" text-lightbrown font-medium">India</span> </div>
+                                        </div>
+                                        <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Pin Code:</h3> <span className="font-medium text-lightbrown">22200</span> </div>
+
                                     </div>
-                                    <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Pin Code:</h3> <span className="font-medium text-lightbrown">22200</span> </div>
+
+                                    <div className="flex flex-col p-5  gap-3  justify-start border-b-2 border-dashed">
+                                        <div className="font-semibold  font-lato justify-between    flex items-center"><h3 className="text-black">Item Price:</h3> <span className="font-medium text-lightbrown">₹15000</span> </div>
+                                        <div className="font-semibold  font-lato justify-between    flex items-center"><h3 className="text-black">Discount:</h3> <span className="font-medium text-lightbrown">₹0</span> </div>
+                                        <div className="font-semibold  font-lato justify-between    flex items-center"><h3 className="text-black">Total Price:</h3> <span className="font-medium text-lightbrown">₹0</span> </div>
+                                    </div>
+                                    <div className="flex flex-col p-5 gap-3   border-b-2 border-dashed">
+                                        <div className="flex items-center flex-wrap justify-between ">
+                                            <div className="font-semibold  font-lato    flex items-center gap-2"><h3 className="text-black">User Name:</h3> <span className="font-medium text-lightbrown">Test 12345</span> </div>
+                                            <div className="font-semibold  font-lato    flex items-center gap-2"><h3 className="text-black">Phone No:</h3> <span className="font-medium text-lightbrown">9545854125</span> </div>
+
+                                        </div>
+                                        <div className="font-semibold  font-lato    flex items-center gap-2"><h3 className="text-black">User Email:</h3> <span className="font-medium text-lightbrown">Test 12345@gmail.com</span> </div>
+                                    </div>
+
+
+                                    <div className="flex flex-col p-5 gap-3   border-b-2 border-dashed">
+                                        <div className="font-semibold  font-lato    flex items-center gap-2"><h3 className="text-black">Order Status:</h3> <span className="font-semibold text-red">Processing</span> </div>
+                                        <h3 className="text-black font-semibold">Process Order</h3>
+                                    </div>
+
+                                    <div className="flex flex-col p-5 gap-3  ">
+                                        <div className="px-1 pr-5 rounded-lg border-borderColor border-[0.6px] bg-darksmoke w-full">
+                                            {/* select box */}
+                                            <select className=" px-3 pr-5 bg-darksmoke w-full   select-sm outline-none focus:outline-none">
+                                                <option disabled selected>Choose Status</option>
+                                                <option>Pending</option>
+                                                <option>Shipped</option>
+                                                <option>Cancelled</option>
+                                                <option>Delivered</option>
+                                            </select>
+                                        </div>
+                                        <div className="flex justify-evenly mt-3 items-center">
+                                            <button className="  w-[192px] h-[50px] border border-borderColor  rounded-[6px] bg-lightgreen text-white">Process</button>
+                                            <button className="  w-[192px] h-[50px] border border-borderColor rounded-[6px] bg-white outline-double outline-1 text-black  hover:bg-black hover:text-white">Download Invice</button>
+                                        </div>
+
+                                    </div>
+
 
                                 </div>
+
+
+
                             </div>
 
                         </div>
 
                     </div>
+
                 </form>
             </dialog>
 

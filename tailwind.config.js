@@ -20,7 +20,8 @@ export default {
         skyblue: "#42A4FF",
         yellow: "#FCBE2D",
         lightred: "#FD5454",
-        stone: "#A1A1A1"
+        stone: "#A1A1A1",
+        lightgreen: "#60AFBD"
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],
