@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import  searchResults from '../../assets/data/Userdata'
+import   {SearchOnUserData,searchResults} from '../../assets/data/Userdata.js'
 import Searchbar from '../../components/Searchbar'
 import downloadIcon from '../../assets/icon/download.svg'
 import leftCaret from '../../assets/icon/leftCaret.svg'
@@ -37,8 +37,7 @@ const User = () => {
 
         <div className=" justify-between flex items-center ">
             {/* Searchbar */}
-            <Searchbar placeholder={"Search by Name Phone or id"} />
-
+            <Searchbar placeholder={"Search by Name Phone or id"} SearchOnUserData={SearchOnUserData} />
             <div className="flex items-center gap-3">
                 {/* downloadIcon */}
                 <button className=" bg-lightgray  rounded-[6px]">
