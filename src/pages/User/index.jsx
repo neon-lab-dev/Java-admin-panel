@@ -1,43 +1,60 @@
 import React,{useEffect, useState} from 'react'
-import   {SearchOnUserData,searchResults} from '../../assets/data/Userdata.js'
+import userData from '../../assets/data/Userdata.js'
 import Searchbar from '../../components/Searchbar'
 import downloadIcon from '../../assets/icon/download.svg'
 import leftCaret from '../../assets/icon/leftCaret.svg'
-import rightCaret from '../../assets/icon/rightCaret.svg'
+import rightCaret from '../../assets/icon/rightCaret.svg';
+import searchObjects from '../../assets/Function/search.js'
 
 const User = () => {
-    const totalDataOfUsers = searchResults.length;
+    const [dataDisplay,setdataDisplay] = useState(userData);
+    const totalDataOfUsers = dataDisplay.length;
+    const [searchquery, setsearchquery] = useState("");
     const [page, setpage] = useState(1);
     let i=9;
-    const [filterData,setfilterData] = useState(searchResults.slice((page-1)*(i),(page)*i));
+    const [filterData,setfilterData] = useState(dataDisplay.slice((page-1)*(i),(page)*i));
 
-
-    const nextpage=(page)=>{
-        setfilterData(searchResults.slice((page-1)*(i),(page)*i))
-    }
-
+    useEffect(() => {
+        setfilterData(dataDisplay.slice((page-1)*(i),(page)*i))
+    }, [page])
+    
     const handleNextPage=()=>{
         if(page<(totalDataOfUsers/9)){
             setpage(page+1);
-            nextpage(page+1);  
         }
     }
+
     const handlePrevPage=()=>{
         if(page>1){
             setpage(page-1)
-            nextpage(page-1);
         }
     }  
+
+    const handleSearch = (event) => {
+        event.preventDefault();
+        setdataDisplay(searchObjects(userData,searchquery,["Name","ID","Mobile"]));
+    };
+
+    useEffect(() => {
+        setpage(1);
+        setfilterData(dataDisplay.slice((page-1)*(i),(page)*i));
+    
+    }, [dataDisplay])
+    
+    const handleChange =(event)=>{
+        setsearchquery(event.target.value);
+
+    }
     
   return (
-    <div className='bg-[#F5F6FA] h-full w-full p-6 pb-11'>
+    <div className='bg-[#F5F6FA] min-h-svh w-full p-6 pb-11'>
     <h1 className='font-lato text-[32px] font-bold text-black leading-[38.4px] '>All Users</h1>
 
     <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 px-5">
 
         <div className=" justify-between flex items-center ">
             {/* Searchbar */}
-            <Searchbar placeholder={"Search by Name Phone or id"} SearchOnUserData={SearchOnUserData} />
+            <Searchbar placeholder={"Search by Name Phone or id"} onChange={handleChange} onSubmit={handleSearch} value={searchquery}/>
             <div className="flex items-center gap-3">
                 {/* downloadIcon */}
                 <button className=" bg-lightgray  rounded-[6px]">
@@ -81,7 +98,7 @@ const User = () => {
             </div>
             <hr />
             <div className="flex items-center justify-end   gap-3 mt-3">
-                <p className="font-lato font-semibold text-grey  text-[14px]">Showing {page*9-8}-{(page*9<totalDataOfUsers)?(page*9):(totalDataOfUsers)} of {totalDataOfUsers}</p>
+                <p className="font-lato font-semibold text-grey  text-[14px]">Showing {(totalDataOfUsers===0)?"0":(page*9-8)}-{(page*9<totalDataOfUsers)?(page*9):(totalDataOfUsers)} of {totalDataOfUsers}</p>
                 <div className=" border-borderColor  join ">
                     <button disabled={page<1} className="border-[0.6px] rounded-l-lg  p-2  px-3 bg-smoke" onClick={handlePrevPage}><img src={leftCaret} /></button>
                     <button disabled={page>(totalDataOfUsers/9)} className="border-[0.6px] rounded-r-lg p-2 px-3 bg-smoke"  onClick={handleNextPage}><img src={rightCaret} alt=""/></button>

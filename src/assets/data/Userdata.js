@@ -1,4 +1,3 @@
-
 let userData =[
     {
         ID:"65f317a55deeaa0008f31cae1",
@@ -108,20 +107,12 @@ let userData =[
         Email:"rahulkumar@gmail.com",
         Mobile:"9236578931",
         DOB:"1999-06-03"
-    },
+    }   ,{
+        ID:"65f317a55deeaa0008f31cae19",
+        Name:"Rahudsadsadl Kumar",
+        Email:"rahulkumar@gmail.com",
+        Mobile:"9236578931",
+        DOB:"1999-06-03"
+    }
 ]
-
-const SearchOnUserData=  (Name,ID,Mobile)=>{
-    const searchByID = userData.filter(user => user.ID === ID)
-    const searchByMobile = userData.filter(user => user.Mobile === Mobile);
-    const searchByName = userData.filter(user => user.Name === Name);
-    const searchResults = [].concat(searchByMobile).concat(searchByName).concat(searchByID);
-    // const searchResults = [].concat(searchByName)
-    return searchResults;
-}
-const searchResults = SearchOnUserData("Rahudsadsadl Kumar","65f317a55deeaa0008f31cae18","9236578931")
-
-console.log(searchResults); 
-
-// let TotalData ={searchResults,userData};
-export  {SearchOnUserData,searchResults};
+export default userData;
