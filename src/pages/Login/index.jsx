@@ -25,7 +25,7 @@ const Login = () => {
                         <input className="mt-2 w-[515px] h-[54px] bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-['Lato']" type='text' placeholder='Enter your Password'/>
                     </div>
                     <button className='mt-[36px] w-[515px] h-16 bg-rose-500 rounded-xl'>
-                        <p className="text-white text-xl font-bold font-['Inter']">
+                        <p className="text-white text-xl font-bold font-['Lato]">
                             Login
                         </p>
                     </button>
