@@ -40,7 +40,6 @@ const Coupons = () => {
     useEffect(() => {
         setpage(1);
         setfilterData(dataDisplay.slice((page-1)*(i),(page)*i));
-    
     }, [dataDisplay])
     
     const handleChange =(event)=>{
@@ -94,20 +93,20 @@ const Coupons = () => {
                 </div>
                 <div className="border-l-2 border-dashed"/>
                 <div className="w-3/5">
-                  <div className="h-full flex flex-col place-content-start place-items-start justify-center items-center">
-                    <div className='w-4/6'>
-                      <p className="text-black text-2xl font-semibold font-['Lato'] tracking-tight">Verify the Coupon</p>
-                      <p>
-                        <span className="text-black text-2xl font-semibold font-['Lato'] tracking-tight">
-                          Coupon Code:
+                  <div className="h-full flex flex-col place-content-start place-items-start items-center">
+                    <div className='w-4/5'>
+                      <p className="mt-[50px] text-black text-2xl font-semibold font-['Lato'] tracking-tight">Verify &nbsp;the&nbsp; Coupon</p>
+                      <p className='mt-[28px]'>
+                        <span className=" text-black text-2xl font-semibold font-['Lato'] tracking-tight">
+                          Coupon &nbsp;Code :&nbsp;&nbsp;
                         </span>
                         <span className="text-black text-lg font-light font-['Lato'] tracking-tight">
-                          421545185
+                        421545185
                         </span>
                       </p>
-                      <p>
+                      <p className='mt-[18px]'>
                         <span className="text-black text-2xl font-semibold font-['Lato'] tracking-tight">
-                          Amount:
+                          Amount :&nbsp;&nbsp;
                         </span>
                         <span className="text-black text-lg font-light font-['Lato'] tracking-tight">
                         ₹421
@@ -135,7 +134,7 @@ const Coupons = () => {
 
         <div className=" justify-between flex items-center ">
             {/* Searchbar */}
-            <Searchbar placeholder={"Search by Name Phone or id"} onChange={handleChange} onSubmit={handleSearch} value={searchquery}/>
+            <Searchbar placeholder={"Search by Coupon code or ID"} onChange={handleChange} onSubmit={handleSearch} value={searchquery}/>
             <div className="flex items-center gap-3">
                 {/* downloadIcon */}
                 <button className=" bg-lightgray  rounded-[6px]">
@@ -152,8 +151,8 @@ const Coupons = () => {
                     <thead className="grid-col-5">
                         <tr className="h-[48px] bg-slate-100 rounded-xl w-full items-center">
                             <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-start px-3 ">ID</th>
-                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3 ">Code</th>
-                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-start px-3">Amount</th>
+                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3 ">Coupon Code</th>
+                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3">Amount</th>
                             <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3">Action</th>
                         </tr>
                     </thead>
@@ -161,12 +160,17 @@ const Coupons = () => {
                     <tbody className='grid-col-5'>
                         {filterData.map((item) =>{
                             return (
-                             <tr className="  h-[48px]  w-full items-center" key={item.ID}>
+                             <tr className="h-[48px] w-full items-center" key={item.ID}>
                             <td className="opacity-80 font-lato font-semibold text-[14px] w-1/5 min-w-[150px] text-black  text-start px-3">#{item.ID}</td>
                             <td className="opacity-80 font-lato font-semibold text-[14px] text-center w-1/5 min-w-[150px] text-black     px-3">{item.Code}</td>
-                            <td className="opacity-80  font-lato font-semibold w-1/5 min-w-[150px] text-satrt text-[14px] px-3">₹{item.Amount}
+                            <td className="opacity-80  font-lato font-semibold w-1/5 min-w-[150px] text-center text-[14px] px-3">₹{item.Amount}
                             </td>
-                            <td className="opacity-80 font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.Action}
+                            <td className="opacity-80 w-1/5 min-w-[100px]">
+                              <div className='flex place-content-center'>
+                                <button>
+                                  <img src={item.Action}/>
+                                </button>
+                              </div>
                             </td>
                         </tr>
                         );
