@@ -68,13 +68,13 @@ const User = () => {
                 <table className="table rounded-2xl bg-salte-100  w-full">
                     {/* head */}
                     
-                    <thead className="grid-col-5 ">
+                    <thead className="grid-col-5">
                         <tr className="h-[48px] bg-slate-100 rounded-xl w-full items-center">
-                            <th className="font-bold font-lato text-black text-[14px] text-start px-3 ">ID</th>
-                            <th className="font-bold font-lato text-black text-[14px] text-center px-3 ">Name</th>
-                            <th className="font-bold font-lato text-black text-[14px] text-start px-3">Email</th>
-                            <th className="font-bold font-lato text-black text-[14px] text-center px-3">Mobile No</th>
-                            <th className="font-bold font-lato text-black text-[14px] text-center px-3">DOB</th>
+                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-start px-3 ">ID</th>
+                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3 ">Name</th>
+                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-start px-3">Email</th>
+                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3">Mobile No</th>
+                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3">DOB</th>
                         </tr>
                     </thead>
                    
@@ -82,13 +82,13 @@ const User = () => {
                         {filterData.map((item) =>{
                             return (
                              <tr className="  h-[48px]  w-full items-center" key={item.ID}>
-                            <td className="font-lato font-semibold text-[14px] w-1/5 min-w-[150px] text-black  text-start px-3">#{item.ID}</td>
-                            <td className="font-lato font-semibold text-[14px] text-center w-1/5 min-w-[150px] text-black     px-3">{item.Name}</td>
-                            <td className=" font-lato font-semibold w-1/5 min-w-[150px] text-satrt text-[14px] px-3">{item.Email}
+                            <td className="opacity-80 font-lato font-semibold text-[14px] w-1/5 min-w-[150px] text-black  text-start px-3">#{item.ID}</td>
+                            <td className="opacity-80 font-lato font-semibold text-[14px] text-center w-1/5 min-w-[150px] text-black     px-3">{item.Name}</td>
+                            <td className="opacity-80  font-lato font-semibold w-1/5 min-w-[150px] text-satrt text-[14px] px-3">{item.Email}
                             </td>
-                            <td className=" font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.Mobile}
+                            <td className="opacity-80 font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.Mobile}
                             </td>
-                            <td className=" font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.DOB}
+                            <td className="opacity-80 font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.DOB}
                             </td>
                         </tr>
                         );
@@ -98,10 +98,10 @@ const User = () => {
             </div>
             <hr />
             <div className="flex items-center justify-end   gap-3 mt-3">
-                <p className="font-lato font-semibold text-grey  text-[14px]">Showing {(totalDataOfUsers===0)?"0":(page*9-8)}-{(page*9<totalDataOfUsers)?(page*9):(totalDataOfUsers)} of {totalDataOfUsers}</p>
+                <p className="font-lato font-semibold text-grey opacity-60 text-[14px]">Showing {(totalDataOfUsers===0)?"0":(page*9-8)}-{(page*9<totalDataOfUsers)?(page*9):(totalDataOfUsers)} of {totalDataOfUsers}</p>
                 <div className=" border-borderColor  join ">
-                    <button disabled={page<1} className="border-[0.6px] rounded-l-lg  p-2  px-3 bg-smoke" onClick={handlePrevPage}><img src={leftCaret} /></button>
-                    <button disabled={page>(totalDataOfUsers/9)} className="border-[0.6px] rounded-r-lg p-2 px-3 bg-smoke"  onClick={handleNextPage}><img src={rightCaret} alt=""/></button>
+                    <button disabled={page<1} className="border-[0.6px] rounded-l-lg  p-2  px-3 bg-smoke" onClick={handlePrevPage}><img className={`${(page<2)?"opacity-40":"opacity-90"}`} src={leftCaret} /></button>
+                    <button disabled={page>(totalDataOfUsers/9)} className="border-[0.6px] rounded-r-lg p-2 px-3 bg-smoke"  onClick={handleNextPage}><img className={`${(page>Math.ceil((totalDataOfUsers/9)-1))?"opacity-40":"opacity-90"}`} src={rightCaret} alt=""/></button>
                 </div>
             </div>
         </div>
