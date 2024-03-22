@@ -52,7 +52,6 @@ const Sidebar = () => {
           Logout
         </button>
       </div>
-      <div className="bg-[#E0E0E0] h-px  my-[140px] "></div>
     </aside>
     
   );
