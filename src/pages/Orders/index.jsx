@@ -7,7 +7,7 @@ import helmetImg from "../../assets/icons/helmet.svg"
 import Searchbar from "../../components/Searchbar";
 import { ORDER_DATA, ORDER_STATUS } from "../../assets/mock-data";
 import { useCallback, useEffect, useState } from "react"
-import useFilter from "./useFilter"
+import useFilter from "../../assets/customhooks/useFilter"
 
 
 
@@ -199,6 +199,11 @@ const Orders = () => {
 
                                                 <td className=" text-center font-lato font-semibold text-[14px]"><button onClick={() => {
                                                     window.orderDetailModal.showModal()
+                                                    const dd = document.getElementById("orderInfo")
+                                                    dd.scrollTop = 0
+                                                    // window.orderDetailModal.scrollTop = 0
+                                                    // window.orderDetailModal.top = 0
+
                                                 }} className="btn text-nowrap btn-sm btn-outline btn-primary rounded-md text-white">View Orders</button></td>
                                             </tr>
 
@@ -294,7 +299,9 @@ const Orders = () => {
 
                             {/* order Information -- order detail modal */}
 
-                            <div onScroll={() => handleScrollbar("right")} className={`col-span-8  scrollbar-width-sm overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)] ${!isScrolling.right && "hidden-scrollbar"}`}>
+                            <div
+                                id="orderInfo"
+                                onScroll={() => handleScrollbar("right")} className={`col-span-8  scrollbar-width-sm overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)] ${!isScrolling.right && "hidden-scrollbar"}`}>
                                 <h1 className="font-lato font-semibold text-center text-[24px]" >Order Information</h1>
                                 <div className="px-3 flex mt-1  justify-center flex-col ">
 
@@ -332,7 +339,7 @@ const Orders = () => {
                                     </div>
 
                                     <div className="flex flex-col p-5 gap-3  ">
-                                        <div className="px-1 pr-5 rounded-lg border-borderColor border-[0.6px] bg-darksmoke w-full">
+                                        <div className="px-1 mb-10 pr-5 rounded-lg border-borderColor border-[0.6px] bg-darksmoke w-full">
                                             {/* select box */}
                                             <select className=" px-3 pr-5 bg-darksmoke w-full   select-sm outline-none focus:outline-none">
                                                 <option disabled selected>Choose Status</option>
@@ -342,9 +349,12 @@ const Orders = () => {
                                                 <option>Delivered</option>
                                             </select>
                                         </div>
-                                        <div className="flex fixed bottom-10  justify-center gap-8 mt-3 items-center">
-                                            <button className="  w-[192px] h-[40px] border border-borderColor  rounded-[6px] bg-lightgreen text-white">Process</button>
-                                            <button className="  w-[192px] h-[40px] border border-borderColor rounded-[6px] bg-white outline-double outline-1 text-black  hover:bg-black hover:text-white">Download Invice</button>
+                                        <div className="w-full bg-white  flex justify-center">
+
+                                            <div className="flex   fixed bottom-10  justify-center gap-8 mt-3 items-center">
+                                                <button className="  w-[192px] h-[40px] border border-borderColor  rounded-[6px] bg-lightgreen text-white">Process</button>
+                                                <button className="  w-[192px] h-[40px] border border-borderColor rounded-[6px] bg-white outline-double outline-1 text-black  hover:bg-black hover:text-white">Download Invice</button>
+                                            </div>
                                         </div>
 
                                     </div>

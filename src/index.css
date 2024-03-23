@@ -13,6 +13,7 @@
 
 .scrollbar-width-sm::-webkit-scrollbar-thumb {
   border-radius: 15%;
+
   @apply bg-red
 }
 
