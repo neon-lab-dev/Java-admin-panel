@@ -5,17 +5,80 @@ import rightCaret from "../../assets/icons/rightCaret.svg"
 import downloadIcon from "../../assets/icons/download.svg"
 import helmetImg from "../../assets/icons/helmet.svg"
 import Searchbar from "../../components/Searchbar";
-import { ORDER_DATA } from "../../assets/mock-data";
-import { useEffect, useState } from "react"
+import { ORDER_DATA, ORDER_STATUS } from "../../assets/mock-data";
+import { useCallback, useEffect, useState } from "react"
+import useFilter from "./useFilter"
 
 
 
 
 const Orders = () => {
 
+    const [filterQty, setFilterQty] = useState({
+        all: ORDER_DATA.length,
+        delivered: ORDER_DATA.filter(item => item.status === "delivered").length,
+        processing: ORDER_DATA.filter(item => item.status === "processing").length,
+        cancelled: ORDER_DATA.filter(item => item.status === "cancelled").length,
+        shipped: ORDER_DATA.filter(item => item.status === "shipped").length,
+    })
+
+
+    const [allOrders, setAllOrders] = useState(ORDER_DATA)
+    const [isScrolling, setIsScrolling] = useState({
+        left: false,
+        right: false
+    })
     const [Orders, setOrders] = useState()
     const [page, setPage] = useState(0)
     const [limit, setLimit] = useState(9)
+    const [filterOrders, setFilterOrders] = useState("all")
+    const [serchFilter, setSerchFilter] = useState()
+
+
+    const filteredOrderData = useFilter({ inpValue: serchFilter, AllData: ORDER_DATA, filterFrom: ["price", "id", "status"] })
+
+    useEffect(() => {
+        if (serchFilter) {
+            setAllOrders(filteredOrderData)
+        } else {
+            setAllOrders(ORDER_DATA)
+        }
+    }, [serchFilter])
+
+
+    // .filter data for dropdown 
+    const handleFilterOrder = (selectedOrder) => {
+        setPage(0)
+        if (selectedOrder === "all") {
+            setFilterOrders(selectedOrder)
+            setAllOrders(ORDER_DATA)
+        } else {
+
+            setFilterOrders(selectedOrder)
+            setAllOrders(ORDER_DATA.filter(item => item.status === selectedOrder))
+        }
+    }
+
+    // pagination pre and next functions
+    const handleNext = () => {
+        setPage(page === (Math.floor(allOrders.length / 9)) ? page : page + 1)
+    }
+
+    const handlePre = () => {
+        setPage(page === 0 ? page : page - 1)
+    }
+
+
+    // handlescrollbar for hiding scrollbar order detail modal
+    const handleScrollbar = useCallback((side) => {
+        if (!isScrolling[side]) {
+            setIsScrolling(prevState => ({ ...prevState, [side]: true }));
+        } else {
+            setTimeout(() => {
+                setIsScrolling({ left: false, right: false });
+            }, 3000);
+        }
+    }, [isScrolling]);
 
     // modal window close code 
     useEffect(() => {
@@ -38,14 +101,14 @@ const Orders = () => {
     useEffect(() => {
         const temp = [];
         for (let i = page * limit; i < page * 9 + limit; i++) {
-            if (ORDER_DATA[i]) {
-                temp.push(ORDER_DATA[i]);
+            if (allOrders[i]) {
+                temp.push(allOrders[i]);
             }
         }
         setOrders(temp);
-    }, [page]);
+    }, [page, allOrders]);
 
-    console.log(page);
+
     return (
         <div className='bg-lightgray h-full w-full p-6 pb-11'>
             <h1 className='font-lato text-[32px] font-bold   text-black leading-[38.4px] '>Total Orders</h1>
@@ -54,7 +117,7 @@ const Orders = () => {
 
                 <div className=" justify-between flex items-center ">
                     {/* Searchbar */}
-                    <Searchbar placeholder={"Search by order id or Total  price"} />
+                    <Searchbar setSerchFilter={setSerchFilter} placeholder={"Search by order id or Total  price"} />
 
                     <div className="flex items-center gap-3">
 
@@ -67,12 +130,12 @@ const Orders = () => {
                                     <div className="font-bold text-[14px] w-full font-lato text-black" >
 
                                         <div className="flex items-center w-full ">
-                                            <div className=" m-1">All (10)</div>
+                                            <div className=" m-1 capitalize">{filterOrders} ({filterQty[filterOrders]})</div>
                                             <ul tabIndex={0} className="dropdown-content  z-[1] menu p-2 shadow bg-base-100 rounded-md w-full">
-                                                <li className="p-2 rounded-md hover:text-white hover:bg-red">Delivered (10)</li>
-                                                <li className="p-2 rounded-md hover:text-white hover:bg-red">Shipped (10)</li>
-                                                <li className="p-2 rounded-md hover:text-white hover:bg-red">Processing (10)</li>
-                                                <li className="p-2 rounded-md hover:text-white hover:bg-red">Cancelled (10)</li>
+                                                {
+                                                    ORDER_STATUS.map((item, i) => <li key={i} onClick={e => handleFilterOrder(item)} className={` p-2 rounded-md capitalize hover:text-white hover:bg-red ${item === filterOrders && "bg-red text-white my-1"}`}>{item} ({filterQty[item]})</li>)
+                                                }
+
                                             </ul>
                                         </div>
 
@@ -100,50 +163,63 @@ const Orders = () => {
 
 
                     <div className="overflow-x-auto">
-                        <table className="table rounded-2xl table-lg">
-                            {/* head */}
-                            <thead className=" rounded-[12px] bg-gray1">
+                        {
+                            Orders && Orders.length > 0
+                                ?
 
-                                <tr className="">
-                                    <th className="font-bold font-lato text-black text-[14px]">ID</th>
-                                    <th className="font-bold font-lato text-black text-[14px]">Total Price</th>
-                                    <th className="font-bold text-center font-lato text-black text-[14px]">Order Status</th>
-                                    <th className=" font-bold text-center font-lato text-black text-[14px]">Action</th>
-                                </tr>
-                            </thead>
+                                <table className="table rounded-2xl table-lg">
+                                    {/* head */}
+                                    <thead className=" rounded-[12px] bg-gray1">
 
-                            <tbody>
+                                        <tr className="">
+                                            <th className="font-bold font-lato text-black text-[14px]">ID</th>
+                                            <th className="font-bold font-lato text-black text-[14px]">Total Price</th>
+                                            <th className="font-bold text-center font-lato text-black text-[14px]">Order Status</th>
+                                            <th className=" font-bold text-center font-lato text-black text-[14px]">Action</th>
+                                        </tr>
+                                    </thead>
 
-                                {Orders && Orders.map(item => <tr className="">
-                                    <td className="font-lato font-semibold text-[14px] text-black">#65f317a55deeaa0008f31cae .. {item.num}</td>
-                                    <td className="font-lato font-semibold text-[14px] text-black">₹{item.price}</td>
-                                    <td className="flex justify-center items-center font-lato font-semibold text-[14px]">
+                                    <tbody>
 
-                                        <div className={` w-[93px] text-center py-1 rounded-md capitalize
+                                        {
+                                            Orders.map(item => <tr className="">
+                                                <td className="font-lato font-semibold text-[14px] text-black">{item.id} .. {item.num}</td>
+                                                <td className="font-lato font-semibold text-[14px] text-black">₹{item.price}</td>
+                                                <td className="flex justify-center items-center font-lato font-semibold text-[14px]">
+
+                                                    <div className={` w-[93px] text-center py-1 rounded-md capitalize
                                      ${item.status === "delivered" ? "bg-green"
-                                                : item.status === "shipped" ? "bg-yellow"
-                                                    : item.status === "processing" ? "bg-skyblue"
-                                                        : item.status === "cancelled" ? "bg-lightred" : "bg-black"} text-white   `}>
-                                            {item.status}
-                                        </div>
+                                                            : item.status === "shipped" ? "bg-yellow"
+                                                                : item.status === "processing" ? "bg-skyblue"
+                                                                    : item.status === "cancelled" ? "bg-lightred" : "bg-black"} text-white   `}>
+                                                        {item.status}
+                                                    </div>
 
-                                    </td>
+                                                </td>
 
-                                    <td className=" text-center font-lato font-semibold text-[14px]"><button onClick={() => {
-                                        window.orderDetailModal.showModal()
-                                    }} className="btn text-nowrap btn-sm btn-outline btn-primary rounded-md text-white">View Orders</button></td>
-                                </tr>
-                                )}
-                            </tbody>
-                        </table>
+                                                <td className=" text-center font-lato font-semibold text-[14px]"><button onClick={() => {
+                                                    window.orderDetailModal.showModal()
+                                                }} className="btn text-nowrap btn-sm btn-outline btn-primary rounded-md text-white">View Orders</button></td>
+                                            </tr>
+
+                                            )
+                                        }
+                                    </tbody>
+                                </table>
+                                : <>
+                                    <div className="p-8">
+                                        <h1 className="text-lg font-lato font-semibold">No records found</h1>
+                                    </div>
+                                </>
+                        }
                     </div>
 
                     <hr />
                     <div className="flex items-center justify-end   gap-3 mt-3">
-                        <p className="font-lato font-semibold text-grey  text-[14px]">Showing {Orders && Orders[0].num} - {Orders && Orders[Orders.length - 1].num} of {ORDER_DATA.length}</p>
+                        <p className="font-lato font-semibold text-grey  text-[14px]">Showing {Orders && (page === 0 ? 1 : page * limit)} - {Orders && (page * limit + Orders.length)} of {allOrders.length}</p>
                         <div className=" border-borderColor  join ">
-                            <button onClick={e => setPage(page === 0 ? page : page - 1)} className="border-[0.6px] rounded-l-lg  p-2  px-3  bg-smoke"><img src={leftCaret} /></button>
-                            <button onClick={e => setPage(page === 8 ? page : page + 1)} className="border-[0.6px] rounded-r-lg p-2  px-3 bg-smoke"><img src={rightCaret} alt="" /></button>
+                            <button onClick={handlePre} className="border-[0.6px] rounded-l-lg  p-2  px-3  bg-smoke"><img src={leftCaret} /></button>
+                            <button onClick={handleNext} className="border-[0.6px] rounded-r-lg p-2  px-3 bg-smoke"><img src={rightCaret} alt="" /></button>
                         </div>
                     </div>
 
@@ -167,9 +243,29 @@ const Orders = () => {
 
                         <div className="grid  justify-center px-4 grid-cols-12">
 
-                            <div className="col-span-4 overflow-y-auto px-4 py-6 h-[calc(100vh-80px)]">
+                            <div onScroll={() => handleScrollbar("left")} className={`col-span-4  scrollbar-width-sm overflow-y-auto ${!isScrolling.left && "hidden-scrollbar "}  lg:px-4 md:px-2 pb-4 h-[calc(100vh-80px)]`}>
 
                                 <h1 className="font-lato  font-semibold text-center text-[24px]">Order Item</h1>
+                                <div className="flex  flex-col justify-center ">
+                                    <div className="">
+
+                                        <div className="bg-darksmoke mt-8 rounded-lg shadow-md w-full h-[317px]">
+                                            <img src={helmetImg} alt="" />
+                                        </div>
+
+                                        <div className="mt-3">
+
+                                            <h2 className="font-semibold text-[18px] font-lato text-black">SG Optipro Cricket Helmet</h2>
+                                            <div className="flex justify-between my-2  items-center">
+                                                <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Price:</h3> <span className="text-stone font-medium">₹15000</span> </div>
+                                                <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Qty:</h3> <span className="text-stone font-medium">1</span> </div>
+
+                                            </div>
+                                        </div>
+                                        <div className="font-semibold  flex items-center gap-1"><h3 className="text-black">Product ID:</h3> <span className="text-stone font-medium">65f317a55deeaa0008f31cae</span> </div>
+                                    </div>
+
+                                </div>
                                 <div className="flex  flex-col justify-center ">
                                     <div className="">
 
@@ -196,9 +292,9 @@ const Orders = () => {
 
 
 
+                            {/* order Information -- order detail modal */}
 
-
-                            <div className="col-span-8  overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)]">
+                            <div onScroll={() => handleScrollbar("right")} className={`col-span-8  scrollbar-width-sm overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)] ${!isScrolling.right && "hidden-scrollbar"}`}>
                                 <h1 className="font-lato font-semibold text-center text-[24px]" >Order Information</h1>
                                 <div className="px-3 flex mt-1  justify-center flex-col ">
 
@@ -246,9 +342,9 @@ const Orders = () => {
                                                 <option>Delivered</option>
                                             </select>
                                         </div>
-                                        <div className="flex justify-evenly mt-3 items-center">
-                                            <button className="  w-[192px] h-[50px] border border-borderColor  rounded-[6px] bg-lightgreen text-white">Process</button>
-                                            <button className="  w-[192px] h-[50px] border border-borderColor rounded-[6px] bg-white outline-double outline-1 text-black  hover:bg-black hover:text-white">Download Invice</button>
+                                        <div className="flex fixed bottom-10  justify-center gap-8 mt-3 items-center">
+                                            <button className="  w-[192px] h-[40px] border border-borderColor  rounded-[6px] bg-lightgreen text-white">Process</button>
+                                            <button className="  w-[192px] h-[40px] border border-borderColor rounded-[6px] bg-white outline-double outline-1 text-black  hover:bg-black hover:text-white">Download Invice</button>
                                         </div>
 
                                     </div>
@@ -266,8 +362,6 @@ const Orders = () => {
 
                 </form>
             </dialog>
-
-
 
 
 

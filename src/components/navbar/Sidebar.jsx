@@ -36,9 +36,8 @@ const Sidebar = () => {
           <Link
             key={index}
             to={link.path}
-            className={`w-full relative rounded-md text-neutral-800 text-sm font-semibold tracking-tight text-center py-3.5 ${
-              pathname === link.path && "bg-primary text-white"
-            }`}
+            className={`w-full relative rounded-md text-neutral-800 text-sm font-semibold tracking-tight text-center py-3.5 ${pathname === link.path && "bg-primary text-white"
+              }`}
           >
             {link.label}
           </Link>
