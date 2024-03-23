@@ -7,7 +7,7 @@ const Home = () => {
   return ( 
   <div className="text-primary bg-[#F5F6FA] min-h-svh w-full px-6 py-2">
     <div className="text-neutral-800 text-[32px] font-bold font-['Lato']">Java Sports Admin Dashboard</div>
-      <div className="flex flex-wrap gap-[1.5rem] py-[33px] ">
+      <div className="flex flex-wrap gap-[30px] py-[33px] ">
         {dashboardData.map((element)=>{
           return(
             <div key={element.title}>
