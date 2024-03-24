@@ -21,7 +21,13 @@ export default {
         yellow: "#FCBE2D",
         lightred: "#FD5454",
         stone: "#A1A1A1",
-        lightgreen: "#60AFBD"
+        lightgreen: "#60AFBD",
+        darkgreen: "#1E6E79",
+        stone1: "#828282",
+        stone2: "#888383",
+        darkstone: "#979797",
+        whiteblack: "#A8A8A8",
+        blackwhite: "#010101"
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],
