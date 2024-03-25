@@ -36,7 +36,7 @@ const Sidebar = () => {
           <Link
             key={index}
             to={link.path}
-            className={`w-full flex justify-center rounded-md text-neutral-800 text-sm font-semibold tracking-tight  py-3.5  hover:bg-slate-100 ${pathname === link.path && "bg-primary text-white hover:text-pink-100 hover:bg-primary"}`}
+            className={`w-full flex justify-center rounded-md text-neutral-800 text-sm font-semibold tracking-tight  py-3.5 ${pathname === link.path ? "bg-primary text-white ":"hover:bg-slate-100"}`}
           >
             <div className="w-1/3">
               <div 
