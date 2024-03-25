@@ -30,7 +30,11 @@ const User = () => {
         }
     }  
 
-    const handleSearch = (event) => {
+    const handleSearch = () => {
+        // event.preventDefault();
+        setdataDisplay(searchObjects(userData,searchquery,["Name","ID","Mobile"]));
+    };
+    const handleSearch1 = (event) => {
         event.preventDefault();
         setdataDisplay(searchObjects(userData,searchquery,["Name","ID","Mobile"]));
     };
@@ -43,8 +47,11 @@ const User = () => {
     
     const handleChange =(event)=>{
         setsearchquery(event.target.value);
-
     }
+    useEffect(() => {
+      handleSearch();
+    }, [searchquery])
+    
     
   return (
     <div className='bg-[#F5F6FA] min-h-svh w-full p-6 pb-11'>
@@ -54,7 +61,7 @@ const User = () => {
 
         <div className=" justify-between flex items-center ">
             {/* Searchbar */}
-            <Searchbar placeholder={"Search by Name Phone or id"} onChange={handleChange} onSubmit={handleSearch} value={searchquery}/>
+            <Searchbar placeholder={"Search by Name Phone or id"} onChange={handleChange} onSubmit={handleSearch1} value={searchquery}/>
             <div className="flex items-center gap-3">
                 {/* downloadIcon */}
                 <button className=" bg-lightgray  rounded-[6px]">
