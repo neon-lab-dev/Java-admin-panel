@@ -32,19 +32,11 @@ const Coupons = () => {
         }
     }  
 
-    // const handleSearch = () => {
-    //   setdataDisplay(searchObjects(couponData,searchquery,["Code","ID"]));
-    // };
 
     const handleSearch = (event) => {
         event.preventDefault();
         setdataDisplay(searchObjects(couponData,searchquery,["Code","ID"]));
     };
-
-    // useEffect(() => {
-    //   handleSearch();
-    // }, [searchquery])
-    
 
     useEffect(() => {
         setpage(1);
