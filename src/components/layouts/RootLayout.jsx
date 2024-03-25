@@ -1,6 +1,6 @@
 import Sidebar from "../navbar/Sidebar";
 import Header from "../navbar/Header";
-import { useInnerSize } from "../../hooks/InnerSizeHook";
+import { useInnerSize } from "../../hooks/useInnerSize";
 import Error from "../../pages/Error";
 
 const RootLayout = ({ children }) => {

@@ -37,9 +37,9 @@ const User = () => {
                         <tr className="h-[48px] bg-slate-100 w-full items-center">
                             <th className="font-bold font-lato text-black text-[14px] text-start px-3 ">ID</th>
                             <th className="font-bold font-lato text-black text-[14px] text-center px-3 ">Name</th>
-                            <th className="font-bold text-center font-lato text-black text-[14px]  text-end px-3">Email</th>
-                            <th className="font-bold text-center font-lato text-black text-[14px]  text-end px-3">Mobile No</th>
-                            <th className="font-bold text-center font-lato text-black text-[14px]  text-center px-3">DOB</th>
+                            <th className="font-bold font-lato text-black text-[14px]  text-end px-3">Email</th>
+                            <th className="font-bold font-lato text-black text-[14px]  text-end px-3">Mobile No</th>
+                            <th className="font-bold font-lato text-black text-[14px]  text-center px-3">DOB</th>
                         </tr>
                     </thead>
                    
