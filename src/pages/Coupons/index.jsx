@@ -32,10 +32,19 @@ const Coupons = () => {
         }
     }  
 
-    const handleSearch = (event) => {
+    const handleSearch = () => {
+      setdataDisplay(searchObjects(couponData,searchquery,["Code","ID"]));
+    };
+
+    const handleSearch1 = (event) => {
         event.preventDefault();
         setdataDisplay(searchObjects(couponData,searchquery,["Code","ID"]));
     };
+
+    useEffect(() => {
+      handleSearch();
+    }, [searchquery])
+    
 
     useEffect(() => {
         setpage(1);
@@ -134,7 +143,7 @@ const Coupons = () => {
 
         <div className=" justify-between flex items-center ">
             {/* Searchbar */}
-            <Searchbar placeholder={"Search by Coupon code or ID"} onChange={handleChange} onSubmit={handleSearch} value={searchquery}/>
+            <Searchbar placeholder={"Search by Coupon code or ID"} onChange={handleChange} onSubmit={handleSearch1} value={searchquery}/>
             <div className="flex items-center gap-3">
                 {/* downloadIcon */}
                 <button className=" bg-lightgray  rounded-[6px]">
