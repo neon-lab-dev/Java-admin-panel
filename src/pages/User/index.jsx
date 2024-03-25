@@ -30,6 +30,7 @@ const User = () => {
         }
     }  
 
+
     const handleSearch = (event) => {
         event.preventDefault();
         setdataDisplay(searchObjects(userData,searchquery,["Name","ID","Mobile"]));
@@ -43,7 +44,7 @@ const User = () => {
     
     const handleChange =(event)=>{
         setsearchquery(event.target.value);
-
+        setdataDisplay(searchObjects(userData,event.target.value,["Name","ID","Mobile"]));
     }
     
   return (
