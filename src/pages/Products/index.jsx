@@ -74,7 +74,7 @@ const Products = () => {
         {/* searchbar and download btn */}
         <div className=" justify-between flex items-center ">
           {/* Searchbar */}
-          <Searchbar setSerchFilter={setSearchFilter} placeholder={"Search products"} />
+          <Searchbar onChange={e => setSearchFilter(e.target.value)} placeholder={"Search products"} value={searchFilter} />
 
           <div className="flex items-center gap-3">
 

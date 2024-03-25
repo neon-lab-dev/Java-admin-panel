@@ -117,7 +117,7 @@ const Orders = () => {
 
                 <div className=" justify-between flex items-center ">
                     {/* Searchbar */}
-                    <Searchbar setSerchFilter={setSerchFilter} placeholder={"Search by order id or Total  price"} />
+                    <Searchbar onChange={e => setSerchFilter(e.target.value)} placeholder={"Search by order id or Total  price"} value={serchFilter} />
 
                     <div className="flex items-center gap-3">
 
