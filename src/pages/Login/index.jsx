@@ -18,14 +18,14 @@ const Login = () => {
                         <div  >
                             <p className="w-full text-zinc-800 text-base font-bold font-['Lato'] leading-tight">User Name</p>
                         </div>
-                        <input className="mt-2 lg:w-[515px] lg:h-[54px] md:w-1/4 md:h-1/4 sm:w-1/4 sm:h-1/4 bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-['Lato']" type='text' placeholder='Enter your User Name'/>
+                        <input className="mt-2 lg:w-[515px] lg:h-[54px] md:w-1/4 md:h-1/4 sm:w-1/4 sm:h-1/4 bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-['Lato']" type='text' placeholder='Enter Your User Name'/>
                         <div className='mt-[24px]'>
                             <p className="w-full text-zinc-800 text-base font-bold font-['Lato'] leading-tight">Password</p>
                         </div>
-                        <input className="mt-2 w-[515px] h-[54px] bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-['Lato']" type='text' placeholder='Enter your Password'/>
+                        <input className="mt-2 w-[515px] h-[54px] bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-['Lato']" type='text' placeholder='Enter Your Password'/>
                     </div>
                     <button className='mt-[36px] w-[515px] h-16 bg-rose-500 rounded-xl'>
-                        <p className="text-white text-xl font-bold font-['Lato]">
+                        <p className="text-white text-xl font-bold font-['Lato']">
                             Login
                         </p>
                     </button>
