@@ -32,6 +32,7 @@ const Coupons = () => {
         }
     }  
 
+
     const handleSearch = (event) => {
         event.preventDefault();
         setdataDisplay(searchObjects(couponData,searchquery,["Code","ID"]));
@@ -44,6 +45,7 @@ const Coupons = () => {
     
     const handleChange =(event)=>{
         setsearchquery(event.target.value);
+        setdataDisplay(searchObjects(couponData,event.target.value,["Code","ID"]));
     }
     
   return (
@@ -116,7 +118,7 @@ const Coupons = () => {
                       <div className="modal-action">
                         <form method="dialog" >
                           <button className="btn bg-white w-[324px] h-11 pl-[111px] pr-[112.44px] py-2.5 rounded-xl border border-neutral-400 justify-center items-center inline-flex">
-                            <span className="w-[100.56px] h-6 text-center text-zinc-800 text-lg font-bold font-['Lato'] leading-snug">
+                            <span className="w-[100.56px] h-6 text-center text-zinc-800 text-lg font-bold font-['Lato'] leading-snug" >
                               Close
                             </span>
                           </button>
