@@ -27,6 +27,9 @@ const ROUTES = [
   {
     path: "/coupons",
     component: lazy(async () => await import("../pages/Coupons/index")),
+  },{
+    path: "*",
+    component: lazy(async () => await import("../pages/Error/index")),
   },
 ];
 export default ROUTES;
