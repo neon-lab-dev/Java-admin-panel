@@ -32,27 +32,31 @@ const Sidebar = () => {
         <img className="my-4" src={logo} />
       </Link>
       <div className="flex flex-col gap-3 items-center justify-center mt-6 px-5">
-        {links.map((link, index) => (
+          {links.map((link, index) => (
           <Link
             key={index}
             to={link.path}
-            className={`w-full relative rounded-md text-neutral-800 text-sm font-semibold tracking-tight text-center py-3.5 ${
-              pathname === link.path && "bg-primary text-white"
-            }`}
+            className={`w-full flex justify-center rounded-md text-neutral-800 text-sm font-semibold tracking-tight  py-3.5  hover:bg-slate-100 ${pathname === link.path && "bg-primary text-white hover:text-pink-100 hover:bg-primary"}`}
           >
-            {link.label}
+            <div className="w-1/3">
+              <div 
+              className="text-left">
+                {link.label}
+              </div>
+            </div>
           </Link>
-        ))}
+          ))}
       </div>
       <div className="bg-[#E0E0E0] h-px my-[18px]"></div>
-      <div className=" justify-center items-center flex">
-        <button
-          className={`w-5/6 h-[50px] relative rounded-md text-neutral-800 text-sm font-semibold font-['Lato'] tracking-tight `}
-        >
-          Logout
-        </button>
+      <div className="flex flex-col gap-3 items-center justify-center mt-6 px-5">
+          <button className="w-full flex justify-center rounded-md text-neutral-800 text-sm font-semibold tracking-tight  py-3.5 hover:bg-slate-100">
+            <div  className="w-1/3" >
+              <div  className="text-left">
+                Logout
+              </div>
+            </div>
+          </button>
       </div>
-      <div className="bg-[#E0E0E0] h-px  my-[140px] "></div>
     </aside>
   );
 };
