@@ -27,7 +27,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="lg:min-w-[242px] max-w-[242px] md:min-w-[200px] sm:min-w-[200px] bg-white h-screen">
+    <aside className="lg:min-w-[242px] max-w-[242px] md:min-w-[200px] hidden md:block bg-white h-screen">
       <Link to="/" className="flex justify-center">
         <img className="my-4" src={logo} />
       </Link>
@@ -58,6 +58,7 @@ const Sidebar = () => {
           </button>
       </div>
     </aside>
+    
   );
 };
 

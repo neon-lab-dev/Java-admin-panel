@@ -15,10 +15,19 @@ export default {
         red: "#EE3F4C",
         gray1: "#F1F4F9",
         brown: "#565656",
+        lightbrown: "#464646",
         green: "#00B69B",
         skyblue: "#42A4FF",
         yellow: "#FCBE2D",
-        lightred: "#FD5454"
+        lightred: "#FD5454",
+        stone: "#A1A1A1",
+        lightgreen: "#60AFBD",
+        darkgreen: "#1E6E79",
+        stone1: "#828282",
+        stone2: "#888383",
+        darkstone: "#979797",
+        whiteblack: "#A8A8A8",
+        blackwhite: "#010101"
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],

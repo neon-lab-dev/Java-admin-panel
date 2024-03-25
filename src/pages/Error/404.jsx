@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Error = () => {
+const Error404 = () => {
   return (
     <div className="flex justify-center items-center">
-      <h1>Error 404: Page not found</h1>
+      <h1>Error404 404: Page not found</h1>
     </div>
   )
 }
 
-export default Error
+export default Error404
