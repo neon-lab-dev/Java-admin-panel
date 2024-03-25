@@ -69,13 +69,13 @@ const User = () => {
                 <table className="table rounded-2xl bg-salte-100  w-full">
                     {/* head */}
                     
-                    <thead className="grid-col-5">
-                        <tr className="h-[48px] bg-slate-100 rounded-xl w-full items-center">
-                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-start px-3 ">ID</th>
-                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3 ">Name</th>
-                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-start px-3">Email</th>
-                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3">Mobile No</th>
-                            <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3">DOB</th>
+                    <thead className="grid-col-5 ">
+                        <tr className="h-[48px] bg-slate-100 w-full items-center">
+                            <th className="font-bold font-lato text-black text-[14px] text-start px-3 ">ID</th>
+                            <th className="font-bold font-lato text-black text-[14px] text-center px-3 ">Name</th>
+                            <th className="font-bold font-lato text-black text-[14px]  text-end px-3">Email</th>
+                            <th className="font-bold font-lato text-black text-[14px]  text-end px-3">Mobile No</th>
+                            <th className="font-bold font-lato text-black text-[14px]  text-center px-3">DOB</th>
                         </tr>
                     </thead>
                    

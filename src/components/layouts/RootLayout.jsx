@@ -1,13 +1,17 @@
 import Sidebar from "../navbar/Sidebar";
 import Header from "../navbar/Header";
-import {useLocation} from "react-router-dom"
-
+import { useInnerSize } from "../../hooks/useInnerSize";
+import { useLocation } from "react-router-dom";
+import NotSupported from "../../pages/Error/NotSupported";
 
 const RootLayout = ({ children }) => {
+  const { pathname } = useLocation();
+  if (pathname === "/login") return children;
 
-  const {pathname} = useLocation()
-  if(pathname === "/login") return children;
-
+  let size = useInnerSize();
+  if (size.width < 768 || size.height < 500) {
+    return <NotSupported />;
+  }
   return (
     <div className="flex h-screen">
       {/* 👉  w-dvw */}
