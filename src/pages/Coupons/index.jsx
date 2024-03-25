@@ -32,18 +32,18 @@ const Coupons = () => {
         }
     }  
 
-    const handleSearch = () => {
-      setdataDisplay(searchObjects(couponData,searchquery,["Code","ID"]));
-    };
+    // const handleSearch = () => {
+    //   setdataDisplay(searchObjects(couponData,searchquery,["Code","ID"]));
+    // };
 
-    const handleSearch1 = (event) => {
+    const handleSearch = (event) => {
         event.preventDefault();
         setdataDisplay(searchObjects(couponData,searchquery,["Code","ID"]));
     };
 
-    useEffect(() => {
-      handleSearch();
-    }, [searchquery])
+    // useEffect(() => {
+    //   handleSearch();
+    // }, [searchquery])
     
 
     useEffect(() => {
@@ -53,6 +53,7 @@ const Coupons = () => {
     
     const handleChange =(event)=>{
         setsearchquery(event.target.value);
+        setdataDisplay(searchObjects(couponData,event.target.value,["Code","ID"]));
     }
     
   return (
@@ -143,7 +144,7 @@ const Coupons = () => {
 
         <div className=" justify-between flex items-center ">
             {/* Searchbar */}
-            <Searchbar placeholder={"Search by Coupon code or ID"} onChange={handleChange} onSubmit={handleSearch1} value={searchquery}/>
+            <Searchbar placeholder={"Search by Coupon code or ID"} onChange={handleChange} onSubmit={handleSearch} value={searchquery}/>
             <div className="flex items-center gap-3">
                 {/* downloadIcon */}
                 <button className=" bg-lightgray  rounded-[6px]">
