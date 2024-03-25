@@ -123,7 +123,7 @@ const Coupons = () => {
                       </p>
                       </div>
                       <div className="modal-action">
-                        <form method="dialog" onClick={()=>document.getElementById('create_new_coupon').close()} >
+                        <form method="dialog" >
                           <button className="btn bg-white w-[324px] h-11 pl-[111px] pr-[112.44px] py-2.5 rounded-xl border border-neutral-400 justify-center items-center inline-flex">
                             <span className="w-[100.56px] h-6 text-center text-zinc-800 text-lg font-bold font-['Lato'] leading-snug" >
                               Close
