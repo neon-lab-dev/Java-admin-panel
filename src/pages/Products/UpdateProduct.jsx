@@ -1,14 +1,110 @@
 import { useNavigate } from "react-router-dom"
 import backIcon from "../../assets/icons/back.svg"
+import { useForm } from "react-hook-form"
+import { useState } from "react"
 
 const UpdateProduct = () => {
 
 
-    const navigate = useNavigate()
+    const { register, handleSubmit, formState: { errors }, getValues, setValue, setError, clearErrors } = useForm()
+    const { baseprice, discountprice } = getValues()
+    const [categories] = useState(['Gear', 'Shoes', 'Helmets']);
+    const [subcategories, setSubcategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedSubcategory, setSelectedSubcategory] = useState('');
+    const [subSubcategories, setSubSubcategories] = useState([]);
+    const [selectedSubSubcategory, setSelectedSubSubcategory] = useState('');
 
+
+    const navigate = useNavigate()
     const handleBackNagigate = () => {
         navigate("/products")
     }
+    console.log(baseprice, discountprice);
+
+    const handleFormSubmit = (data) => {
+    }
+
+
+
+
+    const subcategoriesMap = {
+        Gear: [
+            'Bat',
+            'Batting Gear',
+            'WicketKeeping',
+            'Protection',
+            'Bags',
+            'Clothing',
+            'Cricket Sets',
+            'Accessories',
+        ],
+        Shoes: ['Bowling', 'Spikes', 'Rubber Studs', 'Accessories'],
+        Helmets: ['Titanium', 'Steel', 'Limited Edition', 'Accessories'],
+    };
+
+    const subSubcategoriesMap = {
+        Bat: ['English Willow', 'Kashmir Willow', 'Tennis', 'Player Edition'],
+        'Batting Gear': ['Gloves', 'Leg Guard', 'Inner Gloves'],
+        WicketKeeping: ['WGloves', 'WLeg Guard', 'WInner Gloves'],
+        Protection: [
+            'Thigh Pad',
+            'Chest Guard',
+            'Arm Guard',
+            'Abdominal Guard',
+            'Inner ThighPad',
+        ],
+        Bags: ['Kitbags', 'Wheelie', 'Duffle', 'Backpack', 'Bat Cover'],
+        Clothing: [
+            'On-Field',
+            'Base Layer',
+            'Athletic Supporter',
+            'Socks',
+            'Caps & Hats',
+            'WristBand',
+        ],
+        'Cricket Sets': ['English Willow Kit', 'Kashmir Willow Kit', 'Plastic Kit'],
+        Accessories: [
+            'Ball',
+            'SunGlass',
+            'Bat Grips',
+            'Bat Care',
+            'Stumps',
+            'Other',
+        ],
+    };
+
+
+    const handleCategoryChange = category => {
+        clearErrors("category")
+        if (!category) {
+            setError("category", { message: "Choose a valid category" })
+        }
+        setValue("category", category)
+        setSelectedCategory(category);
+        setSubcategories(subcategoriesMap[category] || []);
+        setSelectedSubcategory(''); // Reset selected subcategory when the category changes
+        setSubSubcategories([]); // Reset subsubcategories when the category changes
+        setSelectedSubSubcategory(''); // Reset selected subsubcategory when the category changes
+    };
+
+
+    const handleSubcategoryChange = subcategory => {
+        clearErrors("subcategory")
+        if (!subcategory) {
+            setError("subcategory", { message: "Choose a valid subcategory" })
+        }
+        setSelectedSubcategory(subcategory);
+        if (selectedCategory === 'Gear') {
+            setSubSubcategories(subSubcategoriesMap[subcategory] || []);
+        } else {
+            setSubSubcategories([]); // Reset subsubcategories if the category is not 'Gear'
+        }
+        setSelectedSubSubcategory(''); // Reset selected subsubcategory when the subcategory changes
+    };
+
+
+
 
 
     return (<div>
@@ -25,51 +121,211 @@ const UpdateProduct = () => {
 
                 {/* form and side image */}
 
-                <div className="flex  gap-3 my-7 mt-1 flex-wrap md:flex-nowrap  w-full">
+                <div className="flex  gap-3 my-7 mt-6 flex-wrap md:flex-nowrap  w-full">
                     <div className="w-full">
-                        <form className="max-w-[513px] md:min-w-[460px] min-w-[300px]">
+                        <form onSubmit={handleSubmit(handleFormSubmit)} className='max-w-[513px] md:min-w-[460px] min-w-[300px]'>
+
+                            {/* name  */}
                             <div className="">
-                                <input className="w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="Gloves" />
+                                <input {...register("name",
+                                    {
+                                        required: { value: true, message: "This field is required" },
+                                        minLength: { value: 3, message: "Minimun length is 3 character " },
+                                        maxLength: { value: 15, message: "Minimun length is 15 character" }
+                                    })} className={` h-[45px] w-full rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.name && "border-red"}`} type="text" placeholder="Product Name" />
+
+                                {errors.name && <span className='text-red ms-2'>{errors.name.message}</span>}
                             </div>
+
+                            {/* desc */}
                             <div className="my-5">
-                                <textarea className="w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="Gloves" />
+                                <textarea
+                                    {...register("description", {
+                                        required: { value: true, message: "This field is required" },
+                                        minLength: { value: 8, message: "Minimun length is 8 character " },
+                                    })}
+                                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${errors.description && "border-red"} ps-3 text-[16px] text-gray2 `} type="text" placeholder="Product Description" />
+                                {errors.description && <span className='text-red ms-2'>{errors.description.message}</span>}
                             </div>
+
+                            {/* featiures */}
                             <div className="my-5">
-                                <textarea className="w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="Gloves" />
+                                <textarea
+                                    {...register("features", {
+                                        required: { value: true, message: "This field is required" },
+                                        minLength: { value: 8, message: "Minimun length is 8 character " },
+                                    })}
+                                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none ${errors.features && "border-red"} border ps-3 text-[16px] text-gray2 `} type="text" placeholder="Product key featured" />
+                                {errors.features && <span className='text-red ms-2'>{errors.features.message}</span>}
                             </div>
+
+                            {/* specification */}
                             <div className="my-5">
-                                <textarea className="w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="Gloves" />
+                                <textarea
+                                    {...register("specification", {
+                                        required: { value: true, message: "This field is required" },
+                                        minLength: { value: 8, message: "Minimun length is 8 character " },
+                                    })}
+                                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${errors.specification && "border-red"} ps-3 text-[16px] text-gray2 `} type="text" placeholder="Product Specification" />
+                                {errors.specification && <span className='text-red ms-2'>{errors.specification.message}</span>}
                             </div>
+
+                            {/* baseprice */}
                             <div className="my-5">
-                                <input className="w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="900" />
+                                <input
+                                    {...register("baseprice", {
+                                        required: { value: true, message: "This field is required" },
+                                    })}
+                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.baseprice && "border-red"}`} type="number" placeholder="Base Price" />
+                                {errors.baseprice && <span className='text-red ms-2'>{errors.baseprice.message}</span>}
                             </div>
+
+                            {/* discountprice */}
                             <div className="my-5">
-                                <input className="w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="400" />
+                                <input
+                                    {...register("discountprice", {
+                                        required: { value: true, message: "This field is required", },
+                                    })}
+                                    onChange={e => {
+                                        clearErrors("discountprice")
+                                        if (baseprice < +e.target.value) {
+                                            setError("discountprice", { message: "Discount price should be less than the base price" })
+                                        }
+                                    }}
+                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.discountprice && "border-red"}`} type="number" placeholder="Discounted Price" />
+                                {errors.discountprice && <span className='text-red ms-2'>{errors.discountprice.message}</span>}
                             </div>
+
+                            {/* stock */}
                             <div className="my-5">
-                                <input className="w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="0" />
+                                <input
+                                    {...register("stock", {
+                                        required: { value: true, message: "This field is required" },
+                                    })}
+                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.stock && "border-red"}`} type="text" placeholder="Stock" />
+                                {errors.stock && <span className='text-red ms-2'>{errors.stock.message}</span>}
                             </div>
-                            <div className="my-5">
-                                <input className="w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="gear" />
+
+                            {/* catrgory */}
+                            <div className="my-5 w-full ">
+                                <div className="w-full  px-3 rounded-xl border-darkstone  border">
+                                    <select
+                                        {...register("category", { required: { value: true, message: "This field is required" } })}
+                                        value={selectedCategory}
+                                        onChange={e => handleCategoryChange(e.target.value)}
+                                        className=" text-[16px] outline-none text-gray2 h-[45px] w-full"
+                                    >
+                                        <option value="">Category</option>
+                                        {categories.map(item => (
+                                            <option key={item} value={item}>
+                                                {item}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {errors.category && <span className='text-red ms-2'>{errors.category.message}</span>}
                             </div>
-                            <div className="my-5">
-                                <input className="w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="Subcategory" />
+
+
+                            <div className="my-5 w-full ">
+                                <div className="w-full  px-3 rounded-xl border-darkstone  border">
+                                    <select
+                                        {...register("subcategory", { required: { value: true, message: "This field is required" } })}
+                                        value={selectedSubcategory}
+                                        onChange={e => handleSubcategoryChange(e.target.value)}
+                                        disabled={!selectedCategory}
+                                        className=" text-[16px] outline-none text-gray2 h-[45px] w-full"
+                                    >
+                                        <option value="">Subcategory</option>
+                                        {subcategories.map(item => (
+                                            <option key={item} value={item}>
+                                                {item}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                {errors.subcategory && <span className='text-red ms-2'>{errors.subcategory.message}</span>}
                             </div>
+
+
+
+                            {
+                                selectedCategory === "Gear" && (
+                                    <div className="my-5 ">
+
+                                        <div className=" w-full px-3 rounded-xl border-darkstone  border ps-3">
+                                            <select
+                                                focusBorderColor="purple.500"
+                                                value={selectedSubSubcategory}
+                                                onChange={e => {
+                                                    clearErrors("subsubcategory")
+                                                    if (!e.target.value) {
+                                                        setError("subsubcategory", { message: "Choose valid Subsubcategory" })
+                                                    }
+                                                    setSelectedSubSubcategory(e.target.value)
+                                                }}
+                                                className=" text-[16px] outline-none text-gray2 h-[45px] w-full"
+                                                disabled={!selectedSubcategory} // Disable the subsubcategory select until a subcategory is selected
+                                            >
+                                                <option value="">SubSubcategory</option>
+                                                {subSubcategories.map(item => (
+                                                    <option key={item} value={item}>
+                                                        {item}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        {errors.subsubcategory && <span className='text-red ms-2'>{errors.subsubcategory.message}</span>}
+                                    </div>
+                                )
+                            }
+                            {/* size */}
                             <div className="my-5">
-                                <input className="w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="Men" />
+                                <input
+                                    {...register("size", {
+                                        required: { value: true, message: "This field is required" },
+                                    })}
+                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.size && "border-red"}`} type="text" placeholder="Size/Type" />
+                                {errors.size && <span className='text-red ms-2'>{errors.size.message}</span>}
                             </div>
+
+                            {/* color */}
                             <div className="my-5">
-                                <input className="w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="White" />
+                                <input
+                                    {...register("color", {
+                                        required: { value: true, message: "This field is required" },
+                                    })}
+                                    className={` w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.color && "border-red"} `} type="text" placeholder="Color" />
+                                {errors.color && <span className='text-red ms-2'>{errors.color.message}</span>}
                             </div>
-                            <div className="my-5">
-                                <input className="w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 " type="text" placeholder="White black red" />
+
+
+                            {/* available color */}
+                            <div className="my-5 px-4 w-full  rounded-xl border-darkstone  border ps-3">
+                                <select
+                                    {...register("availablecolor", {
+                                        required: { value: true, message: "This field is required" },
+                                    })}
+                                    className=" text-[16px] outline-none text-gray2 h-[45px] w-full"
+                                    name="" >
+                                    <option selected disabled>Avaailable Color</option>
+                                    <option>White</option>
+                                    <option>Red</option>
+                                    <option>Black</option>
+                                    <option>Gray</option>
+                                </select>
+                                {errors.availablecolor && <span className='text-red ms-2'>{errors.availablecolor.message}</span>}
+                                {/* <input type="text" placeholder="" /> */}
                             </div>
                             {/* buttons */}
                             <div className="my-5">
                                 <button type="button" className="h-[54px] rounded-xl text-white bg-darkgreen w-full">Create</button>
                             </div>
                             <div className="my-5">
-                                <button type="button" className="h-[54px] rounded-xl btn btn-neutral btn-outline w-full">Verify</button>
+                                <button
+                                    // type="submit" 
+                                    onClick={e => window.verificationModal.showModal()}
+                                    className="h-[54px] rounded-xl btn btn-neutral btn-outline w-full">Verify</button>
                             </div>
                         </form>
                     </div>
@@ -85,10 +341,38 @@ const UpdateProduct = () => {
 
                 </div>
 
-
-
-
             </div>
+
+            {/* verification modal */}
+
+
+
+            <dialog id="verificationModal" className="modal ">
+                <form method="dialog" className="modal-box  max-h-[777px] w-[656px]">
+                    <h3 className="font-bold text-lg text-[24px] text-center pb-4 border-b gap-16 border-dashed border-b-black  ">Verification Details</h3>
+                    <div className="mt-5 font-semibold px-2">
+                        <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Product Name:</div>
+                        <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Desciption:</div>
+                        <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Base Price:</div>
+                        <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Discount Price:</div>
+                        <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Stock:</div>
+                        <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Category:</div>
+                        <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Sub Category:</div>
+                        <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Size/Type:</div>
+                        <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Color:</div>
+                        <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Available Color:</div>
+                        <div className="text-center">
+                            <button type="submit" className="mt-3 bg-gray3 w-[285px] h-[54px] rounded-xl" >Close</button>
+                        </div>
+                    </div>
+
+                </form>
+            </dialog>
+
+
+
+
+
         </div>
     </div>
     )

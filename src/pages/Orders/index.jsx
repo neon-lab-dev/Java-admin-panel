@@ -43,6 +43,7 @@ const Orders = () => {
         } else {
             setAllOrders(ORDER_DATA)
         }
+        setPage(0)
     }, [serchFilter])
 
 
@@ -108,6 +109,12 @@ const Orders = () => {
         setOrders(temp);
     }, [page, allOrders]);
 
+    const handleDropDownClose = () => {
+        const elem = document.activeElement;
+        if (elem) {
+            elem?.blur();
+        }
+    };
 
     return (
         <div className='bg-lightgray h-full w-full p-6 pb-11'>
@@ -133,7 +140,10 @@ const Orders = () => {
                                             <div className=" m-1 capitalize">{filterOrders} ({filterQty[filterOrders]})</div>
                                             <ul tabIndex={0} className="dropdown-content  z-[1] menu p-2 shadow bg-base-100 rounded-md w-full">
                                                 {
-                                                    ORDER_STATUS.map((item, i) => <li key={i} onClick={e => handleFilterOrder(item)} className={` p-2 rounded-md capitalize hover:text-white hover:bg-red ${item === filterOrders && "bg-red text-white my-1"}`}>{item} ({filterQty[item]})</li>)
+                                                    ORDER_STATUS.map((item, i) => <li key={i} onClick={e => {
+                                                        handleFilterOrder(item)
+                                                        handleDropDownClose()
+                                                    }} className={` p-2 rounded-md capitalize   hover:text-white hover:bg-red ${item === filterOrders && "bg-red text-white my-1"}`}>{item} ({filterQty[item]})</li>)
                                                 }
 
                                             </ul>
@@ -182,7 +192,7 @@ const Orders = () => {
                                     <tbody>
 
                                         {
-                                            Orders.map(item => <tr className="">
+                                            Orders.map((item, i) => <tr key={i} className="">
                                                 <td className="font-lato font-semibold text-[14px] text-black">{item.id} .. {item.num}</td>
                                                 <td className="font-lato font-semibold text-[14px] text-black">₹{item.price}</td>
                                                 <td className="flex justify-center items-center font-lato font-semibold text-[14px]">
@@ -221,10 +231,12 @@ const Orders = () => {
 
                     <hr />
                     <div className="flex items-center justify-end   gap-3 mt-3">
-                        <p className="font-lato font-semibold text-grey  text-[14px]">Showing {Orders && (page === 0 ? 1 : page * limit)} - {Orders && (page * limit + Orders.length)} of {allOrders.length}</p>
+                        <p className="font-lato font-semibold text-grey  text-[14px]">Showing {Orders && (
+                            (allOrders.length === 0) ? 0
+                                : (page === 0) ? 1 : page * limit)} - {Orders && (page * limit + Orders.length)} of {allOrders.length}</p>
                         <div className=" border-borderColor  join ">
-                            <button onClick={handlePre} className="border-[0.6px] rounded-l-lg  p-2  px-3  bg-smoke"><img src={leftCaret} /></button>
-                            <button onClick={handleNext} className="border-[0.6px] rounded-r-lg p-2  px-3 bg-smoke"><img src={rightCaret} alt="" /></button>
+                            <button disabled={page === 0} onClick={handlePre} className={`border-[0.6px] rounded-l-lg  p-2  px-3  bg-smoke ${page === 0 && "opacity-55"}`}><img src={leftCaret} /></button>
+                            <button disabled={page === (Math.floor(allOrders.length / 9))} onClick={handleNext} className={`border-[0.6px] rounded-r-lg p-2  px-3 bg-smoke ${page === (Math.floor(allOrders.length / 9)) && "opacity-55"} `}><img src={rightCaret} alt="" /></button>
                         </div>
                     </div>
 
