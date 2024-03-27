@@ -25,7 +25,7 @@ const Products = () => {
 
   // pagination pre and next functions
   const handleNext = () => {
-    setPage(page === (Math.floor(ALLPRODUCTS.length / 9)) ? page : page + 1)
+    setPage(page === (Math.floor(allProducts.length / 9)) ? page : page + 1)
   }
 
   const handlePre = () => {
@@ -49,6 +49,7 @@ const Products = () => {
     } else {
       setallProducts(ALLPRODUCTS)
     }
+    setPage(0)
   }, [searchFilter])
 
   // 👇 for pagination 
@@ -88,52 +89,61 @@ const Products = () => {
 
 
         <div className="overflow-x-auto">
-          <table className="table">
-            {/* head */}
-            <thead>
-              <tr>
-                <th className='text-[14px] font-bold text-black'>ID</th>
-                <th className='text-[14px] font-bold text-black'>Name</th>
-                <th className='text-[14px] font-bold text-black text-center'>Image</th>
-                <th className='text-[14px] font-bold text-black '>Category</th>
-                <th className='text-[14px] font-bold text-black'>Discount price</th>
-                <th className='text-[14px] font-bold text-black'>Stock</th>
-                <th className='text-[14px] font-bold text-black text-center'>Action</th>
-              </tr>
-            </thead>
-            <tbody>
+          {
+            allProducts.length > 0 ?
 
-              {
-                products.map(item => <tr>
-                  <td className='text-[14px] font-semibold text-black'>#{item.id}</td>
-                  <td className='text-[14px] font-semibold text-black'>{item.name}</td>
-                  <td className='text-[14px] font-semibold text-black text-center'>
-                    <div className="flex justify-center items-center">
-                      <img className='h-[93px] rounded-lg min-w-[78px] w-[78px]' src={item.img} alt="" />
-                    </div>
-                  </td>
-                  <td className='text-[14px] font-semibold text-black'>{item.category}</td>
-                  <td className='text-[14px] font-semibold text-black'>₹{item.discountPrice}</td>
-                  <td className='text-[14px] font-semibold text-black'>{item.stock}</td>
-                  <td className='text-[14px] text-center font-semibold text-black'>
-                    <div className="flex items-center justify-center gap-3">
-                      <button onClick={handleUpdateProductNavigate} type="button" class="btn  h-[38px] min-h-[38px] max-h-[38px]  btn-primary btn-outline">View</button>
-                      <button><img src={deleteIcon} alt="" /></button>
-                    </div>
-                  </td>
-                </tr>)
-              }
+              <table className="table">
+                {/* head */}
+                <thead>
+                  <tr>
+                    <th className='text-[14px] font-bold text-black'>ID</th>
+                    <th className='text-[14px] font-bold text-black'>Name</th>
+                    <th className='text-[14px] font-bold text-black text-center'>Image</th>
+                    <th className='text-[14px] font-bold text-black '>Category</th>
+                    <th className='text-[14px] font-bold text-black'>Discount price</th>
+                    <th className='text-[14px] font-bold text-black'>Stock</th>
+                    <th className='text-[14px] font-bold text-black text-center'>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
 
-            </tbody>
+                  {
+                    products.map(item => <tr>
+                      <td className='text-[14px] font-semibold text-black'>#{item.id}</td>
+                      <td className='text-[14px] font-semibold text-black'>{item.name}</td>
+                      <td className='text-[14px] font-semibold text-black text-center'>
+                        <div className="flex justify-center items-center">
+                          <img className='h-[93px] rounded-lg min-w-[78px] w-[78px]' src={item.img} alt="" />
+                        </div>
+                      </td>
+                      <td className='text-[14px] font-semibold text-black'>{item.category}</td>
+                      <td className='text-[14px] font-semibold text-black'>₹{item.discountPrice}</td>
+                      <td className='text-[14px] font-semibold text-black'>{item.stock}</td>
+                      <td className='text-[14px] text-center font-semibold text-black'>
+                        <div className="flex items-center justify-center gap-3">
+                          <button onClick={handleUpdateProductNavigate} type="button" class="btn  h-[38px] min-h-[38px] max-h-[38px]  btn-primary btn-outline">View</button>
+                          <button><img src={deleteIcon} alt="" /></button>
+                        </div>
+                      </td>
+                    </tr>)
+                  }
 
-          </table>
+                </tbody>
+
+              </table>
+              : <>
+                <div className="p-8">
+                  <h1 className="text-lg font-lato font-semibold">No records found</h1>
+                </div>
+              </>
+          }
         </div>
         <hr />
         <div className="flex items-center justify-end   gap-3 mt-3">
-          <p className="font-lato font-semibold text-grey  text-[14px]">Showing {products && (page === 0 ? 1 : page * limit)} - {products && (page * limit + products.length)} of {allProducts.length}</p>
+          <p className="font-lato font-semibold text-grey  text-[14px]">Showing {products && ((allProducts.length === 0) ? 0 : (page === 0) ? 1 : page * limit)} - {products && (page * limit + products.length)} of {allProducts.length}</p>
           <div className=" border-borderColor  join ">
-            <button onClick={handlePre} className="border-[0.6px] rounded-l-lg  p-2  px-3  bg-smoke"><img src={leftCaret} /></button>
-            <button onClick={handleNext} className="border-[0.6px] rounded-r-lg p-2  px-3 bg-smoke"><img src={rightCaret} alt="" /></button>
+            <button disabled={page === 0} onClick={handlePre} className={`border-[0.6px] rounded-l-lg  p-2  px-3  bg-smoke ${page === 0 && "opacity-55"}`}><img src={leftCaret} /></button>
+            <button disabled={page === (Math.floor(allProducts.length / 9))} onClick={handleNext} className={`border-[0.6px] rounded-r-lg p-2  px-3 bg-smoke ${page === (Math.floor(allProducts.length / 9)) && "opacity-55"} `}><img src={rightCaret} alt="" /></button>
           </div>
         </div>
 

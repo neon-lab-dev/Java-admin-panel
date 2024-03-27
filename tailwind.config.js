@@ -27,7 +27,10 @@ export default {
         stone2: "#888383",
         darkstone: "#979797",
         whiteblack: "#A8A8A8",
-        blackwhite: "#010101"
+        blackwhite: "#010101",
+        gray2: "#6F6F6F",
+        gray3: "#EDF2F7"
+
       },
       fontFamily: {
         lato: ["Lato", "sans-serif"],
