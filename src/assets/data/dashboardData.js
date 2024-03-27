@@ -7,43 +7,44 @@ import icon6 from '../../assets/icon/Icon6.svg';
 import icon7 from '../../assets/icon/Icon7.svg';
 import icon8 from '../../assets/icon/Icon8.svg';
 import icon9 from '../../assets/icon/Icon9.svg';
+
 let dashboardData=[{
     "image":icon1,
     "title":"Total User",
-    "number":"40,689"
+    "ID":"userCount"
   },
   {
     "image":icon2,
     "title":"Total Products",
-    "number":"64"
+    "ID":"productsCount"
   },{
     "image":icon3,
     "title":"Total Revenue",
-    "number":"₹ 89,000"
+    "ID":"totalOrdersAmount"
   },{
     "image":icon4,
     "title":"Total cancellation",
-    "number":"₹ 2040"
+    "ID":"totalOrdersAmountCancelled"
   },{
     "image":icon5,
     "title":"Total Order",
-    "number":"10293"
+    "ID":"TotalOrders"
   },{
     "image":icon6,
     "title":"Orders delivred",
-    "number":"89,000"
+    "ID":"orderDelivered"
   },{
     "image":icon7,
     "title":"Orders Pending",
-    "number":"2040"
+    "ID":"ordersPlaced"
   },{
     "image":icon8,
     "title":"Orders cancelled",
-    "number":"2040"
+    "ID":"orderCancelled"
   },{
     "image":icon9,
     "title":"Order Shipped",
-    "number":"10293"
+    "ID":"orderShipped"
   }]
 
   export default dashboardData;
