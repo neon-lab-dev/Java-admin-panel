@@ -11,40 +11,40 @@ import icon9 from '../../assets/icon/Icon9.svg';
 let dashboardData=[{
     "image":icon1,
     "title":"Total User",
-    "ID":"userCount"
+    "queryKey":"userCount"
   },
   {
     "image":icon2,
     "title":"Total Products",
-    "ID":"productsCount"
+    "queryKey":"productsCount"
   },{
     "image":icon3,
     "title":"Total Revenue",
-    "ID":"totalOrdersAmount"
+    "queryKey":"totalOrdersAmount"
   },{
     "image":icon4,
     "title":"Total cancellation",
-    "ID":"totalOrdersAmountCancelled"
+    "queryKey":"totalOrdersAmountCancelled"
   },{
     "image":icon5,
     "title":"Total Order",
-    "ID":"TotalOrders"
+    "queryKey":"TotalOrders"
   },{
     "image":icon6,
-    "title":"Orders delivred",
-    "ID":"orderDelivered"
+    "title":"Orders delivered",
+    "queryKey":"orderDelivered"
   },{
     "image":icon7,
     "title":"Orders Pending",
-    "ID":"ordersPlaced"
+    "queryKey":"ordersPlaced"
   },{
     "image":icon8,
     "title":"Orders cancelled",
-    "ID":"orderCancelled"
+    "queryKey":"orderCancelled"
   },{
     "image":icon9,
     "title":"Order Shipped",
-    "ID":"orderShipped"
+    "queryKey":"orderShipped"
   }]
 
   export default dashboardData;
