@@ -83,8 +83,8 @@ export const ORDER_DATA = [
 export const ORDER_STATUS = [
     "all",
     "delivered",
-    "shipped",
-    "processing",
+    "Shipped",
+    "Processing",
     "cancelled",
 ]
 

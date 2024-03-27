@@ -53,7 +53,7 @@ const Header = () => {
 
           <div className="flex flex-col justify-center">
             <h1 className="font-bold font-lato text-[14px] ">
-              {user.full_name}
+              {user && user.full_name}
             </h1>
             <p className="text-[12px] font-lato font-semibold text-brown ">
               {user.role}

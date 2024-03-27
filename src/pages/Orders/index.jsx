@@ -5,59 +5,61 @@ import rightCaret from "../../assets/icons/rightCaret.svg"
 import downloadIcon from "../../assets/icons/download.svg"
 import helmetImg from "../../assets/icons/helmet.svg"
 import Searchbar from "../../components/Searchbar";
-import { ORDER_DATA, ORDER_STATUS } from "../../assets/mock-data";
+import { ORDER_STATUS } from "../../assets/mock-data";
 import { useCallback, useEffect, useState } from "react"
 import useFilter from "../../assets/customhooks/useFilter"
+import { useQuery } from "@tanstack/react-query"
+import { getAllOrders, getSingleOrder } from "../../api/order"
 
 
 
 
 const Orders = () => {
 
-    const [filterQty, setFilterQty] = useState({
-        all: ORDER_DATA.length,
-        delivered: ORDER_DATA.filter(item => item.status === "delivered").length,
-        processing: ORDER_DATA.filter(item => item.status === "processing").length,
-        cancelled: ORDER_DATA.filter(item => item.status === "cancelled").length,
-        shipped: ORDER_DATA.filter(item => item.status === "shipped").length,
-    })
+    // Tanstack query (react query) code for fetching data from backend
 
+    // query for fetching all orders
+    const { data, isSuccess } = useQuery({ queryFn: getAllOrders })
 
-    const [allOrders, setAllOrders] = useState(ORDER_DATA)
+    // const { data: orderDetail, refetch } = useQuery({ queryFn: () => getSingleOrder("65f712c270e76a000848f71b"), })
+    console.log(data);
+
+    const [filterQty, setFilterQty] = useState({})
+    const [selectedOrderId, setSelectedOrderId] = useState()
+    const [allOrders, setAllOrders] = useState([])
     const [isScrolling, setIsScrolling] = useState({
         left: false,
         right: false
     })
-    const [Orders, setOrders] = useState()
+    const [orders, setOrders] = useState()
     const [page, setPage] = useState(0)
     const [limit, setLimit] = useState(9)
     const [filterOrders, setFilterOrders] = useState("all")
     const [serchFilter, setSerchFilter] = useState()
 
-
-    const filteredOrderData = useFilter({ inpValue: serchFilter, AllData: ORDER_DATA, filterFrom: ["price", "id", "status"] })
+    const filteredOrderData = useFilter({ inpValue: serchFilter, AllData: data ? data.orders : allOrders, filterFrom: ["totalPrice", "_id", "orderStatus"] })
 
     useEffect(() => {
         if (serchFilter) {
             setAllOrders(filteredOrderData)
         } else {
-            setAllOrders(ORDER_DATA)
+            setAllOrders(data && data.orders)
         }
     }, [serchFilter])
-
-
     // .filter data for dropdown 
     const handleFilterOrder = (selectedOrder) => {
         setPage(0)
         if (selectedOrder === "all") {
             setFilterOrders(selectedOrder)
-            setAllOrders(ORDER_DATA)
+            setAllOrders(data.orders)
         } else {
-
+            console.log(selectedOrder);
             setFilterOrders(selectedOrder)
-            setAllOrders(ORDER_DATA.filter(item => item.status === selectedOrder))
+            setAllOrders(data.orders.filter(item => item.orderStatus === selectedOrder))
         }
     }
+
+
 
     // pagination pre and next functions
     const handleNext = () => {
@@ -67,7 +69,6 @@ const Orders = () => {
     const handlePre = () => {
         setPage(page === 0 ? page : page - 1)
     }
-
 
     // handlescrollbar for hiding scrollbar order detail modal
     const handleScrollbar = useCallback((side) => {
@@ -79,6 +80,22 @@ const Orders = () => {
             }, 3000);
         }
     }, [isScrolling]);
+
+
+
+
+    useEffect(() => {
+        if (isSuccess) {
+            setAllOrders(data.orders)
+            setFilterQty({
+                all: data && data.ordersCount,
+                delivered: data && data.orders.filter(item => item.orderStatus === "delivered").length,
+                Processing: data && data.orders.filter(item => item.orderStatus === "processing").length,
+                cancelled: data && data.orders.filter(item => item.orderStatus === "cancelled").length,
+                Shipped: data && data.orders.filter(item => item.orderStatus === "Shipped").length,
+            })
+        }
+    }, [isSuccess])
 
     // modal window close code 
     useEffect(() => {
@@ -101,23 +118,24 @@ const Orders = () => {
     useEffect(() => {
         const temp = [];
         for (let i = page * limit; i < page * 9 + limit; i++) {
-            if (allOrders[i]) {
+            if (allOrders && allOrders[i]) {
                 temp.push(allOrders[i]);
             }
         }
         setOrders(temp);
-    }, [page, allOrders]);
+        console.log("called");
+    }, [page, allOrders, data]);
 
-
-    return (
+    return allOrders && (
         <div className='bg-lightgray h-full w-full p-6 pb-11'>
             <h1 className='font-lato text-[32px] font-bold   text-black leading-[38.4px] '>Total Orders</h1>
 
-            <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 px-5">
+            <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 pb-12 px-5">
 
                 <div className=" justify-between flex items-center ">
                     {/* Searchbar */}
-                    <Searchbar onChange={e => setSerchFilter(e.target.value)} placeholder={"Search by order id or Total  price"} value={serchFilter} />
+                    <Searchbar placeholder={"Search by order id or Total  price"}
+                        setSerchFilter={setSerchFilter} />
 
                     <div className="flex items-center gap-3">
 
@@ -133,7 +151,8 @@ const Orders = () => {
                                             <div className=" m-1 capitalize">{filterOrders} ({filterQty[filterOrders]})</div>
                                             <ul tabIndex={0} className="dropdown-content  z-[1] menu p-2 shadow bg-base-100 rounded-md w-full">
                                                 {
-                                                    ORDER_STATUS.map((item, i) => <li key={i} onClick={e => handleFilterOrder(item)} className={` p-2 rounded-md capitalize hover:text-white hover:bg-red ${item === filterOrders && "bg-red text-white my-1"}`}>{item} ({filterQty[item]})</li>)
+                                                    ORDER_STATUS.map((item, i) => <li key={i} onClick={e => handleFilterOrder(item)}
+                                                        className={` p-2 rounded-md capitalize hover:text-white hover:bg-red ${item === filterOrders && "bg-red text-white my-1"}`}>{item} ({filterQty[item]})</li>)
                                                 }
 
                                             </ul>
@@ -164,7 +183,7 @@ const Orders = () => {
 
                     <div className="overflow-x-auto">
                         {
-                            Orders && Orders.length > 0
+                            orders && orders.length > 0
                                 ?
 
                                 <table className="table rounded-2xl table-lg">
@@ -182,22 +201,23 @@ const Orders = () => {
                                     <tbody>
 
                                         {
-                                            Orders.map(item => <tr className="">
-                                                <td className="font-lato font-semibold text-[14px] text-black">{item.id} .. {item.num}</td>
-                                                <td className="font-lato font-semibold text-[14px] text-black">₹{item.price}</td>
+                                            orders.map(item => <tr key={item._id} className="">
+                                                <td className="font-lato font-semibold text-[14px] text-black">{item._id}</td>
+                                                <td className="font-lato font-semibold text-[14px] text-black">₹{item.totalPrice}</td>
                                                 <td className="flex justify-center items-center font-lato font-semibold text-[14px]">
 
                                                     <div className={` w-[93px] text-center py-1 rounded-md capitalize
-                                     ${item.status === "delivered" ? "bg-green"
-                                                            : item.status === "shipped" ? "bg-yellow"
-                                                                : item.status === "processing" ? "bg-skyblue"
-                                                                    : item.status === "cancelled" ? "bg-lightred" : "bg-black"} text-white   `}>
-                                                        {item.status}
+                                     ${item.orderStatus === "delivered" ? "bg-green"
+                                                            : item.orderStatus === "Shipped" ? "bg-yellow"
+                                                                : item.orderStatus === "Processing" ? "bg-skyblue"
+                                                                    : item.orderStatus === "cancelled" ? "bg-lightred" : "bg-black"} text-white   `}>
+                                                        {item.orderStatus}
                                                     </div>
 
                                                 </td>
 
                                                 <td className=" text-center font-lato font-semibold text-[14px]"><button onClick={() => {
+                                                    setSelectedOrderId(item._id)
                                                     window.orderDetailModal.showModal()
                                                     const dd = document.getElementById("orderInfo")
                                                     dd.scrollTop = 0
@@ -221,10 +241,14 @@ const Orders = () => {
 
                     <hr />
                     <div className="flex items-center justify-end   gap-3 mt-3">
-                        <p className="font-lato font-semibold text-grey  text-[14px]">Showing {Orders && (page === 0 ? 1 : page * limit)} - {Orders && (page * limit + Orders.length)} of {allOrders.length}</p>
+                        <p className="font-lato font-semibold text-grey  text-[14px]">Showing {Orders && (
+                            (allOrders.length === 0) ? 0
+                                : (page === 0) ? 1 : page * limit)} - {orders && (page * limit + orders.length)} of {allOrders.length}</p>
                         <div className=" border-borderColor  join ">
-                            <button onClick={handlePre} className="border-[0.6px] rounded-l-lg  p-2  px-3  bg-smoke"><img src={leftCaret} /></button>
-                            <button onClick={handleNext} className="border-[0.6px] rounded-r-lg p-2  px-3 bg-smoke"><img src={rightCaret} alt="" /></button>
+
+                            <button disabled={page === 0} onClick={handlePre} className={`border-[0.6px] rounded-l-lg  p-2  px-3  bg-smoke ${page === 0 && "opacity-55"}`}><img src={leftCaret} /></button>
+
+                            <button disabled={page === (Math.floor(allOrders.length / 9) === 1 ? 0 : Math.floor(allOrders.length / 9))} onClick={handleNext} className={`border-[0.6px] rounded-r-lg p-2  px-3 bg-smoke ${page === (Math.floor(allOrders.length / 9) === 1 ? 0 : Math.floor(allOrders.length / 9)) && "opacity-55"} `}><img src={rightCaret} alt="" /></button>
                         </div>
                     </div>
 
