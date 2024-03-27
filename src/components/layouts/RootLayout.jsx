@@ -24,7 +24,7 @@ const RootLayout = ({ children }) => {
     <div className="flex h-screen">
       {/* 👉  w-dvw */}
       <Sidebar />
-      <div className="flex flex-col flex-grow overflow-y-scroll">
+      <div className="flex flex-col flex-grow overflow-y-scroll h-full">
         <Header />
         <main>{children}</main>
       </div>
