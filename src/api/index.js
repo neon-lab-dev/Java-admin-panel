@@ -8,9 +8,8 @@ export const API = {
 
   // order
   getOrders: BACKEND_BASE_URL + "/admin/orders",  // to get all orders
-  getSingleOrder: BACKEND_BASE_URL + "/order"  // to get all orders
+  getSingleOrder: BACKEND_BASE_URL + "/order",  // to get all orders
 
-  
   //dashboard
   dashboard:BACKEND_BASE_URL + "/admin/dashboard", //to get dashboard details
 };
