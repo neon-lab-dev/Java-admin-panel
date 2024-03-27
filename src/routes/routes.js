@@ -18,11 +18,15 @@ const ROUTES = [
   },
   {
     path: "/add-product",
-    component: lazy(async () => await import("../pages/Products/CreateProduct")),
+    component: lazy(
+      async () => await import("../pages/Products/CreateProduct")
+    ),
   },
   {
     path: "/update-product",
-    component: lazy(async () => await import("../pages/Products/UpdateProduct")),
+    component: lazy(
+      async () => await import("../pages/Products/UpdateProduct")
+    ),
   },
   {
     path: "/orders",
@@ -35,6 +39,14 @@ const ROUTES = [
   {
     path: "/coupons",
     component: lazy(async () => await import("../pages/Coupons/index")),
+  },
+  {
+    path: "/login",
+    component: lazy(async () => await import("../pages/Login/index")),
+  },
+  {
+    path: "*",
+    component: lazy(async () => await import("../pages/Error/404")),
   },
 ];
 export default ROUTES;

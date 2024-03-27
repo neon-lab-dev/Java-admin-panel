@@ -7,43 +7,44 @@ import icon6 from '../../assets/icon/Icon6.svg';
 import icon7 from '../../assets/icon/Icon7.svg';
 import icon8 from '../../assets/icon/Icon8.svg';
 import icon9 from '../../assets/icon/Icon9.svg';
+
 let dashboardData=[{
     "image":icon1,
     "title":"Total User",
-    "number":"40,689"
+    "queryKey":"userCount"
   },
   {
     "image":icon2,
     "title":"Total Products",
-    "number":"64"
+    "queryKey":"productsCount"
   },{
     "image":icon3,
     "title":"Total Revenue",
-    "number":"₹ 89,000"
+    "queryKey":"totalOrdersAmount"
   },{
     "image":icon4,
     "title":"Total cancellation",
-    "number":"₹ 2040"
+    "queryKey":"totalOrdersAmountCancelled"
   },{
     "image":icon5,
     "title":"Total Order",
-    "number":"10293"
+    "queryKey":"TotalOrders"
   },{
     "image":icon6,
-    "title":"Orders delivred",
-    "number":"89,000"
+    "title":"Orders delivered",
+    "queryKey":"orderDelivered"
   },{
     "image":icon7,
     "title":"Orders Pending",
-    "number":"2040"
+    "queryKey":"ordersPlaced"
   },{
     "image":icon8,
     "title":"Orders cancelled",
-    "number":"2040"
+    "queryKey":"orderCancelled"
   },{
     "image":icon9,
     "title":"Order Shipped",
-    "number":"10293"
+    "queryKey":"orderShipped"
   }]
 
   export default dashboardData;
