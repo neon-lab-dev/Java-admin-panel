@@ -4,5 +4,8 @@ export const API = {
   //auth
   login: BACKEND_BASE_URL + "/login", //to login user
   user: BACKEND_BASE_URL + "/me", //to get user details
-  logout: BACKEND_BASE_URL + "/logout", //to logout user
+  logout: BACKEND_BASE_URL + "/logout", //to logout user 
+  
+  //dashboard
+  dashboard:BACKEND_BASE_URL + "/admin/dashboard", //to get dashboard details
 };
