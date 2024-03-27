@@ -7,7 +7,7 @@ const CreateProduct = () => {
 
     // react hook form 👇
     const { register, handleSubmit, formState: { errors }, getValues, setValue, setError, clearErrors } = useForm()
-    const { baseprice, discountprice, category } = getValues()
+    const { baseprice, discountprice, category, name, description, features, stock, availablecolor, specification, subcategory, size, color } = getValues()
     const [categories] = useState(['Gear', 'Shoes', 'Helmets']);
     const [subcategories, setSubcategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -316,29 +316,31 @@ const CreateProduct = () => {
 
 
                             {/* available color */}
-                            <div className="my-5 px-4 w-full  rounded-xl border-darkstone  border ps-3">
-                                <select
-                                    {...register("availablecolor", {
-                                        required: { value: true, message: "This field is required" },
-                                    })}
-                                    className=" text-[16px] outline-none text-gray2 h-[45px] w-full"
-                                    name="" >
-                                    <option selected disabled>Avaailable Color</option>
-                                    <option>White</option>
-                                    <option>Red</option>
-                                    <option>Black</option>
-                                    <option>Gray</option>
-                                </select>
+                            <div className="my-5  w-full  ">
+
+                                <div className="w-full  px-3 rounded-xl border-darkstone  border">
+                                    <select
+                                        {...register("availablecolor", {
+                                            required: { value: true, message: "This field is required" },
+                                        })}
+                                        className=" text-[16px] outline-none text-gray2 h-[45px] w-full"
+                                    >
+                                        <option selected value={""}>Available Color</option>
+                                        <option value={"white"}  >White</option>
+                                        <option value={"red"}  >Red</option>
+                                        <option value={"black"}  >Black</option>
+                                        <option value={"gray"}  >Gray</option>
+                                    </select>
+                                </div>
                                 {errors.availablecolor && <span className='text-red ms-2'>{errors.availablecolor.message}</span>}
                                 {/* <input type="text" placeholder="" /> */}
                             </div>
                             {/* buttons */}
                             <div className="my-5">
-                                <button type="button" className="h-[54px] rounded-xl text-white bg-darkgreen w-full">Create</button>
+                                <button type="submit" className="h-[54px] rounded-xl text-white bg-darkgreen w-full">Create</button>
                             </div>
                             <div className="my-5">
                                 <button
-                                    // type="submit" 
                                     onClick={e => window.verificationModal.showModal()}
                                     className="h-[54px] rounded-xl btn btn-neutral btn-outline w-full">Verify</button>
                             </div>
@@ -387,16 +389,46 @@ const CreateProduct = () => {
             <form method="dialog" className="modal-box  max-h-[777px] w-[656px]">
                 <h3 className="font-bold text-lg text-[24px] text-center pb-4 border-b gap-16 border-dashed border-b-black  ">Verification Details</h3>
                 <div className="mt-5 font-semibold px-2">
-                    <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Product Name:</div>
-                    <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Desciption:</div>
-                    <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Base Price:</div>
-                    <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Discount Price:</div>
-                    <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Stock:</div>
-                    <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Category:</div>
-                    <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Sub Category:</div>
-                    <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Size/Type:</div>
-                    <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Color:</div>
-                    <div className='my-[15px] lg:text-[16px] max-xl:text-[18px]'>Available Color:</div>
+
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Product Name:
+                        {name ? <span className='text-base font-semibold'>{name}</span> : <span className='text-red text-base'>Please enter Name!</span>}
+                    </div>
+
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Desciption:
+                        {description ? <span className='text-base font-semibold'>{description}</span> : <span className='text-red text-base'>Please enter Description!</span>}
+                    </div>
+
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Base Price:
+                        {baseprice ? <span className='text-base font-semibold'>{baseprice}</span> : <span className='text-red text-base'>Please enter Baseprice!</span>}
+                    </div>
+
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Discount Price:
+                        {discountprice ? <span className='text-base font-semibold'>{discountprice}</span> : <span className='text-red text-base'>Please enter Discountprice!</span>}
+                    </div>
+
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Stock:
+                        {stock ? <span className='text-base font-semibold'>{stock}</span> : <span className='text-red text-base'>Please enter Stock!</span>}
+                    </div>
+
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Category:
+                        {category ? <span className='text-base font-semibold'>{category}</span> : <span className='text-red text-base'>Please enter Category!</span>}
+                    </div>
+
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Sub Category:
+                        {subcategory ? <span className='text-base font-semibold'>{subcategory}</span> : <span className='text-red text-base'>Please enter Subcategory!</span>}
+                    </div>
+
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Size/Type:
+                        {size ? <span className='text-base font-semibold'>{size}</span> : <span className='text-red text-base'>Please enter size!</span>}
+                    </div>
+
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Color:
+                        {color ? <span className='text-base font-semibold'>{color}</span> : <span className='text-red text-base'>Please enter color!</span>}
+                    </div>
+
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Available Color: {availablecolor ? <span className='text-base font-semibold'>{availablecolor}</span> : <span className='text-red text-base'>Please enter Availabecolor!</span>}
+                    </div>
+
                     <div className="text-center">
                         <button type="submit" className="mt-3 bg-gray3 w-[285px] h-[54px] rounded-xl" >Close</button>
                     </div>

@@ -77,7 +77,7 @@ const Orders = () => {
         } else {
             setTimeout(() => {
                 setIsScrolling({ left: false, right: false });
-            }, 3000);
+            }, 6000);
         }
     }, [isScrolling]);
 
