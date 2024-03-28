@@ -1,19 +1,41 @@
 import React, { useEffect, useState } from 'react'
-import userData from '../../assets/data/Userdata.js'
 import Searchbar from '../../components/Searchbar'
 import downloadIcon from '../../assets/icon/download.svg'
 import leftCaret from '../../assets/icon/leftCaret.svg'
 import rightCaret from '../../assets/icon/rightCaret.svg';
 import searchObjects from '../../assets/Function/search.js'
+import { getUserDetails } from '../../api/user.js'
+import { useQuery} from "@tanstack/react-query";
+
 
 const User = () => {
-    const [dataDisplay, setdataDisplay] = useState(userData);
-    const totalDataOfUsers = dataDisplay.length;
+    
+    const [dataDisplay, setdataDisplay] = useState([]);
+    const [totalDataOfUsers,settotalDataOfUsers] = useState(0);
     const [searchquery, setsearchquery] = useState("");
     const [page, setpage] = useState(1);
     let i = 9;
     const [filterData, setfilterData] = useState(dataDisplay.slice((page - 1) * (i), (page) * i));
 
+    //api fetching
+    const {
+        data:allUserData,
+        isLoading,
+        isError,
+        isSuccess
+      } = useQuery({
+        queryKey: ["users"],
+        queryFn: () => getUserDetails(),
+    });
+    
+    // to change the data after fetching
+    useEffect(() => {
+        if (isSuccess) {
+          setdataDisplay(allUserData.users);
+        }
+      }, [isSuccess]);
+    
+    // pagination -start 
     useEffect(() => {
         setfilterData(dataDisplay.slice((page - 1) * (i), (page) * i))
     }, [page])
@@ -29,24 +51,29 @@ const User = () => {
             setpage(page - 1)
         }
     }
-
+    // pagination end
 
     const handleSearch = (event) => {
         event.preventDefault();
-        setdataDisplay(searchObjects(userData, searchquery, ["Name", "ID", "Mobile"]));
+        console.log(dataDisplay)
+        setdataDisplay(searchObjects(dataDisplay, searchquery, ["full_name", "_id", "phoneNo"]));
     };
-
-    useEffect(() => {
-        setpage(1);
-        setfilterData(dataDisplay.slice((page - 1) * (i), (page) * i));
-
-    }, [dataDisplay])
 
     const handleChange = (event) => {
         setsearchquery(event.target.value);
-        setdataDisplay(searchObjects(userData, event.target.value, ["Name", "ID", "Mobile"]));
+        console.log(dataDisplay)
+        setdataDisplay(searchObjects(dataDisplay, event.target.value, ["full_name", "_id", "phoneNo"]));
     }
+    useEffect(() => {
+        settotalDataOfUsers(dataDisplay.length)
+        setpage(1);
+        setfilterData(dataDisplay.slice((page - 1) * (i), (page) * i));
+    }, [dataDisplay])
 
+    
+    
+    
+    
     return (
         <div className='bg-[#F5F6FA] min-h-svh w-full p-6 pb-11'>
             <h1 className='font-lato text-[32px] font-bold text-black leading-[38.4px] '>All Users</h1>
@@ -82,14 +109,14 @@ const User = () => {
                             <tbody className='grid-col-5'>
                                 {filterData.map((item) => {
                                     return (
-                                        <tr className="  h-[48px]  w-full items-center" key={item.ID}>
-                                            <td className="opacity-80 font-lato font-semibold text-[14px] w-1/5 min-w-[150px] text-black  text-start px-3">#{item.ID}</td>
-                                            <td className="opacity-80 font-lato font-semibold text-[14px] text-center w-1/5 min-w-[150px] text-black     px-3">{item.Name}</td>
-                                            <td className="opacity-80  font-lato font-semibold w-1/5 min-w-[150px] text-satrt text-[14px] px-3">{item.Email}
+                                        <tr className="  h-[48px]  w-full items-center" key={item._id}>
+                                            <td className="opacity-80 font-lato font-semibold text-[14px] w-1/5 min-w-[150px] text-black  text-start px-3">#{item._id}</td>
+                                            <td className="opacity-80 font-lato font-semibold text-[14px] text-center w-1/5 min-w-[150px] text-black     px-3">{item.full_name}</td>
+                                            <td className="opacity-80  font-lato font-semibold w-1/5 min-w-[150px] text-satrt text-[14px] px-3">{item.email}
                                             </td>
-                                            <td className="opacity-80 font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.Mobile}
+                                            <td className="opacity-80 font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.phoneNo}
                                             </td>
-                                            <td className="opacity-80 font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.DOB}
+                                            <td className="opacity-80 font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.dob}
                                             </td>
                                         </tr>
                                     );
