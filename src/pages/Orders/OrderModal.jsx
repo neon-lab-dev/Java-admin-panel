@@ -84,7 +84,6 @@ const OrderModal = ({ selectedOrderId }) => {
         modal.close();
       }
     };
-
     document.addEventListener("click", handleClickOutsideModal);
 
     return () => {
@@ -111,9 +110,8 @@ const OrderModal = ({ selectedOrderId }) => {
                 <div className="grid justify-center px-4 grid-cols-12 max-h-[880px]">
                   <div
                     onScroll={() => handleScrollbar("left")}
-                    className={`col-span-4  scrollbar-width-sm h-[calc(100vh-80px)] max-h-[880px] overflow-y-auto ${
-                      !isScrolling.left && "hidden-scrollbar "
-                    }  lg:px-4 md:px-2 pb-4 `}
+                    className={`col-span-4  scrollbar-width-sm h-[calc(100vh-80px)] max-h-[880px] overflow-y-auto ${!isScrolling.left && "hidden-scrollbar "
+                      }  lg:px-4 md:px-2 pb-4 `}
                   >
                     <h1 className="font-lato  font-semibold text-center text-[24px]">
                       Order Item
@@ -162,9 +160,8 @@ const OrderModal = ({ selectedOrderId }) => {
                   <div
                     id="orderInfo"
                     onScroll={() => handleScrollbar("right")}
-                    className={`col-span-8  scrollbar-width-sm overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)] max-h-[880px] ${
-                      !isScrolling.right && "hidden-scrollbar"
-                    }`}
+                    className={`col-span-8  scrollbar-width-sm overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)] max-h-[880px] ${!isScrolling.right && "hidden-scrollbar"
+                      }`}
                   >
                     <h1 className="font-lato font-semibold text-center text-[24px]">
                       Order Information
