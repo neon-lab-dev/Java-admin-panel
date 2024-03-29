@@ -8,6 +8,7 @@ import { getUserDetails } from '../../api/user.js'
 import { useQuery} from "@tanstack/react-query";
 import AppLoading from "../../components/loaders/AppLoading.jsx";
 import SomeErrorOccurred from "../Error/SomeErrorOccurred.jsx"
+import jsonToXlsx from '../../utils/jsonAsXlsx.js';
 
 
 const User = () => {
@@ -83,7 +84,9 @@ const User = () => {
                     <Searchbar placeholder={"Search by Name Phone or id"} onChange={handleChange} onSubmit={handleSearch} value={searchquery} />
                     <div className="flex items-center gap-3">
                         {/* downloadIcon */}
-                        <button className=" bg-lightgray  rounded-[6px]">
+                        <button
+                        onClick={()=>jsonToXlsx(dataDisplay,"users")}
+                        className=" bg-lightgray  rounded-[6px]">
                             <img src={downloadIcon} alt="" />
                         </button>
                     </div>
