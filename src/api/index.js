@@ -12,4 +12,7 @@ export const API = {
 
   //dashboard
   dashboard:BACKEND_BASE_URL + "/admin/dashboard", //to get dashboard details
+
+  //users
+  userDetails:BACKEND_BASE_URL + "/admin/users", //to get all users details
 };
