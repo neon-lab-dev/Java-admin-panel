@@ -61,15 +61,15 @@ const Login = () => {
             </p>
           </div>
           {/* Email */}
-          <div className="mt-[36px]">
-            <div>
-              <p className="w-full text-zinc-800 text-base font-bold font-Lato leading-tight">
+          <div className="mt-[36px] w-full flex flex-col items-center">
+            <div className="flex flex-col items-center w-5/6">
+              <p className="lg:w-[515px]  text-zinc-800  text-start text-base font-bold font-Lato leading-tight">
                 Email
               </p>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center w-5/6">
               <input
-                className="mt-2 lg:w-[515px] lg:h-[54px] md:w-1/4 md:h-1/4 sm:w-1/4 sm:h-1/4 bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-Lato"
+                className="mt-2 lg:w-[515px] lg:h-[54px] bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-Lato"
                 type="email"
                 placeholder="Enter Your Email"
                 {...register("email", {
@@ -82,14 +82,14 @@ const Login = () => {
               )}
             </div>
 
-            <div className="mt-[24px]">
-              <p className="w-full text-zinc-800 text-base font-bold font-Lato leading-tight">
+            <div className="flex flex-col mt-[24px] items-center w-5/6">
+              <p className="lg:w-[515px] text-zinc-800 text-base font-bold font-Lato leading-tight">
                 Password
               </p>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center w-5/6">
               <input
-                className="mt-2 w-[515px] h-[54px] bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-Lato"
+                className="mt-2 lg:w-[515px] lg:h-[54px] bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-Lato"
                 type="password"
                 placeholder="Enter Your Password"
                 {...register("password", {
@@ -108,7 +108,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={Object.keys(errors).length > 0}
-            className="mt-[36px] w-[515px] h-16 bg-rose-500 rounded-xl disabled:opacity-60 disabled:cursor-default"
+            className="mt-[36px] lg:w-[515px] lg:h-16 w-5/6 h-12 bg-rose-500 rounded-xl disabled:opacity-60 disabled:cursor-default"
           >
             {isPending ? (
               <span className="loading loading-spinner loading-md text-white" />
