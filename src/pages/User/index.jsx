@@ -6,6 +6,8 @@ import rightCaret from '../../assets/icon/rightCaret.svg';
 import searchObjects from '../../assets/Function/search.js'
 import { getUserDetails } from '../../api/user.js'
 import { useQuery} from "@tanstack/react-query";
+import AppLoading from "../../components/loaders/AppLoading.jsx";
+import SomeErrorOccurred from "../Error/SomeErrorOccurred.jsx"
 
 
 const User = () => {
@@ -70,10 +72,6 @@ const User = () => {
         setfilterData(dataDisplay.slice((page - 1) * (i), (page) * i));
     }, [dataDisplay])
 
-    
-    
-    
-    
     return (
         <div className='bg-[#F5F6FA] min-h-svh w-full p-6 pb-11'>
             <h1 className='font-lato text-[32px] font-bold text-black leading-[38.4px] '>All Users</h1>
@@ -93,36 +91,40 @@ const User = () => {
                 {/* User table */}
                 <div className="mt-4">
                     <div className="overflow-x-auto">
-                        <table className="table rounded-2xl bg-salte-100  w-full">
-                            {/* head */}
+                        { isLoading?(<AppLoading/>)
+                            :!isError && allUserData ?(
+                            <table className="table rounded-2xl bg-salte-100  w-full">
+                                {/* head */}
 
-                            <thead className="grid-col-5 ">
-                                <tr className="h-[48px] bg-slate-100 w-full items-center">
-                                    <th className="font-bold font-lato text-black text-[14px] text-start px-3 ">ID</th>
-                                    <th className="font-bold font-lato text-black text-[14px] text-center px-3 ">Name</th>
-                                    <th className="font-bold font-lato text-black text-[14px]  text-end px-3">Email</th>
-                                    <th className="font-bold font-lato text-black text-[14px]  text-end px-3">Mobile No</th>
-                                    <th className="font-bold font-lato text-black text-[14px]  text-center px-3">DOB</th>
-                                </tr>
-                            </thead>
+                                <thead className="grid-col-5 ">
+                                    <tr className="h-[48px] bg-slate-100 w-full items-center">
+                                        <th className="font-bold font-lato text-black text-[14px] text-start px-3 ">ID</th>
+                                        <th className="font-bold font-lato text-black text-[14px] text-center px-3 ">Name</th>
+                                        <th className="font-bold font-lato text-black text-[14px]  text-end px-3">Email</th>
+                                        <th className="font-bold font-lato text-black text-[14px]  text-end px-3">Mobile No</th>
+                                        <th className="font-bold font-lato text-black text-[14px]  text-center px-3">DOB</th>
+                                    </tr>
+                                </thead>
 
-                            <tbody className='grid-col-5'>
-                                {filterData.map((item) => {
-                                    return (
-                                        <tr className="  h-[48px]  w-full items-center" key={item._id}>
-                                            <td className="opacity-80 font-lato font-semibold text-[14px] w-1/5 min-w-[150px] text-black  text-start px-3">#{item._id}</td>
-                                            <td className="opacity-80 font-lato font-semibold text-[14px] text-center w-1/5 min-w-[150px] text-black     px-3">{item.full_name}</td>
-                                            <td className="opacity-80  font-lato font-semibold w-1/5 min-w-[150px] text-satrt text-[14px] px-3">{item.email}
-                                            </td>
-                                            <td className="opacity-80 font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.phoneNo}
-                                            </td>
-                                            <td className="opacity-80 font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.dob}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+                                <tbody className='grid-col-5'>
+                                    {filterData.map((item) => {
+                                        return (
+                                            <tr className="  h-[48px]  w-full items-center" key={item._id}>
+                                                <td className="opacity-80 font-lato font-semibold text-[14px] w-1/5 min-w-[150px] text-black  text-start px-3">#{item._id}</td>
+                                                <td className="opacity-80 font-lato font-semibold text-[14px] text-center w-1/5 min-w-[150px] text-black     px-3">{item.full_name}</td>
+                                                <td className="opacity-80  font-lato font-semibold w-1/5 min-w-[150px] text-satrt text-[14px] px-3">{item.email}
+                                                </td>
+                                                <td className="opacity-80 font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.phoneNo}
+                                                </td>
+                                                <td className="opacity-80 font-lato font-semibold w-1/5 min-w-[100px] text-center text-[14px] px-3">{item.dob}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>)
+                            :(<SomeErrorOccurred />)
+                        }
                     </div>
                     <hr />
                     <div className="flex items-center justify-end   gap-3 mt-3">
