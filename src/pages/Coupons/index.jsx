@@ -11,6 +11,9 @@ import { useQuery,useMutation} from "@tanstack/react-query";
 import CouponModal from './couponModal.jsx'
 import Swal from 'sweetalert2'
 import removeItemById from '../../assets/Function/removeitem.js'
+import AppLoading from '../../components/loaders/AppLoading.jsx'
+import SomeErrorOccurred from '../Error/SomeErrorOccurred.jsx'
+import Deleting from '../../components/loaders/Deleting.jsx'
 
 const Coupons = () => {
     const [dataDisplay,setdataDisplay] = useState([]);
@@ -56,6 +59,17 @@ const Coupons = () => {
         setdataDisplay(updatedData);
       }
     });
+
+    useEffect(() => {
+      if(couponDeleted){
+      Swal.fire({
+        title: "Deleted!",
+        text: `coupon has been deleted.`,
+        icon: "success"
+      });}
+    
+    }, [couponDeleted])
+    
     
     // for deleting coupon
     const handleClick = (data) => {
@@ -71,11 +85,6 @@ const Coupons = () => {
         if (result.isConfirmed) {
           setidToDelete(data._id);
           mutate(data._id);
-          Swal.fire({
-            title: "Deleted!",
-            text: `${data.code} coupon has been deleted.`,
-            icon: "success"
-          });
         }
       });
     };
@@ -115,7 +124,8 @@ const Coupons = () => {
     }, [dataDisplay])
     
     
-  return (
+  return (<>
+    
     <div className='bg-[#F5F6FA] min-h-svh w-full p-6 pb-11'>
       <div className='flex justify-between'>
         <h1 className='font-lato text-[32px] font-bold text-black leading-[38.4px] '>Total Coupons</h1>
@@ -126,7 +136,7 @@ const Coupons = () => {
           </div>
         </button>
         {/* couponModal */}
-        <CouponModal setdataDisplay={setdataDisplay} dataDisplay={dataDisplay}/>
+        <CouponModal setdataDisplay={setdataDisplay} dataDisplay={dataDisplay} allCouponsData={allCouponsData}/>
         
       </div>
     <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 px-5">
@@ -144,7 +154,9 @@ const Coupons = () => {
         {/* User table */}
         <div className="mt-4">
             <div className="overflow-x-auto">
-                <table className="table rounded-2xl bg-salte-100  w-full">
+              { isLoading?(<AppLoading/>)
+                :!isError && allCouponsData ?
+                (<table className="table rounded-2xl bg-salte-100  w-full">
                     {/* head */}
                     
                     <thead className="grid-col-5">
@@ -155,10 +167,10 @@ const Coupons = () => {
                             <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3">Action</th>
                         </tr>
                     </thead>
-                   
-                    <tbody className='grid-col-5'>
+                   <tbody className='grid-col-5'>
                         {filterData.map((item) =>{
                             return (
+                            <>
                              <tr className="h-[48px] w-full items-center" key={item._id}>
                             <td className="opacity-80 font-lato font-semibold text-[14px] w-1/5 min-w-[150px] text-black  text-start px-3">#{item._id}</td>
                             <td className="opacity-80 font-lato font-semibold text-[14px] text-center w-1/5 min-w-[150px] text-black     px-3">{item.code}</td>
@@ -167,15 +179,18 @@ const Coupons = () => {
                             <td className="opacity-80 w-1/5 min-w-[100px]">
                               <div className='flex place-content-center'>
                                 <button onClick={()=>handleClick(item)}>
-                                  <img src={icondelete}/>
+                                  {(isPending&&item._id==idToDelete)?(<Deleting/>):(<img src={icondelete}/>)}
                                 </button>
                               </div>
                             </td>
                         </tr>
+                        </>
                         );
                         })}
                     </tbody>
-                </table>
+                </table>)
+                :(<SomeErrorOccurred/>)
+              }
             </div>
             <hr />
             <div className="flex items-center justify-end   gap-3 mt-3">
@@ -187,7 +202,7 @@ const Coupons = () => {
             </div>
         </div>
     </div>
-</div>
+      </div></>
   )
 }
 

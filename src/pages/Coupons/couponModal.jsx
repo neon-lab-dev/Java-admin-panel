@@ -1,20 +1,25 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 import createCouponimg from '../../assets/icon/createCoupon.svg'
 import { createCoupon, getAllCoupon } from '../../api/coupon';
 import { useForm } from 'react-hook-form';
 import { useMutation,useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
-const CouponModal = (props) => {
-  let {dataDisplay,setdataDisplay}=props;
+import { data } from 'autoprefixer';
+import AppLoading from '../../components/loaders/AppLoading';
 
+const CouponModal = (props) => {
+  let {dataDisplay,setdataDisplay,allCouponsData}=props;
+  const [values, setvalues] = useState({});
   const queryClient = useQueryClient();
   const {
     register,
     handleSubmit,
     formState: { errors },
+    getValues,
+    reset
   } = useForm();
 
-  const { mutate, isPending} = useMutation({
+  const { mutate, isPending,isSuccess} = useMutation({
     mutationKey: ["newCoupon"],
     mutationFn: ({ code,amount }) => createCoupon({ code,amount }),
     onError: (error) => {
@@ -23,14 +28,24 @@ const CouponModal = (props) => {
         title: "Oops...",
         text: error,
       });
+      reset();
       console.log(error);
     },
     onSuccess:()=>{
+      queryClient.invalidateQueries({queryKey:["coupons"]})
+      // setdataDisplay(allCouponsData);
+      console.log(allCouponsData);
       console.log(dataDisplay);
-      console.log("success")
+      // reset();
     }
     },
   );
+  useEffect(() => {
+    if(!isPending){
+      // document.getElementById("create_new_coupon").close();
+    }
+  }, [isPending])
+  
 
   const onSubmit = async (data) => {
    const mutatedData = mutate({
@@ -38,6 +53,11 @@ const CouponModal = (props) => {
       amount:Number(data.amount)
     });
   };
+
+  const handleVerify=()=>{
+    document.getElementById('verify_new_coupon').showModal();
+    setvalues(getValues());
+  }
 
 
   return (
@@ -54,7 +74,8 @@ const CouponModal = (props) => {
                 </div>
                 <div className="border-l-2 border-dashed"/>
                 <div className="w-3/5">
-                  <form className=" flex flex-col place-content-center place-items-center" onSubmit={handleSubmit(onSubmit)}>
+                  <div className=" flex flex-col place-content-center place-items-center">
+                    <form className=" flex flex-col place-content-center place-items-center" onSubmit={handleSubmit(onSubmit)}>
                     <p className="w-[324px] text-start text-black text-2xl font-semibold font-['Lato'] tracking-tight">Create New Coupon</p>
                     <input className="mt-[32px] w-[324px] h-11 pl-3 bg-white rounded-xl border border-zinc-300 justify-start items-center inline-flex placeholder:text-black opacity-40 text-sm font-light font-['Lato'] leading-[16.80px]" type='text' placeholder='Enter New Coupon Code'
                     {...register("code",{
@@ -66,12 +87,14 @@ const CouponModal = (props) => {
                       required:true
                     })}/>
                     <button className="mt-[24px] w-[324px] h-11 pl-[111px] pr-[112.44px] py-2.5 bg-slate-400 rounded-xl justify-center items-center inline-flex">
-                      <p className="w-[100.56px] h-6 text-center text-white text-lg font-bold font-['Lato'] leading-snug">Create</p>
+                      {isPending?(<span className="loading loading-spinner loading-md text-white"></span>):
+                      <p className="w-[100.56px] h-6 text-center text-white text-lg font-bold font-['Lato'] leading-snug">Create</p>}
                     </button>
-                    <button className="mt-[12px] w-[324px] h-11 pl-[111px] pr-[112.44px] py-2.5 rounded-xl border border-neutral-400 justify-center items-center inline-flex" onClick={()=>document.getElementById('verify_new_coupon').showModal()}>
+                    </form>
+                    <button className="mt-[12px] w-[324px] h-11 pl-[111px] pr-[112.44px] py-2.5 rounded-xl border border-neutral-400 justify-center items-center inline-flex" onClick={()=>handleVerify()}>
                       <p className="w-[100.56px] h-6 text-center text-zinc-800 text-lg font-bold font-['Lato'] leading-snug">Verify</p>
                     </button>
-                  </form>
+                  </div>
                 </div>
               </div>
             </div>
@@ -94,7 +117,7 @@ const CouponModal = (props) => {
                           Coupon &nbsp;Code :&nbsp;&nbsp;
                         </span>
                         <span className="text-black text-lg font-light font-['Lato'] tracking-tight">
-                        421545185
+                        {values?.code}
                         </span>
                       </p>
                       <p className='mt-[18px]'>
@@ -102,7 +125,7 @@ const CouponModal = (props) => {
                           Amount :&nbsp;&nbsp;
                         </span>
                         <span className="text-black text-lg font-light font-['Lato'] tracking-tight">
-                        ₹421
+                        ₹{values?.amount}
                         </span>
                       </p>
                       </div>
