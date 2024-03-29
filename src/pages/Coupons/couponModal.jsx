@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import { data } from "autoprefixer";
 import AppLoading from "../../components/loaders/AppLoading";
+import AppFormErrorLine from "../../components/AppFromErrorLine";
 
 const CouponModal = (props) => {
   let { dataDisplay, setdataDisplay, allCouponsData } = props;
@@ -19,39 +20,34 @@ const CouponModal = (props) => {
     reset,
   } = useForm();
 
-  const { mutate, isPending, isSuccess } = useMutation({
+  const { mutate, isPending, isSuccess,data } = useMutation({
     mutationFn: ({ code, amount }) => createCoupon({ code, amount }),
     onError: (error) => {
-      window.create_new_coupon.close();
       Swal.fire({
         icon: "error",
         title: "Oops...",
         text: error,
       });
       reset();
-      console.log(error);
     },
-    onSuccess: () => {
-      window.create_new_coupon.close();
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["coupons"] });
       Swal.fire({
         icon: "success",
-        title: "Success",
-        text: "Coupon Created Successfully",
+        title: "Coupon created",
+        text:  data.message,
       });
+      reset();
     },
   });
   useEffect(() => {
     if (!isPending) {
-      // document.getElementById("create_new_coupon").close();
+      document.getElementById("create_new_coupon").close();
     }
   }, [isPending]);
 
   const onSubmit = async (data) => {
-    const mutatedData = mutate({
-      ...data,
-      amount: Number(data.amount),
-    });
+    mutate(data)
   };
 
   const handleVerify = () => {
@@ -65,7 +61,7 @@ const CouponModal = (props) => {
       <dialog id="create_new_coupon" className="modal">
         <div className="modal-box lg:w-[763px] lg:h-[410px] sm:h-[1/6] w-5/6 max-w-5xl h-1/2 max-h-5xl">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={()=>reset()}>
               ✕
             </button>
           </form>
@@ -88,17 +84,36 @@ const CouponModal = (props) => {
                     type="text"
                     placeholder="Enter New Coupon Code"
                     {...register("code", {
-                      required: true,
+                      required:{
+                        value:true,
+                        message:"Please enter code name"
+                      },
+                      maxLength :{
+                        value:12,
+                        message:"Maximum length should be 12 characters"
+                      },
+                      minLength :{
+                        value:5,
+                        message:"Minimum length should be 5 characters"
+                      }
+                      
                     })}
                   />
+                  {errors.code && (
+                    <AppFormErrorLine message={errors.code?.message} />
+                  )}
                   <input
                     className="mt-[18px] w-[324px] h-11 pl-3 bg-white rounded-xl border border-zinc-300 justify-start items-center inline-flex placeholder:text-black opacity-40 text-sm font-light font-['Lato'] leading-[16.80px]"
                     type="number"
                     placeholder="Amount"
                     {...register("amount", {
-                      required: true,
+                      required: "Please enter amount",
+                      valueAsNumber:true
                     })}
                   />
+                  {errors.amount && (
+                    <AppFormErrorLine message={errors.amount?.message} />
+                  )}
                   <button className="mt-[24px] w-[324px] h-11 pl-[111px] pr-[112.44px] py-2.5 bg-slate-400 rounded-xl justify-center items-center inline-flex">
                     {isPending ? (
                       <span className="loading loading-spinner loading-md text-white"></span>

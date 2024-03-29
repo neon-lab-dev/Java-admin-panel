@@ -70,7 +70,7 @@ const Coupons = () => {
     if (couponDeleted) {
       Swal.fire({
         title: "Deleted!",
-        text: `coupon has been deleted.`,
+        text: `Coupon has been deleted.`,
         icon: "success",
       });
     }
