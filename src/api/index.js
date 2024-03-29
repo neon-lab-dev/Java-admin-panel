@@ -15,4 +15,8 @@ export const API = {
 
   //coupon
   allCoupon:BACKEND_BASE_URL + "/coupon/all", //to get all coupon details
+
+  coupon:BACKEND_BASE_URL + "/coupon", // coupon details
+  newCoupon:BACKEND_BASE_URL + "/coupon/new", // coupon details
+
 };

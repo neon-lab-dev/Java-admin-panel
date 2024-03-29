@@ -9,7 +9,8 @@ import coupon from '../../assets/icon/coupon.svg'
 import { getAllCoupon,deleteCoupon } from '../../api/coupon.js'
 import { useQuery,useMutation} from "@tanstack/react-query";
 import CouponModal from './couponModal.jsx'
-
+import Swal from 'sweetalert2'
+import removeItemById from '../../assets/Function/removeitem.js'
 
 const Coupons = () => {
     const [dataDisplay,setdataDisplay] = useState([]);
@@ -18,6 +19,7 @@ const Coupons = () => {
     const [page, setpage] = useState(1);
     let i=9;
     const [filterData,setfilterData] = useState(dataDisplay.slice((page-1)*(i),(page)*i));
+    const [idToDelete, setidToDelete] = useState("");
 
     // API fetching
     const {
@@ -29,30 +31,55 @@ const Coupons = () => {
       queryKey: ["coupons"],
       queryFn: () => getAllCoupon(),
     });
-
-    const { mutate, isPending } = useMutation({
-      mutationKey: ["deleteCoupon"],
-      mutationFn: (id) => deleteCoupon(id),
-      onError: (error) => {
-        console.log(error,data);
-      },
-      onSuccess: () => {
-        console.log("Coupon deleted successfully:", data)
-      },
-    });
-
-    const handleClick = (data) => {
-      console.log(data);
-      mutate(data);
-    };
-  
+    
   // to change the data after fetching
     useEffect(() => {
       if (isSuccess) {
         setdataDisplay(allCouponsData.coupons);
       }
     }, [isSuccess]);
- 
+   
+  // to delete the coupon
+    const { mutate, isPending, isSuccess:couponDeleted} = useMutation({
+      mutationKey: ["deleteCoupon"],
+      mutationFn: (id) => deleteCoupon(id),
+      onError: (error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: error,
+        });
+      },
+      onSuccess:()=>{
+        const updatedData = [...dataDisplay]
+        removeItemById(updatedData,idToDelete)
+        setdataDisplay(updatedData);
+      }
+    });
+    
+    // for deleting coupon
+    const handleClick = (data) => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setidToDelete(data._id);
+          mutate(data._id);
+          Swal.fire({
+            title: "Deleted!",
+            text: `${data.code} coupon has been deleted.`,
+            icon: "success"
+          });
+        }
+      });
+    };
+  
     // pagination start
     useEffect(() => {
         setfilterData(dataDisplay.slice((page-1)*(i),(page)*i))
@@ -71,7 +98,6 @@ const Coupons = () => {
     }  
     // pagination end
 
-
     const handleSearch = (event) => {
         event.preventDefault();
         setdataDisplay(searchObjects(couponData,searchquery,["Code","ID"]));
@@ -83,7 +109,7 @@ const Coupons = () => {
     }
 
     useEffect(() => {
-      settotalDataOfUsers(dataDisplay.length)
+        settotalDataOfUsers(dataDisplay.length)
         setpage(1);
         setfilterData(dataDisplay.slice((page-1)*(i),(page)*i));
     }, [dataDisplay])
@@ -100,7 +126,7 @@ const Coupons = () => {
           </div>
         </button>
         {/* couponModal */}
-        <CouponModal/>
+        <CouponModal setdataDisplay={setdataDisplay} dataDisplay={dataDisplay}/>
         
       </div>
     <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 px-5">
@@ -140,7 +166,7 @@ const Coupons = () => {
                             </td>
                             <td className="opacity-80 w-1/5 min-w-[100px]">
                               <div className='flex place-content-center'>
-                                <button onClick={()=>handleClick(item._id)}>
+                                <button onClick={()=>handleClick(item)}>
                                   <img src={icondelete}/>
                                 </button>
                               </div>

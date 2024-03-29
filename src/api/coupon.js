@@ -22,10 +22,34 @@ export const getAllCoupon = () => {
   });
 };
 
+export const createCoupon = ({code,amount }) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        API.newCoupon,
+        { code,amount  },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(
+          err?.response?.data?.message || "Login failed, please try again"
+        );
+      });
+  });
+};
+
 export const deleteCoupon = (id) => {
     return new Promise((resolve, reject) => {
       axios
-        .delete(`${API.allCoupon}/${id}`, {
+        .delete(`${API.coupon}/${id}`, {
           withCredentials: true,
           headers: {
             "Content-Type": "application/json",

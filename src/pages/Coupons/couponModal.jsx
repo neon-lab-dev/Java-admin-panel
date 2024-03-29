@@ -1,6 +1,45 @@
 import React from 'react'
-import createCoupon from '../../assets/icon/createCoupon.svg'
-const CouponModal = () => {
+import createCouponimg from '../../assets/icon/createCoupon.svg'
+import { createCoupon, getAllCoupon } from '../../api/coupon';
+import { useForm } from 'react-hook-form';
+import { useMutation,useQueryClient } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
+const CouponModal = (props) => {
+  let {dataDisplay,setdataDisplay}=props;
+
+  const queryClient = useQueryClient();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const { mutate, isPending} = useMutation({
+    mutationKey: ["newCoupon"],
+    mutationFn: ({ code,amount }) => createCoupon({ code,amount }),
+    onError: (error) => {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error,
+      });
+      console.log(error);
+    },
+    onSuccess:()=>{
+      console.log(dataDisplay);
+      console.log("success")
+    }
+    },
+  );
+
+  const onSubmit = async (data) => {
+   const mutatedData = mutate({
+      ...data,
+      amount:Number(data.amount)
+    });
+  };
+
+
   return (
     <>
     {/*createCoupon Modal Start */}
@@ -11,21 +50,28 @@ const CouponModal = () => {
               </form>
               <div className='flex h-full w-full'>
                 <div className="w-2/5 flex justify-center items-center place-content-center">
-                  <img src={createCoupon} className="h-full w-full"/>
+                  <img src={createCouponimg} className="h-full w-full"/>
                 </div>
                 <div className="border-l-2 border-dashed"/>
                 <div className="w-3/5">
-                  <div className=" flex flex-col place-content-center place-items-center">
+                  <form className=" flex flex-col place-content-center place-items-center" onSubmit={handleSubmit(onSubmit)}>
                     <p className="w-[324px] text-start text-black text-2xl font-semibold font-['Lato'] tracking-tight">Create New Coupon</p>
-                    <input className="mt-[32px] w-[324px] h-11 pl-3 bg-white rounded-xl border border-zinc-300 justify-start items-center inline-flex placeholder:text-black opacity-40 text-sm font-light font-['Lato'] leading-[16.80px]" type='text' placeholder='Enter New Coupon Code'/>
-                    <input className="mt-[18px] w-[324px] h-11 pl-3 bg-white rounded-xl border border-zinc-300 justify-start items-center inline-flex placeholder:text-black opacity-40 text-sm font-light font-['Lato'] leading-[16.80px]" type='text' placeholder='Amount'/>
+                    <input className="mt-[32px] w-[324px] h-11 pl-3 bg-white rounded-xl border border-zinc-300 justify-start items-center inline-flex placeholder:text-black opacity-40 text-sm font-light font-['Lato'] leading-[16.80px]" type='text' placeholder='Enter New Coupon Code'
+                    {...register("code",{
+                      required:true
+                    })}
+                    />
+                    <input className="mt-[18px] w-[324px] h-11 pl-3 bg-white rounded-xl border border-zinc-300 justify-start items-center inline-flex placeholder:text-black opacity-40 text-sm font-light font-['Lato'] leading-[16.80px]" type='number' placeholder='Amount'
+                    {...register("amount",{
+                      required:true
+                    })}/>
                     <button className="mt-[24px] w-[324px] h-11 pl-[111px] pr-[112.44px] py-2.5 bg-slate-400 rounded-xl justify-center items-center inline-flex">
                       <p className="w-[100.56px] h-6 text-center text-white text-lg font-bold font-['Lato'] leading-snug">Create</p>
                     </button>
                     <button className="mt-[12px] w-[324px] h-11 pl-[111px] pr-[112.44px] py-2.5 rounded-xl border border-neutral-400 justify-center items-center inline-flex" onClick={()=>document.getElementById('verify_new_coupon').showModal()}>
                       <p className="w-[100.56px] h-6 text-center text-zinc-800 text-lg font-bold font-['Lato'] leading-snug">Verify</p>
                     </button>
-                  </div>
+                  </form>
                 </div>
               </div>
             </div>
@@ -36,7 +82,7 @@ const CouponModal = () => {
             <div className="modal-box lg:w-[763px] lg:h-[410px] sm:h-[1/6] w-5/6 max-w-5xl h-1/2 max-h-5xl">
               <div className='flex h-full w-full'>
                 <div className="w-2/5 flex justify-center items-center place-content-center">
-                  <img src={createCoupon} className="h-full w-full"/>
+                  <img src={createCouponimg} className="h-full w-full"/>
                 </div>
                 <div className="border-l-2 border-dashed"/>
                 <div className="w-3/5">
