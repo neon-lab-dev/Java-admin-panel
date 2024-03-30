@@ -48,20 +48,20 @@ const Login = () => {
 
   return (
     <div className="flex flex-col place-content-center place-items-center justify-center items-center h-screen">
-      <div className="lg:w-[888px] lg:h-[672px] w-4/6 h-4/6 sm:h-1/2 bg-white rounded-[20px] border border-stone-300 ">
+      <div className="lg:w-[888px] lg:h-[672px] w-4/6 h-5/6 min-h-[510px] lg:min-h-[712px] bg-white rounded-[20px] border border-stone-300  ">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-full h-full flex flex-col items-center mt-[29px]"
+          className="w-full h-full flex flex-col lg:place-content-center place-items-center items-center mt-[29px]"
         >
           {/* {image and Dashboard} */}
-          <div className="flex flex-col w-full justify-center items-center">
-            <img className="lg:w-[130px] lg:h-[167px]" src={logo} />
-            <p className="flex w-full justify-center text-zinc-800 lg:text-[32px] text-[24px] font-medium font-Lato leading-loose mt-[18px]">
+          <div className="flex flex-col w-full justify-center items-center place-content-center place-items-center">
+            <div className=" flex w-full justify-center"><img className="lg:w-[130px] lg:h-[167px] w-[80px] h-[120px]" src={logo} /></div>
+            <p className="flex w-full justify-center  text-zinc-800 lg:text-[32px] text-[18px] font-medium font-Lato leading-loose mt-[18px]">
               Dashboard Login
             </p>
           </div>
           {/* Email */}
-          <div className="mt-[36px] w-full flex flex-col items-center">
+          <div className="lg:mt-[36px] mt-[20px] w-full flex flex-col items-center">
             <div className="flex flex-col items-center w-5/6">
               <p className="lg:w-[515px] w-5/6  text-zinc-800  text-start text-base font-bold font-Lato leading-tight">
                 Email
@@ -108,7 +108,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={Object.keys(errors).length > 0}
-            className="mt-[36px] lg:w-[515px] lg:h-16 w-4/6 h-12 bg-rose-500 rounded-xl disabled:opacity-60 disabled:cursor-default"
+            className="lg:mt-[36px] mt-[20px] lg:w-[515px] lg:h-16 w-4/6 h-10 bg-rose-500 rounded-xl disabled:opacity-60 disabled:cursor-default"
           >
             {isPending ? (
               <span className="loading loading-spinner loading-md text-white" />
