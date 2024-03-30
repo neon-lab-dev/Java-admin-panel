@@ -13,6 +13,12 @@ export const API = {
   //dashboard
   dashboard:BACKEND_BASE_URL + "/admin/dashboard", //to get dashboard details
 
+  //coupon
+  allCoupon:BACKEND_BASE_URL + "/coupon/all", //to get all coupon details
+
+  coupon:BACKEND_BASE_URL + "/coupon", // coupon details
+  newCoupon:BACKEND_BASE_URL + "/coupon/new", // coupon details
+
   //users
   userDetails:BACKEND_BASE_URL + "/admin/users", //to get all users details
 };
