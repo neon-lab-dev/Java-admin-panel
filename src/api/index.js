@@ -19,4 +19,6 @@ export const API = {
   coupon:BACKEND_BASE_URL + "/coupon", // coupon details
   newCoupon:BACKEND_BASE_URL + "/coupon/new", // coupon details
 
+  //users
+  userDetails:BACKEND_BASE_URL + "/admin/users", //to get all users details
 };
