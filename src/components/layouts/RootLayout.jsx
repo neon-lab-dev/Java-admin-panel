@@ -5,9 +5,10 @@ import { Navigate, useLocation } from "react-router-dom";
 import NotSupported from "../../pages/Error/NotSupported";
 import { useSelector } from "react-redux";
 import AppLoading from "../loaders/AppLoading";
+import Swal from "sweetalert2";
 
 const RootLayout = ({ children }) => {
-  const { isAuthenticating, isAuthenticated } = useSelector(
+  const { isAuthenticating, isAuthenticated, user } = useSelector(
     (state) => state.user
   );
   const { pathname } = useLocation();
@@ -17,7 +18,17 @@ const RootLayout = ({ children }) => {
   }
   if (isAuthenticating) return <AppLoading />;
   if (pathname === "/login") return children;
-  if (!isAuthenticated) return <Navigate to="/login" />;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+  if (isAuthenticated && user?.role?.toLowerCase() !== "admin") {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "You are not authorized to view this page. Please login with an admin account.",
+    });
+    return <Navigate to="/login" />;
+  }
 
   return (
     <div className="flex h-screen">

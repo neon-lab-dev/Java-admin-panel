@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form";
 import { EMAIL_REGEX } from "../../assets/data/regex";
 import AppFormErrorLine from "../../components/AppFromErrorLine";
 import { login } from "../../api/auth";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { setIsAuthenticating } from "../../store/slices/userSlice";
 
@@ -14,6 +14,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useSelector((state) => state.user);
   const {
     register,
     handleSubmit,
@@ -46,6 +47,9 @@ const Login = () => {
     mutate(data);
   };
 
+  if (isAuthenticated && user?.role?.toLowerCase() === "admin") {
+    return <Navigate to="/" />;
+  }
   return (
     <div className="flex flex-col place-content-center place-items-center justify-center items-center h-screen">
       <div className="lg:w-[888px] lg:h-[672px] w-4/6 h-5/6 min-h-[510px] lg:min-h-[712px] bg-white rounded-[20px] border border-stone-300  ">
@@ -55,7 +59,12 @@ const Login = () => {
         >
           {/* {image and Dashboard} */}
           <div className="flex flex-col w-full justify-center items-center place-content-center place-items-center">
-            <div className=" flex w-full justify-center"><img className="lg:w-[130px] lg:h-[167px] w-[80px] h-[120px]" src={logo} /></div>
+            <div className=" flex w-full justify-center">
+              <img
+                className="lg:w-[130px] lg:h-[167px] w-[80px] h-[120px]"
+                src={logo}
+              />
+            </div>
             <p className="flex w-full justify-center  text-zinc-800 lg:text-[32px] text-[18px] font-medium font-Lato leading-loose mt-[18px]">
               Dashboard Login
             </p>
