@@ -1,12 +1,11 @@
-import {useNavigate } from "react-router-dom"
+import warning from "../../assets/images/warning.png"
 
 const SomeErrorOccurred = () => {
-  const navigate = useNavigate();
   return (
-    <div className="flex h-screen flex-col justify-center items-center">
-      <div className="text-9xl ">404</div>
-      <div className="mt-7 text-2xl">The page you are looking for was not found</div>
-      <button className="text-blue-500 mt-3" onClick={()=>{navigate("/")}} > Back to Home</button>
+    <div className="flex h-screen flex-col justify-center items-center text-center p-2">
+     <img src={warning}/>
+     <div className="text-4xl font-semibold text-red tracking-wider">Error occurred</div>
+     <div className="text-xl mt-3 tracking-wide">Something went wrong, Please try refreshing the page.</div>
     </div>
   )
 }
