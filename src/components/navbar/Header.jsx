@@ -5,7 +5,7 @@ const Header = () => {
   const { user } = useSelector((state) => state.user);
 
   return (
-    <header className="h-[70px] bg-white border-b-black w-full">
+    <header className="h-[70px] bg-white w-full">
       <div className="flex h-[70px] items-center md:ps-11  md:pe-7 justify-between">
         <div></div>
 
