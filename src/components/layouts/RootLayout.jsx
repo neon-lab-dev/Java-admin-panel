@@ -12,14 +12,13 @@ const RootLayout = ({ children }) => {
   );
   const { pathname } = useLocation();
   const size = useInnerSize();
-
+  if (size.width < 768 || size.height < 500) {
+    return <NotSupported />;
+  }
   if (isAuthenticating) return <AppLoading />;
   if (pathname === "/login") return children;
   if (!isAuthenticated) return <Navigate to="/login" />;
 
-  if (size.width < 768 || size.height < 500) {
-    return <NotSupported />;
-  }
   return (
     <div className="flex h-screen">
       {/* 👉  w-dvw */}
