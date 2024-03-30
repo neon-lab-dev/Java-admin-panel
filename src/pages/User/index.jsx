@@ -15,6 +15,7 @@ const User = () => {
   const [startingIndex, setStartingIndex] = useState(0);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isBirthdayTodayActive, setIsBirthdayTodayActive] = useState(false);
 
   const {
     data: userData,
@@ -25,19 +26,6 @@ const User = () => {
     queryFn: () => getUserDetails(),
   });
 
-  const handleFilter = (e) => {
-    e.preventDefault();
-    const search = e.target.value;
-    const filteredData = searchObjects(userData, search, [
-      "_id",
-      "full_name",
-      "phoneNo",
-      "email",
-    ]);
-    setFilteredData(filteredData);
-    setStartingIndex(0);
-  };
-
   useEffect(() => {
     if (userData) {
       const filteredData = searchObjects(userData, searchQuery, [
@@ -46,9 +34,21 @@ const User = () => {
         "phoneNo",
         "email",
       ]);
-      setFilteredData(filteredData);
+      if (isBirthdayTodayActive) {
+        const today = new Date();
+        const filteredDataByBirthday = filteredData.filter((user) => {
+          const dob = new Date(user.dob);
+          return (
+            dob.getDate() === today.getDate() &&
+            dob.getMonth() === today.getMonth()
+          );
+        });
+        setFilteredData(filteredDataByBirthday);
+      } else {
+        setFilteredData(filteredData);
+      }
     }
-  }, [userData, searchQuery]);
+  }, [userData, searchQuery, isBirthdayTodayActive]);
   return (
     <div className="bg-[#F5F6FA] min-h-full w-full p-6 pb-11">
       <h1 className="font-lato text-[32px] font-bold text-black leading-[38.4px] ">
@@ -62,8 +62,14 @@ const User = () => {
             placeholder="Search by ID, Name, Email, Mobile No"
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-6">
             {/* downloadIcon */}
+            <button
+              onClick={() => setIsBirthdayTodayActive((prev) => !prev)}
+              class="btn btn-outline btn-secondary btn-sm"
+            >
+              {isBirthdayTodayActive ? "Show All Users" : "Birthday Today"}
+            </button>
             <button
               onClick={() => jsonToXlsx(dataDisplay, "users")}
               className=" bg-lightgray  rounded-[6px]"
