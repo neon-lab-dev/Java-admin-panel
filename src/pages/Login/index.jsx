@@ -47,29 +47,29 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="lg:w-[888px] lg:h-[672px] md:w-1/2 md:h-1/2 bg-white rounded-[20px] border border-stone-300 ">
+    <div className="flex flex-col place-content-center place-items-center justify-center items-center h-screen">
+      <div className="lg:w-[888px] lg:h-[672px] w-4/6 h-5/6 min-h-[510px] lg:min-h-[712px] bg-white rounded-[20px] border border-stone-300  ">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-full h-full flex flex-col items-center mt-[29px]"
+          className="w-full h-full flex flex-col lg:place-content-center place-items-center items-center mt-[29px]"
         >
           {/* {image and Dashboard} */}
-          <div className="flex flex-col w-full justify-center items-center">
-            <img className="w-[130px] h-[167px]" src={logo} />
-            <p className="flex w-full justify-center text-zinc-800 text-[32px] font-medium font-Lato leading-loose mt-[18px]">
+          <div className="flex flex-col w-full justify-center items-center place-content-center place-items-center">
+            <div className=" flex w-full justify-center"><img className="lg:w-[130px] lg:h-[167px] w-[80px] h-[120px]" src={logo} /></div>
+            <p className="flex w-full justify-center  text-zinc-800 lg:text-[32px] text-[18px] font-medium font-Lato leading-loose mt-[18px]">
               Dashboard Login
             </p>
           </div>
           {/* Email */}
-          <div className="mt-[36px]">
-            <div>
-              <p className="w-full text-zinc-800 text-base font-bold font-Lato leading-tight">
+          <div className="lg:mt-[36px] mt-[20px] w-full flex flex-col items-center">
+            <div className="flex flex-col items-center w-5/6">
+              <p className="lg:w-[515px] w-5/6  text-zinc-800  text-start text-base font-bold font-Lato leading-tight">
                 Email
               </p>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center w-5/6">
               <input
-                className="mt-2 lg:w-[515px] lg:h-[54px] md:w-1/4 md:h-1/4 sm:w-1/4 sm:h-1/4 bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-Lato"
+                className="mt-2 lg:w-[515px] lg:h-[54px] w-5/6 bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-Lato"
                 type="email"
                 placeholder="Enter Your Email"
                 {...register("email", {
@@ -81,15 +81,15 @@ const Login = () => {
                 <AppFormErrorLine message={errors.email.message} />
               )}
             </div>
-
-            <div className="mt-[24px]">
-              <p className="w-full text-zinc-800 text-base font-bold font-Lato leading-tight">
+            {/* password */}
+            <div className="flex flex-col mt-[24px] items-center w-5/6">
+              <p className="lg:w-[515px] w-5/6  text-zinc-800 text-base font-bold font-Lato leading-tight">
                 Password
               </p>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center w-5/6">
               <input
-                className="mt-2 w-[515px] h-[54px] bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-Lato"
+                className="mt-2 lg:w-[515px] lg:h-[54px] w-5/6 bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-Lato"
                 type="password"
                 placeholder="Enter Your Password"
                 {...register("password", {
@@ -108,7 +108,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={Object.keys(errors).length > 0}
-            className="mt-[36px] w-[515px] h-16 bg-rose-500 rounded-xl disabled:opacity-60 disabled:cursor-default"
+            className="lg:mt-[36px] mt-[20px] lg:w-[515px] lg:h-16 w-4/6 h-10 bg-rose-500 rounded-xl disabled:opacity-60 disabled:cursor-default"
           >
             {isPending ? (
               <span className="loading loading-spinner loading-md text-white" />
