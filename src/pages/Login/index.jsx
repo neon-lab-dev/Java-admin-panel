@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import logo from "../../assets/icon/logo.svg";
 import { useForm } from "react-hook-form";
 import { EMAIL_REGEX } from "../../assets/data/regex";
@@ -14,6 +14,7 @@ const Login = () => {
   const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [isVisible, setisvisible] = useState(false);
   const { user, isAuthenticated } = useSelector((state) => state.user);
   const {
     register,
@@ -97,9 +98,10 @@ const Login = () => {
               </p>
             </div>
             <div className="flex flex-col items-center w-5/6">
+              <div className="mt-2 flex justify-center items-center lg:w-[515px] lg:h-[54px] w-5/6 bg-white rounded-[10px] border border-stone-300  leading-9 ">
               <input
-                className="mt-2 lg:w-[515px] lg:h-[54px] w-5/6 bg-white rounded-[10px] border border-stone-300 placeholder:opacity-40 leading-9 pl-[16px] text-base font-light font-Lato"
-                type="password"
+                className="w-full h-full rounded-l-[10px] pl-[16px] placeholder:opacity-40 text-base font-light font-Lato"
+                type={isVisible?"text":"password"}
                 placeholder="Enter Your Password"
                 {...register("password", {
                   required: "Password is required",
@@ -108,7 +110,7 @@ const Login = () => {
                     message: "Password must have at least 8 characters",
                   },
                 })}
-              />
+              /><button className="w-1/6 h-full inline-flex justify-center items-center" onClick={()=>{setisvisible(!isVisible)}}>{!isVisible?<i className="fa-solid fa-eye"></i>:<i class="fa-solid fa-eye-slash"></i>}</button></div>
               {errors.password && (
                 <AppFormErrorLine message={errors.password.message} />
               )}
