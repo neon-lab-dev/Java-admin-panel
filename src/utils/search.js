@@ -25,7 +25,8 @@ export function searchObjects(array, queryString, keys) {
         if (typeof value === "number") {
           value = value.toString();
         }
-        if (value.includes(queryString)) {
+        value = value.toLowerCase();
+        if (value.includes(queryString.toLowerCase())) {
           return true;
         }
       }
