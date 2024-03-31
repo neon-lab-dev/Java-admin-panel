@@ -1,28 +1,26 @@
-import React, { useEffect, useState } from "react";
-import createCouponimg from "../../assets/icon/createCoupon.svg";
-import { createCoupon, getAllCoupon } from "../../api/coupon";
+import createCouponImg from "../../assets/icon/createCoupon.svg";
+import { createCoupon } from "../../api/coupon";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
-import { data } from "autoprefixer";
-import AppLoading from "../../components/loaders/AppLoading";
 import AppFormErrorLine from "../../components/AppFromErrorLine";
 
-const CouponModal = (props) => {
-  let { dataDisplay, setdataDisplay, allCouponsData } = props;
-  const [values, setvalues] = useState({});
+const CouponModal = () => {
   const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
+    watch,
     reset,
   } = useForm();
+  const { code, amount } = watch();
 
-  const { mutate, isPending, isSuccess,data } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: ({ code, amount }) => createCoupon({ code, amount }),
     onError: (error) => {
+      document.getElementById("create_new_coupon").close();
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -31,28 +29,23 @@ const CouponModal = (props) => {
       reset();
     },
     onSuccess: (data) => {
+      document.getElementById("create_new_coupon").close();
       queryClient.invalidateQueries({ queryKey: ["coupons"] });
       Swal.fire({
         icon: "success",
         title: "Coupon created",
-        text:  data.message,
+        text: data.message,
       });
       reset();
     },
   });
-  useEffect(() => {
-    if (!isPending) {
-      document.getElementById("create_new_coupon").close();
-    }
-  }, [isPending]);
 
   const onSubmit = async (data) => {
-    mutate(data)
+    mutate(data);
   };
 
   const handleVerify = () => {
     document.getElementById("verify_new_coupon").showModal();
-    setvalues(getValues());
   };
 
   return (
@@ -61,13 +54,16 @@ const CouponModal = (props) => {
       <dialog id="create_new_coupon" className="modal">
         <div className="modal-box lg:w-[763px] lg:h-[410px] sm:h-[1/6] w-5/6 max-w-5xl h-1/2 max-h-5xl">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={()=>reset()}>
+            <button
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+              onClick={() => reset()}
+            >
               ✕
             </button>
           </form>
           <div className="flex h-full w-full">
             <div className="w-2/5 flex justify-center items-center place-content-center">
-              <img src={createCouponimg} className="h-full w-full" />
+              <img src={createCouponImg} className="h-full w-full" />
             </div>
             <div className="border-l-2 border-dashed" />
             <div className="w-3/5">
@@ -84,23 +80,25 @@ const CouponModal = (props) => {
                     type="text"
                     placeholder="Enter New Coupon Code"
                     {...register("code", {
-                      required:{
-                        value:true,
-                        message:"Please enter code name"
+                      required: {
+                        value: true,
+                        message: "Please enter code name",
                       },
-                      maxLength :{
-                        value:12,
-                        message:"Maximum length should be 12 characters"
+                      maxLength: {
+                        value: 12,
+                        message: "Maximum length should be 12 characters",
                       },
-                      minLength :{
-                        value:5,
-                        message:"Minimum length should be 5 characters"
-                      }
-                      
+                      minLength: {
+                        value: 4,
+                        message: "Minimum length should be 4 characters",
+                      },
                     })}
                   />
                   {errors.code && (
-                    <AppFormErrorLine message={errors.code?.message} />
+                    <AppFormErrorLine
+                      message={errors.code?.message}
+                      className="self-start"
+                    />
                   )}
                   <input
                     className="mt-[18px] w-[324px] h-11 pl-3 bg-white rounded-xl border border-zinc-300 justify-start items-center inline-flex placeholder:text-black opacity-40 text-sm font-light font-['Lato'] leading-[16.80px]"
@@ -108,11 +106,15 @@ const CouponModal = (props) => {
                     placeholder="Amount"
                     {...register("amount", {
                       required: "Please enter amount",
-                      valueAsNumber:true
+                      valueAsNumber: true,
+                      min: 1,
                     })}
                   />
                   {errors.amount && (
-                    <AppFormErrorLine message={errors.amount?.message} />
+                    <AppFormErrorLine
+                      message={errors.amount?.message}
+                      className="self-start"
+                    />
                   )}
                   <button className="mt-[24px] w-[324px] h-11 pl-[111px] pr-[112.44px] py-2.5 bg-slate-400 rounded-xl justify-center items-center inline-flex">
                     {isPending ? (
@@ -143,7 +145,7 @@ const CouponModal = (props) => {
         <div className="modal-box lg:w-[763px] lg:h-[410px] sm:h-[1/6] w-5/6 max-w-5xl h-1/2 max-h-5xl">
           <div className="flex h-full w-full">
             <div className="w-2/5 flex justify-center items-center place-content-center">
-              <img src={createCouponimg} className="h-full w-full" />
+              <img src={createCouponImg} className="h-full w-full" />
             </div>
             <div className="border-l-2 border-dashed" />
             <div className="w-3/5">
@@ -157,7 +159,7 @@ const CouponModal = (props) => {
                       Coupon &nbsp;Code :&nbsp;&nbsp;
                     </span>
                     <span className="text-black text-lg font-light font-['Lato'] tracking-tight">
-                      {values?.code}
+                      {code}
                     </span>
                   </p>
                   <p className="mt-[18px]">
@@ -165,7 +167,7 @@ const CouponModal = (props) => {
                       Amount :&nbsp;&nbsp;
                     </span>
                     <span className="text-black text-lg font-light font-['Lato'] tracking-tight">
-                      ₹{values?.amount}
+                      ₹{isNaN(amount) ? 0 : amount}
                     </span>
                   </p>
                 </div>
