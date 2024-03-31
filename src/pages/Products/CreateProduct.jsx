@@ -2,12 +2,46 @@ import React, { useRef, useState } from 'react'
 import backIcon from "../../assets/icons/back.svg"
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
+import { useMutation } from '@tanstack/react-query'
+import { createProduct } from '../../api/product'
+import Swal from 'sweetalert2'
+import { filterOptions, subSubcategoriesMap, subcategoriesMap } from './data'
 
 const CreateProduct = () => {
 
+    // mutation for add product
+
+    const { mutate, isPending, isSuccess } = useMutation({
+        mutationFn: createProduct,
+        onSuccess: () => {
+            Swal.fire({
+                title: "Product Add Success",
+                text: `${name} added to your store `,
+                icon: "success",
+            })
+            setSelectedAvailableColor([])
+            setSelectedColor("")
+            setSelectedCategory("")
+            setSelectedSubcategory("")
+            setSelectedSubSubcategory("")
+            setSelectedImages([])
+            reset()
+        },
+        onError: (err) => {
+            Swal.fire({
+                title: "Error",
+                text: err,
+                icon: "error",
+            })
+            reset()
+        }
+    })
+
+
+
     // react hook form 👇
-    const { register, handleSubmit, formState: { errors }, getValues, setValue, setError, clearErrors } = useForm()
-    const { baseprice, discountprice, category, name, description, features, stock, availablecolor, specification, subcategory, size, color } = getValues()
+    const { control, watch, register, handleSubmit, formState: { errors }, getValues, setValue, setError, clearErrors, reset } = useForm()
+    const { baseprice, discountedprice, category, name, description, features, stock, Availablecolor, specification, sub_category, size, color } = watch()
     const [categories] = useState(['Gear', 'Shoes', 'Helmets']);
     const [subcategories, setSubcategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -15,13 +49,15 @@ const CreateProduct = () => {
     const [subSubcategories, setSubSubcategories] = useState([]);
     const [selectedSubSubcategory, setSelectedSubSubcategory] = useState('');
     const [selectedImages, setSelectedImages] = useState([])
+    const [selectedColor, setSelectedColor] = useState("")
+    const [selectedAvailableColor, setSelectedAvailableColor] = useState([])
 
     const navigate = useNavigate()
 
     // input ref 
     const inputRef = useRef()
 
-    const handleBackNagigate = () => {
+    const handleBackNavigate = () => {
         navigate("/products")
     }
 
@@ -31,55 +67,30 @@ const CreateProduct = () => {
 
     // form submit
     const handleFormSubmit = (data) => {
+        if (!selectedColor || selectedAvailableColor.length === 0 || selectedImages.length === 0) {
+            return Swal.fire({
+                title: "Error",
+                text: "Please Fill All field",
+                icon: "error",
+            })
+        }
+        const fd = new FormData()
+        for (const item of selectedImages) {
+            fd.append("images", item)
+        }
+        for (const item of Object.keys(data)) {
+            fd.append(item, data[item])
+        }
+        fd.append("Availablecolor", selectedAvailableColor.join())
+        fd.append("color", selectedColor)
+        mutate(fd)
+
+
     }
-    // custom validation for discount price
 
 
-    const subcategoriesMap = {
-        Gear: [
-            'Bat',
-            'Batting Gear',
-            'WicketKeeping',
-            'Protection',
-            'Bags',
-            'Clothing',
-            'Cricket Sets',
-            'Accessories',
-        ],
-        Shoes: ['Bowling', 'Spikes', 'Rubber Studs', 'Accessories'],
-        Helmets: ['Titanium', 'Steel', 'Limited Edition', 'Accessories'],
-    };
 
-    const subSubcategoriesMap = {
-        Bat: ['English Willow', 'Kashmir Willow', 'Tennis', 'Player Edition'],
-        'Batting Gear': ['Gloves', 'Leg Guard', 'Inner Gloves'],
-        WicketKeeping: ['WGloves', 'WLeg Guard', 'WInner Gloves'],
-        Protection: [
-            'Thigh Pad',
-            'Chest Guard',
-            'Arm Guard',
-            'Abdominal Guard',
-            'Inner ThighPad',
-        ],
-        Bags: ['Kitbags', 'Wheelie', 'Duffle', 'Backpack', 'Bat Cover'],
-        Clothing: [
-            'On-Field',
-            'Base Layer',
-            'Athletic Supporter',
-            'Socks',
-            'Caps & Hats',
-            'WristBand',
-        ],
-        'Cricket Sets': ['English Willow Kit', 'Kashmir Willow Kit', 'Plastic Kit'],
-        Accessories: [
-            'Ball',
-            'SunGlass',
-            'Bat Grips',
-            'Bat Care',
-            'Stumps',
-            'Other',
-        ],
-    };
+
 
 
     const handleCategoryChange = category => {
@@ -96,9 +107,9 @@ const CreateProduct = () => {
     };
 
     const handleSubcategoryChange = subcategory => {
-        clearErrors("subcategory")
+        clearErrors("sub_category")
         if (!subcategory) {
-            setError("subcategory", { message: "Choose a valid subcategory" })
+            setError("sub_category", { message: "Choose a valid subcategory" })
         }
         setSelectedSubcategory(subcategory);
         if (selectedCategory === 'Gear') {
@@ -117,20 +128,21 @@ const CreateProduct = () => {
             setSelectedImages([...selectedImages, files[0]])
         }
     }
-    const handlreRemoveImage = (index) => {
+    const handleRemoveImage = (index) => {
         setSelectedImages(selectedImages.filter((item, i) => i !== index))
     }
 
+    // color input ref
+    const colorInputRef = useRef()
 
     return (<div>
 
 
         <div className='bg-lightgray h-full w-full p-6 py-8'>
-
             <div className="bg-white overflow-x-auto rounded-[16px] p-4  ps-10 ">
 
                 <div className="flex items-center  justify-between">
-                    <button onClick={handleBackNagigate} className=""><img src={backIcon} alt="" /></button>
+                    <button onClick={handleBackNavigate} className=""><img src={backIcon} alt="" /></button>
                     <h1 className="text-[32px] text-black font-bold flex-1 me-6 text-center">Create Product</h1>
                 </div>
 
@@ -146,8 +158,8 @@ const CreateProduct = () => {
                                 <input {...register("name",
                                     {
                                         required: { value: true, message: "This field is required" },
-                                        minLength: { value: 3, message: "Minimun length is 3 character " },
-                                        maxLength: { value: 15, message: "Minimun length is 15 character" }
+                                        minLength: { value: 3, message: "Minimum length is 3 character " },
+                                        maxLength: { value: 15, message: "Minimum length is 15 character" }
                                     })} className={` h-[45px] w-full rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.name && "border-red"}`} type="text" placeholder="Product Name" />
 
                                 {errors.name && <span className='text-red ms-2'>{errors.name.message}</span>}
@@ -158,7 +170,7 @@ const CreateProduct = () => {
                                 <textarea
                                     {...register("description", {
                                         required: { value: true, message: "This field is required" },
-                                        minLength: { value: 8, message: "Minimun length is 8 character " },
+                                        minLength: { value: 8, message: "Minimum length is 8 character " },
                                     })}
                                     className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${errors.description && "border-red"} ps-3 text-[16px] text-gray2 `} type="text" placeholder="Product Description" />
                                 {errors.description && <span className='text-red ms-2'>{errors.description.message}</span>}
@@ -167,12 +179,12 @@ const CreateProduct = () => {
                             {/* featiures */}
                             <div className="my-5">
                                 <textarea
-                                    {...register("features", {
+                                    {...register("keyFeatures", {
                                         required: { value: true, message: "This field is required" },
                                         minLength: { value: 8, message: "Minimun length is 8 character " },
                                     })}
-                                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none ${errors.features && "border-red"} border ps-3 text-[16px] text-gray2 `} type="text" placeholder="Product key featured" />
-                                {errors.features && <span className='text-red ms-2'>{errors.features.message}</span>}
+                                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none ${errors.keyFeatures && "border-red"} border ps-3 text-[16px] text-gray2 `} type="text" placeholder="Product key featured" />
+                                {errors.keyFeatures && <span className='text-red ms-2'>{errors.keyFeatures.message}</span>}
                             </div>
 
                             {/* specification */}
@@ -199,17 +211,17 @@ const CreateProduct = () => {
                             {/* discountprice */}
                             <div className="my-5">
                                 <input
-                                    {...register("discountprice", {
+                                    {...register("discountedprice", {
                                         required: { value: true, message: "This field is required", },
                                     })}
                                     onChange={e => {
-                                        clearErrors("discountprice")
+                                        clearErrors("discountedprice")
                                         if (baseprice < +e.target.value) {
-                                            setError("discountprice", { message: "Discount price should be less than the base price" })
+                                            setError("discountedprice", { message: "Discount price should be less than the base price" })
                                         }
                                     }}
-                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.discountprice && "border-red"}`} type="number" placeholder="Discounted Price" />
-                                {errors.discountprice && <span className='text-red ms-2'>{errors.discountprice.message}</span>}
+                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.discountedprice && "border-red"}`} type="number" placeholder="Discounted Price" />
+                                {errors.discountedprice && <span className='text-red ms-2'>{errors.discountedprice.message}</span>}
                             </div>
 
                             {/* stock */}
@@ -218,18 +230,18 @@ const CreateProduct = () => {
                                     {...register("stock", {
                                         required: { value: true, message: "This field is required" },
                                     })}
-                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.stock && "border-red"}`} type="text" placeholder="Stock" />
+                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.stock && "border-red"}`} type="number" placeholder="Stock" />
                                 {errors.stock && <span className='text-red ms-2'>{errors.stock.message}</span>}
                             </div>
 
-                            {/* catrgory */}
+                            {/* category */}
                             <div className="my-5 w-full ">
-                                <div className="w-full  px-3 rounded-xl border-darkstone  border">
+                                <div className={`${errors.category && "border-red"} w-full  px-3 rounded-xl border-darkstone   border`}>
                                     <select
                                         {...register("category", { required: { value: true, message: "This field is required" } })}
                                         value={selectedCategory}
                                         onChange={e => handleCategoryChange(e.target.value)}
-                                        className=" text-[16px] outline-none text-gray2 h-[45px] w-full"
+                                        className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${errors.category && " border-red"}`}
                                     >
                                         <option value="">Category</option>
                                         {categories.map(item => (
@@ -244,12 +256,13 @@ const CreateProduct = () => {
 
 
                             <div className="my-5 w-full ">
-                                <div className="w-full  px-3 rounded-xl border-darkstone  border">
+                                <div className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"}`}>
                                     <select
-                                        {...register("subcategory", { required: { value: true, message: "This field is required" } })}
+                                        {...register("sub_category", { required: { value: true, message: "This field is required" } })}
                                         value={selectedSubcategory}
+                                        disabled={!category}
                                         onChange={e => handleSubcategoryChange(e.target.value)}
-                                        className=" text-[16px] outline-none text-gray2 h-[45px] w-full"
+                                        className={` text-[16px] outline-none text-gray2 h-[45px] w-full`}
                                     >
                                         <option value="">Subcategory</option>
                                         {subcategories.map(item => (
@@ -259,27 +272,29 @@ const CreateProduct = () => {
                                         ))}
                                     </select>
                                 </div>
-                                {errors.subcategory && <span className='text-red ms-2'>{errors.subcategory.message}</span>}
+                                {errors.sub_category && <span className='text-red ms-2'>{errors.sub_category.message}</span>}
                             </div>
 
-
+                            {/* sub sub category */}
 
                             {
                                 selectedCategory === "Gear" && (
                                     <div className="my-5 ">
 
-                                        <div className=" w-full px-3 rounded-xl border-darkstone  border ps-3">
+                                        <div className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"}`}>
                                             <select
+                                                {...register("sub_category2", { required: { value: selectedCategory === "Gear", message: "This field is required" } })}
+
                                                 focusBorderColor="purple.500"
                                                 value={selectedSubSubcategory}
                                                 onChange={e => {
-                                                    clearErrors("subsubcategory")
+                                                    clearErrors("sub_category2")
                                                     if (!e.target.value) {
-                                                        setError("subsubcategory", { message: "Choose valid Subsubcategory" })
+                                                        setError("sub_category2", { message: "Choose valid Subsubcategory" })
                                                     }
                                                     setSelectedSubSubcategory(e.target.value)
                                                 }}
-                                                className=" text-[16px] outline-none text-gray2 h-[45px] w-full"
+                                                className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${errors.sub_category2 && " border-red"}`}
                                                 disabled={!selectedSubcategory} // Disable the subsubcategory select until a subcategory is selected
                                             >
                                                 <option value="">SubSubcategory</option>
@@ -290,80 +305,133 @@ const CreateProduct = () => {
                                                 ))}
                                             </select>
                                         </div>
-                                        {errors.subsubcategory && <span className='text-red ms-2'>{errors.subsubcategory.message}</span>}
+                                        {errors.sub_category2 && <span className='text-red ms-2'>{errors.sub_category2.message}</span>}
                                     </div>
                                 )
                             }
                             {/* size */}
-                            <div className="my-5">
-                                <input
-                                    {...register("size", {
-                                        required: { value: true, message: "This field is required" },
-                                    })}
-                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.size && "border-red"}`} type="text" placeholder="Size/Type" />
-                                {errors.size && <span className='text-red ms-2'>{errors.size.message}</span>}
-                            </div>
+                            {
+                                (selectedCategory === "Gear" ? selectedSubSubcategory : selectedCategory && selectedSubcategory) && <div className="my-5 ">
 
-                            {/* color */}
-                            <div className="my-5">
-                                <input
-                                    {...register("color", {
-                                        required: { value: true, message: "This field is required" },
-                                    })}
-                                    className={` w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.color && "border-red"} `} type="text" placeholder="Color" />
-                                {errors.color && <span className='text-red ms-2'>{errors.color.message}</span>}
-                            </div>
+                                    <div className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"}`}>
 
+                                        <select
+                                            // disabled={!sub_category}
+                                            {...register((selectedCategory === "Gear" && selectedSubcategory === "Bags") ? "type" : "size", { value: true })}
+                                            onChange={e => {
+                                                clearErrors("size")
+                                                clearErrors("type")
+                                                if (!e.target.value) {
+                                                    setError((selectedCategory === "Gear" && selectedSubcategory === "Bags") ? "type" : "size", { message: "Please Choose valid size" })
+                                                }
+                                                setValue((selectedCategory === "Gear" && selectedSubcategory === "Bags") ? "type" : "size", e.target.value)
+                                            }}
+                                            className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${(errors.size || errors.type) && " border-red"}`} name="" id="">
 
-                            {/* available color */}
-                            <div className="my-5  w-full  ">
-
-                                <div className="w-full  px-3 rounded-xl border-darkstone  border">
-                                    <select
-                                        {...register("availablecolor", {
-                                            required: { value: true, message: "This field is required" },
-                                        })}
-                                        className=" text-[16px] outline-none text-gray2 h-[45px] w-full"
-                                    >
-                                        <option selected value={""}>Available Color</option>
-                                        <option value={"white"}  >White</option>
-                                        <option value={"red"}  >Red</option>
-                                        <option value={"black"}  >Black</option>
-                                        <option value={"gray"}  >Gray</option>
-                                    </select>
+                                            <option selected value={""} >Choose Size</option>
+                                            {/* category filter */}
+                                            {
+                                                category && filterOptions(selectedCategory, selectedSubcategory, selectedSubSubcategory).map((item, i) => <option key={i} value={item}>{item}</option>)
+                                            }
+                                        </select>
+                                    </div>
                                 </div>
-                                {errors.availablecolor && <span className='text-red ms-2'>{errors.availablecolor.message}</span>}
-                                {/* <input type="text" placeholder="" /> */}
+                            }
+
+                            {/* choose color */}
+                            <div className="my-5 px-3">
+                                <div className="">
+                                    <div className='flex justify-between'>
+                                        <div className='flex items-center gap-2'>Choose color: <div style={{ backgroundColor: selectedColor }} className='h-6 w-6 rounded-full'></div> </div>
+                                        <label className={`bg-gray-50  border cursor-pointer border-borderColor flex  rounded-full justify-center items-center h-6 w-6`} type='button' htmlFor="colorInput">
+                                            +
+                                            <input onChange={e => setSelectedColor(e.target.value)} className=' opacity-0 w-0 h-0' type="color" name="" id="colorInput" />
+                                        </label>
+                                    </div>
+                                    {
+                                        size && !selectedColor && <span className='text-red'>Please select color</span>
+                                    }
+
+                                </div>
                             </div>
+
+
+
+
+                            {/* Available color */}
+                            <div className="px-3">
+                                <div className='flex justify-between'>
+                                    Available color:
+                                    <div className="ps-4 flex-1 flex items-center gap-5 flex-wrap">
+                                        {
+                                            selectedAvailableColor.map((item, i) => <>
+
+                                                <div style={{ backgroundColor: item }} className="relative h-6 w-6 border-borderColor rounded-full border">
+                                                    <button onClick={e => setSelectedAvailableColor(selectedAvailableColor.filter((col, ind) => ind !== i))} type='button' className='-top-3 text-red -right-2 absolute'>x</button>
+                                                </div>
+                                            </>)
+                                        }
+                                    </div>
+
+                                    <label style={{ backgroundColor: selectedColor }} className={`bg-gray-50  border ${selectedColor ? "cursor-pointer" : ""}  border-borderColor flex  rounded-full justify-center items-center h-6 w-6`} type='button' htmlFor="availableColorInput">
+                                        +
+                                        <input
+                                            disabled={!selectedColor}
+                                            color={selectedColor}
+                                            value={selectedColor}
+                                            onChange={e => setSelectedAvailableColor([...selectedAvailableColor, e.target.value])}
+                                            className=' opacity-0 w-0 h-0' type="color" id="availableColorInput" />
+                                    </label>
+                                </div>
+                            </div>
+                            {selectedColor && selectedAvailableColor && selectedAvailableColor.length === 0 && <span className='text-red ms-2'>Please select color</span>}
+                            {/* <input type="text" placeholder="" /> */}
+
+
+
+
                             {/* buttons */}
                             <div className="my-5">
-                                <button type="submit" className="h-[54px] rounded-xl text-white bg-darkgreen w-full">Create</button>
+                                <button type="submit" className="h-[54px] rounded-xl text-white bg-darkgreen w-full">
+                                    {
+                                        isPending ? <>
+                                            <div className="loading loading-spinner loading-md"></div>
+                                        </>
+                                            : "Create"
+                                    }
+                                </button>
                             </div>
                             <div className="my-5">
                                 <button
+                                    type='button'
                                     onClick={e => window.verificationModal.showModal()}
                                     className="h-[54px] rounded-xl btn btn-neutral btn-outline w-full">Verify</button>
                             </div>
                         </form>
                     </div>
 
+                    {/* choose image */}
                     <div className="border-dashed border-l-2  ps-5 pe-3 flex flex-col  items-center  border-l-stone1">
                         {/* product image */}
                         <div className="h-[420px] md:min-w-[400px] min-w-[300px] rounded-xl mt-7  text-center flex flex-col justify-center items-center max-w-[453px] border border-stone2">
                             <input
+                                type="file"
+                                // {...register("url", { required: true })}
                                 onChange={handleImageChange}
-                                ref={inputRef} type="file" className='hidden' name="" id="" />
+                                ref={inputRef}
+                                className='hidden' name="" id="" />
                             <button disabled={selectedImages.length >= 4} onClick={handleChooseImage} type="button" className=" bg-gradient-to-t from-blackwhite text-white h-[55px] rounded-xl w-[253px] to-whiteblack">
                                 Choose image</button>
-                            {selectedImages.length > 4 && <span className='text-red font-medium '>You cannot select more than 4 image</span>}
+
+                            {selectedImages.length === 4 && <span className='text-red font-medium '>You can select only 4 image</span>}
 
                         </div>
                         {/* selected image */}
                         <div className="flex flex-wrap mt-10 gap-6">
                             {
                                 selectedImages && selectedImages.map((item, index) => <div className='relative'>
-                                    <button onClick={() => { handlreRemoveImage(index) }} className='absolute -right-4 text-xl rounded-full   text-red top-0'>x</button>
-                                    <img className='h-40 rounded-lg' src={URL.createObjectURL(item)} alt="" />
+                                    <button onClick={() => { handleRemoveImage(index) }} className='absolute -right-4 text-xl rounded-full   text-red top-0'>x</button>
+                                    <img className='min-h-52 max-h-52 max-w-44 min-w-44 object-contain object-center rounded-lg' src={URL.createObjectURL(item)} alt="" />
                                 </div>)
                             }
                         </div>
@@ -373,19 +441,20 @@ const CreateProduct = () => {
 
                 </div>
 
-
-
-
             </div>
         </div >
 
 
 
+
+
+
+
+
+
         {/* verification modal */}
 
-
-
-        <dialog dialog id="verificationModal" className="modal " >
+        <dialog id="verificationModal" className="modal " >
             <form method="dialog" className="modal-box  max-h-[777px] w-[656px]">
                 <h3 className="font-bold text-lg text-[24px] text-center pb-4 border-b gap-16 border-dashed border-b-black  ">Verification Details</h3>
                 <div className="mt-5 font-semibold px-2">
@@ -403,7 +472,7 @@ const CreateProduct = () => {
                     </div>
 
                     <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Discount Price:
-                        {discountprice ? <span className='text-base font-semibold'>{discountprice}</span> : <span className='text-red text-base'>Please enter Discountprice!</span>}
+                        {discountedprice ? <span className='text-base font-semibold'>{discountedprice}</span> : <span className='text-red text-base'>Please enter Discountprice!</span>}
                     </div>
 
                     <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Stock:
@@ -415,7 +484,7 @@ const CreateProduct = () => {
                     </div>
 
                     <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Sub Category:
-                        {subcategory ? <span className='text-base font-semibold'>{subcategory}</span> : <span className='text-red text-base'>Please enter Subcategory!</span>}
+                        {sub_category ? <span className='text-base font-semibold'>{sub_category}</span> : <span className='text-red text-base'>Please enter Subcategory!</span>}
                     </div>
 
                     <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Size/Type:
@@ -423,10 +492,10 @@ const CreateProduct = () => {
                     </div>
 
                     <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Color:
-                        {color ? <span className='text-base font-semibold'>{color}</span> : <span className='text-red text-base'>Please enter color!</span>}
+                        {selectedColor ? <span className='text-base font-semibold'>{selectedColor}</span> : <span className='text-red text-base'>Please enter color!</span>}
                     </div>
 
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Available Color: {availablecolor ? <span className='text-base font-semibold'>{availablecolor}</span> : <span className='text-red text-base'>Please enter Availabecolor!</span>}
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Available Color: {selectedAvailableColor.length !== 0 ? <span className='text-base font-semibold'>{selectedAvailableColor.join()}</span> : <span className='text-red text-base'>Please enter Availabecolor!</span>}
                     </div>
 
                     <div className="text-center">
