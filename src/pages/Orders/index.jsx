@@ -14,6 +14,7 @@ import { searchObjects } from "../../utils/search";
 import TableEntriesPrevNextButtons from "../../components/TableEntriesPrevNextButtons";
 import { MAX_ROWS_PER_PAGE } from "../../assets/data/constants";
 import NoDataFound from "../../components/NoDataFound";
+import { getOrderStatusLength } from "../../utils/getOrderStatusLength";
 
 const Orders = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -69,7 +70,14 @@ const Orders = () => {
                 >
                   <div className="font-bold text-[14px] w-full font-lato text-black">
                     <div className="flex items-center w-full ">
-                      <div className=" m-1 capitalize">{filterByStatus}</div>
+                      <div className=" m-1 capitalize">
+                        {filterByStatus}{" "}
+                        {!isLoading && !isError && data ? (
+                          <>({getOrderStatusLength(data, filterByStatus)})</>
+                        ) : (
+                          ""
+                        )}
+                      </div>
                       <ul
                         tabIndex={0}
                         className="dropdown-content  z-[1] menu p-2 shadow bg-base-100 rounded-md w-full"
@@ -83,7 +91,12 @@ const Orders = () => {
                               "bg-red text-white my-1"
                             }`}
                           >
-                            {item}
+                            {item}{" "}
+                            {!isLoading && !isError && data ? (
+                              <>({getOrderStatusLength(data, item)})</>
+                            ) : (
+                              ""
+                            )}
                           </li>
                         ))}
                       </ul>
