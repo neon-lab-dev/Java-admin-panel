@@ -54,7 +54,10 @@ const Orders = () => {
           {/* Searchbar */}
           <Searchbar
             placeholder={"Search by order id or Total  price"}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setStartingIndex(0);
+            }}
           />
 
           <div className="flex items-center gap-3">

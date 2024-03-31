@@ -60,7 +60,10 @@ const User = () => {
           {/* Searchbar */}
           <Searchbar
             placeholder="Search by ID, Name, Email, Mobile No"
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setStartingIndex(0);
+            }}
           />
           <div className="flex items-center gap-6">
             {/* downloadIcon */}

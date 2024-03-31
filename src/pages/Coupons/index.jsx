@@ -115,7 +115,10 @@ const Coupons = () => {
             {/* Searchbar */}
             <Searchbar
               placeholder="Search by Coupon code or ID"
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setStartingIndex(0);
+              }}
             />
             <div className="flex items-center gap-3">
               {/* downloadIcon */}
