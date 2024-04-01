@@ -17,6 +17,7 @@ import { MAX_ROWS_PER_PAGE } from "../../assets/data/constants.js";
 import { searchObjects } from "../../utils/search.js";
 import { reversed } from "../../utils/reversed.js";
 import NoDataFound from "../../components/NoDataFound.jsx";
+import jsonToXlsx from "../../utils/jsonAsXlsx.js";
 
 const Coupons = () => {
   const [startingIndex, setStartingIndex] = useState(0);
@@ -122,7 +123,11 @@ const Coupons = () => {
             />
             <div className="flex items-center gap-3">
               {/* downloadIcon */}
-              <button className=" bg-lightgray  rounded-[6px]">
+              <button
+                disabled={isLoading || isError}
+                onClick={() => jsonToXlsx(allCouponsData, "coupons")}
+                className=" bg-lightgray  rounded-[6px] disabled:opacity-50"
+              >
                 <img src={downloadIcon} alt="" />
               </button>
             </div>

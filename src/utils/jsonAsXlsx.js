@@ -4,7 +4,7 @@ export default function jsonToXlsx(data, name) {
   /**
    * Error handling
    */
-  if (!Array.isArray(data)) return;
+  if (!Array.isArray(data)) return Swal.fire("Invalid data", "", "error");
   if (data.length === 0) return Swal.fire("No data to export", "", "warning");
 
   try {

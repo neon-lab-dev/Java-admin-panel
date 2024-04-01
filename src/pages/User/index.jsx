@@ -74,8 +74,9 @@ const User = () => {
               {isBirthdayTodayActive ? "Show All Users" : "Birthday Today"}
             </button>
             <button
+              disabled={isLoading || isError}
               onClick={() => jsonToXlsx(userData, "users")}
-              className=" bg-lightgray  rounded-[6px]"
+              className=" bg-lightgray  rounded-[6px] disabled:opacity-50"
             >
               <img src={downloadIcon} alt="" />
             </button>

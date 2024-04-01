@@ -15,6 +15,7 @@ import TableEntriesPrevNextButtons from "../../components/TableEntriesPrevNextBu
 import { MAX_ROWS_PER_PAGE } from "../../assets/data/constants";
 import NoDataFound from "../../components/NoDataFound";
 import { getOrderStatusLength } from "../../utils/getOrderStatusLength";
+import jsonToXlsx from "../../utils/jsonAsXlsx";
 
 const Orders = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -105,13 +106,18 @@ const Orders = () => {
                       </ul>
                     </div>
                   </div>
+
                   <img src={downCaret} alt="" />
                 </div>
               </div>
             </div>
 
             {/* downloadIcon */}
-            <button className=" bg-lightgray  rounded-[6px]">
+            <button
+              disabled={isLoading || isError}
+              onClick={() => jsonToXlsx(data, "orders")}
+              className=" bg-lightgray rounded-[6px] disabled:opacity-50"
+            >
               <img src={downloadIcon} alt="" />
             </button>
           </div>
