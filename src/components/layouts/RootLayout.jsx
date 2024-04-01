@@ -34,9 +34,11 @@ const RootLayout = ({ children }) => {
     <div className="flex h-screen">
       {/* 👉  w-dvw */}
       <Sidebar />
-      <div className="flex flex-col flex-grow overflow-y-scroll h-full">
+      <div className="flex flex-col flex-grow overflow-hidden h-full">
         <Header />
-        <main>{children}</main>
+        <main className="bg-[#F5F6FA] min-h-[calc(100vh-70px)] h-full overflow-y-scroll">
+          {children}
+        </main>
       </div>
     </div>
   );

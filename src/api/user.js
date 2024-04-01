@@ -11,13 +11,13 @@ export const getUserDetails = () => {
         },
       })
       .then((res) => {
-        resolve(res.data);
+        resolve(res?.data?.users);
       })
       .catch((err) => {
         reject(
           err?.response?.data?.message ||
             "Something went wrong, please try again"
         );
-    });
+      });
   });
 };

@@ -23,7 +23,7 @@ const ROUTES = [
     ),
   },
   {
-    path: "/update-product",
+    path: "/update-product/:productId",
     component: lazy(
       async () => await import("../pages/Products/UpdateProduct")
     ),

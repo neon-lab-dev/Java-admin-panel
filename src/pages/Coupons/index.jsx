@@ -1,57 +1,44 @@
 import React, { useEffect, useState } from "react";
-import icondelete from "../../assets/icon/delete.svg";
+import iconDelete from "../../assets/icon/delete.svg";
 import Searchbar from "../../components/Searchbar";
 import downloadIcon from "../../assets/icon/download.svg";
-import leftCaret from "../../assets/icon/leftCaret.svg";
-import rightCaret from "../../assets/icon/rightCaret.svg";
-import searchObjects from "../../assets/Function/search.js";
 import coupon from "../../assets/icon/coupon.svg";
 import { getAllCoupon, deleteCoupon } from "../../api/coupon.js";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import CouponModal from "./couponModal.jsx";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
-import removeItemById from "../../assets/Function/removeitem.js";
 import AppLoading from "../../components/loaders/AppLoading.jsx";
 import SomeErrorOccurred from "../Error/SomeErrorOccurred.jsx";
 import Deleting from "../../components/loaders/Deleting.jsx";
+import TableEntriesPrevNextButtons from "../../components/TableEntriesPrevNextButtons.jsx";
+import { MAX_ROWS_PER_PAGE } from "../../assets/data/constants.js";
+import { searchObjects } from "../../utils/search.js";
+import { reversed } from "../../utils/reversed.js";
+import NoDataFound from "../../components/NoDataFound.jsx";
+import jsonToXlsx from "../../utils/jsonAsXlsx.js";
+import CreateCouponModal from "./CreateCouponModal.jsx";
 
 const Coupons = () => {
-  const [dataDisplay, setdataDisplay] = useState([]);
-  const [totalDataOfUsers, settotalDataOfUsers] = useState(0);
-  const [searchquery, setsearchquery] = useState("");
-  const [page, setpage] = useState(1);
-  let i = 9;
-  const [filterData, setfilterData] = useState(
-    dataDisplay.slice((page - 1) * i, page * i)
-  );
-  const [idToDelete, setidToDelete] = useState("");
+  const [startingIndex, setStartingIndex] = useState(0);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [idToDelete, setIdToDelete] = useState("");
 
+  const queryClient = useQueryClient();
   // API fetching
   const {
     data: allCouponsData,
     isLoading,
     isError,
-    isSuccess,
   } = useQuery({
     queryKey: ["coupons"],
     queryFn: () => getAllCoupon(),
   });
 
-  // to change the data after fetching
-  useEffect(() => {
-    if (isSuccess) {
-      setdataDisplay(allCouponsData.coupons);
-    }
-  }, [isSuccess]);
-
   // to delete the coupon
-  const {
-    mutate,
-    isPending,
-    isSuccess: couponDeleted,
-  } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationKey: ["deleteCoupon"],
     mutationFn: (id) => deleteCoupon(id),
+    gcTime: Infinity,
     onError: (error) => {
       Swal.fire({
         icon: "error",
@@ -60,21 +47,15 @@ const Coupons = () => {
       });
     },
     onSuccess: () => {
-      const updatedData = [...dataDisplay];
-      removeItemById(updatedData, idToDelete);
-      setdataDisplay(updatedData);
-    },
-  });
-
-  useEffect(() => {
-    if (couponDeleted) {
+      setIdToDelete("");
+      queryClient.invalidateQueries({ queryKey: ["coupons"] });
       Swal.fire({
         title: "Deleted!",
         text: `Coupon has been deleted.`,
         icon: "success",
       });
-    }
-  }, [couponDeleted]);
+    },
+  });
 
   // for deleting coupon
   const handleClick = (data) => {
@@ -88,7 +69,7 @@ const Coupons = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        setidToDelete(data._id);
+        setIdToDelete(data._id);
         mutate(data._id);
       }
     });
@@ -96,45 +77,14 @@ const Coupons = () => {
 
   useEffect(() => {
     if (allCouponsData) {
-      setdataDisplay(allCouponsData.coupons);
+      const data = searchObjects(allCouponsData, searchQuery, [
+        "code",
+        "_id",
+        "amount",
+      ]);
+      setFilteredData(reversed(data));
     }
-  }, [allCouponsData]);
-
-  // pagination start
-  useEffect(() => {
-    setfilterData(dataDisplay.slice((page - 1) * i, page * i));
-  }, [page]);
-
-  const handleNextPage = () => {
-    if (page < totalDataOfUsers / 9) {
-      setpage(page + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (page > 1) {
-      setpage(page - 1);
-    }
-  };
-  // pagination end
-
-  const handleSearch = (event) => {
-    event.preventDefault();
-    setdataDisplay(searchObjects(couponData, searchquery, ["Code", "ID"]));
-  };
-
-  const handleChange = (event) => {
-    setsearchquery(event.target.value);
-    setdataDisplay(
-      searchObjects(couponData, event.target.value, ["Code", "ID"])
-    );
-  };
-
-  useEffect(() => {
-    settotalDataOfUsers(dataDisplay.length);
-    setpage(1);
-    setfilterData(dataDisplay.slice((page - 1) * i, page * i));
-  }, [dataDisplay]);
+  }, [allCouponsData, searchQuery]);
 
   return (
     <>
@@ -151,30 +101,31 @@ const Coupons = () => {
           >
             <div className="flex items-center justify-center">
               <img src={coupon} />
-              <p className="text-white text-sm font-semibold font-['Lato'] tracking-tight ml-[10px]">
+              <p className="text-white text-sm font-semibold font-lato tracking-tight ml-[10px]">
                 Create Coupon
               </p>
             </div>
           </button>
           {/* couponModal */}
-          <CouponModal
-            setdataDisplay={setdataDisplay}
-            dataDisplay={dataDisplay}
-            allCouponsData={allCouponsData}
-          />
+          <CreateCouponModal />
         </div>
         <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 px-5">
           <div className=" justify-between flex items-center ">
             {/* Searchbar */}
             <Searchbar
-              placeholder={"Search by Coupon code or ID"}
-              onChange={handleChange}
-              onSubmit={handleSearch}
-              value={searchquery}
+              placeholder="Search by Coupon code or ID"
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setStartingIndex(0);
+              }}
             />
             <div className="flex items-center gap-3">
               {/* downloadIcon */}
-              <button className=" bg-lightgray  rounded-[6px]">
+              <button
+                disabled={isLoading || isError}
+                onClick={() => jsonToXlsx(allCouponsData, "coupons")}
+                className=" bg-lightgray  rounded-[6px] disabled:opacity-50"
+              >
                 <img src={downloadIcon} alt="" />
               </button>
             </div>
@@ -185,98 +136,86 @@ const Coupons = () => {
               {isLoading ? (
                 <AppLoading />
               ) : !isError && allCouponsData ? (
-                <table className="table rounded-2xl bg-salte-100  w-full">
+                <table className="table rounded-2xl  w-full">
                   {/* head */}
 
                   <thead className="grid-col-5">
                     <tr className="h-[48px] bg-slate-100 rounded-xl w-full items-center">
-                      <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-start px-3 ">
+                      <th className=" text-neutral-800 text-sm font-bold font-lato text-start px-3 ">
                         ID
                       </th>
-                      <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3 ">
+                      <th className=" text-neutral-800 text-sm font-bold font-lato text-center px-3 ">
                         Coupon Code
                       </th>
-                      <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3">
+                      <th className=" text-neutral-800 text-sm font-bold font-lato text-center px-3">
                         Amount
                       </th>
-                      <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3">
+                      <th className=" text-neutral-800 text-sm font-bold font-lato text-center px-3">
                         Action
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="grid-col-5">
-                    {filterData.map((item) => {
-                      return (
-                        <>
-                          <tr
-                            className="h-[48px] w-full items-center"
-                            key={item._id}
-                          >
-                            <td className="opacity-80 font-lato font-semibold text-[14px] w-1/5 min-w-[150px] text-black  text-start px-3">
-                              #{item._id}
-                            </td>
-                            <td className="opacity-80 font-lato font-semibold text-[14px] text-center w-1/5 min-w-[150px] text-black     px-3">
-                              {item.code}
-                            </td>
-                            <td className="opacity-80  font-lato font-semibold w-1/5 min-w-[150px] text-center text-[14px] px-3">
-                              ₹{item.amount}
-                            </td>
-                            <td className="opacity-80 w-1/5 min-w-[100px]">
-                              <div className="flex place-content-center">
-                                <button onClick={() => handleClick(item)}>
-                                  {isPending && item._id == idToDelete ? (
-                                    <Deleting />
-                                  ) : (
-                                    <img src={icondelete} />
-                                  )}
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        </>
-                      );
-                    })}
-                  </tbody>
+                  {filteredData?.length > 0 ? (
+                    <tbody className="grid-col-5">
+                      {filteredData
+                        ?.slice(
+                          startingIndex,
+                          startingIndex + MAX_ROWS_PER_PAGE
+                        )
+                        ?.map((item) => {
+                          return (
+                            <>
+                              <tr
+                                className="h-[48px] w-full items-center"
+                                key={item._id}
+                              >
+                                <td className="opacity-80 font-lato font-semibold text-[14px] w-1/5 min-w-[150px] text-black  text-start px-3">
+                                  #{item._id}
+                                </td>
+                                <td className="opacity-80 font-lato font-semibold text-[14px] text-center w-1/5 min-w-[150px] text-black     px-3">
+                                  {item.code}
+                                </td>
+                                <td className="opacity-80  font-lato font-semibold w-1/5 min-w-[150px] text-center text-[14px] px-3">
+                                  ₹{item.amount}
+                                </td>
+                                <td className="opacity-80 w-1/5 min-w-[100px]">
+                                  <div className="flex place-content-center">
+                                    <button onClick={() => handleClick(item)}>
+                                      {isPending && item._id == idToDelete ? (
+                                        <Deleting />
+                                      ) : (
+                                        <img src={iconDelete} />
+                                      )}
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            </>
+                          );
+                        })}
+                    </tbody>
+                  ) : (
+                    <NoDataFound />
+                  )}
                 </table>
               ) : (
                 <SomeErrorOccurred />
               )}
             </div>
             <hr />
-            <div className="flex items-center justify-end   gap-3 mt-3">
-              <p className="font-lato font-semibold text-grey opacity-60 text-[14px]">
-                Showing {totalDataOfUsers === 0 ? "0" : page * 9 - 8}-
-                {page * 9 < totalDataOfUsers ? page * 9 : totalDataOfUsers} of{" "}
-                {totalDataOfUsers}
-              </p>
-              <div className=" border-borderColor  join ">
-                <button
-                  disabled={page < 1}
-                  className="border-[0.6px] rounded-l-lg  p-2  px-3 bg-smoke"
-                  onClick={handlePrevPage}
-                >
-                  <img
-                    className={`${page < 2 ? "opacity-40" : "opacity-90"}`}
-                    src={leftCaret}
-                  />
-                </button>
-                <button
-                  disabled={page > totalDataOfUsers / 9}
-                  className="border-[0.6px] rounded-r-lg p-2 px-3 bg-smoke"
-                  onClick={handleNextPage}
-                >
-                  <img
-                    className={`${
-                      page > Math.ceil(totalDataOfUsers / 9 - 1)
-                        ? "opacity-40"
-                        : "opacity-90"
-                    }`}
-                    src={rightCaret}
-                    alt=""
-                  />
-                </button>
-              </div>
-            </div>
+            {filteredData.length > 0 && (
+              <TableEntriesPrevNextButtons
+                displayDataLength={
+                  filteredData?.slice(
+                    startingIndex,
+                    startingIndex + MAX_ROWS_PER_PAGE
+                  ).length
+                }
+                startingIndex={startingIndex}
+                setStartingIndex={setStartingIndex}
+                filteredDataLength={filteredData.length}
+              />
+            )}
           </div>
         </div>
       </div>
