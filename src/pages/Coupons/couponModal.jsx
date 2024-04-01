@@ -72,11 +72,11 @@ const CouponModal = () => {
                   className=" flex flex-col place-content-center place-items-center"
                   onSubmit={handleSubmit(onSubmit)}
                 >
-                  <p className="w-[324px] text-start text-black text-2xl font-semibold font-['Lato'] tracking-tight">
+                  <p className="w-[324px] text-start text-black text-2xl font-semibold font-lato tracking-tight">
                     Create New Coupon
                   </p>
                   <input
-                    className="mt-[32px] w-[324px] h-11 pl-3 bg-white rounded-xl border border-zinc-300 justify-start items-center inline-flex placeholder:text-black opacity-40 text-sm font-light font-['Lato'] leading-[16.80px]"
+                    className="mt-[32px] w-[324px] h-11 pl-3 bg-white rounded-xl border border-zinc-300 justify-start items-center inline-flex placeholder:text-black opacity-40 text-sm font-light font-lato leading-[16.80px]"
                     type="text"
                     placeholder="Enter New Coupon Code"
                     {...register("code", {
@@ -101,7 +101,7 @@ const CouponModal = () => {
                     />
                   )}
                   <input
-                    className="mt-[18px] w-[324px] h-11 pl-3 bg-white rounded-xl border border-zinc-300 justify-start items-center inline-flex placeholder:text-black opacity-40 text-sm font-light font-['Lato'] leading-[16.80px]"
+                    className="mt-[18px] w-[324px] h-11 pl-3 bg-white rounded-xl border border-zinc-300 justify-start items-center inline-flex placeholder:text-black opacity-40 text-sm font-light font-lato leading-[16.80px]"
                     type="number"
                     placeholder="Amount"
                     {...register("amount", {
@@ -120,7 +120,7 @@ const CouponModal = () => {
                     {isPending ? (
                       <span className="loading loading-spinner loading-md text-white"></span>
                     ) : (
-                      <p className="w-[100.56px] h-6 text-center text-white text-lg font-bold font-['Lato'] leading-snug">
+                      <p className="w-[100.56px] h-6 text-center text-white text-lg font-bold font-lato leading-snug">
                         Create
                       </p>
                     )}
@@ -130,7 +130,7 @@ const CouponModal = () => {
                   className="mt-[12px] w-[324px] h-11 pl-[111px] pr-[112.44px] py-2.5 rounded-xl border border-neutral-400 justify-center items-center inline-flex"
                   onClick={() => handleVerify()}
                 >
-                  <p className="w-[100.56px] h-6 text-center text-zinc-800 text-lg font-bold font-['Lato'] leading-snug">
+                  <p className="w-[100.56px] h-6 text-center text-zinc-800 text-lg font-bold font-lato leading-snug">
                     Verify
                   </p>
                 </button>
@@ -151,22 +151,22 @@ const CouponModal = () => {
             <div className="w-3/5">
               <div className="h-full flex flex-col place-content-start place-items-start items-center">
                 <div className="w-4/5">
-                  <p className="mt-[50px] text-black text-2xl font-semibold font-['Lato'] tracking-tight">
+                  <p className="mt-[50px] text-black text-2xl font-semibold font-lato tracking-tight">
                     Verify &nbsp;the&nbsp; Coupon
                   </p>
                   <p className="mt-[28px]">
-                    <span className=" text-black text-2xl font-semibold font-['Lato'] tracking-tight">
+                    <span className=" text-black text-2xl font-semibold font-lato tracking-tight">
                       Coupon &nbsp;Code :&nbsp;&nbsp;
                     </span>
-                    <span className="text-black text-lg font-light font-['Lato'] tracking-tight">
+                    <span className="text-black text-lg font-light font-lato tracking-tight">
                       {code}
                     </span>
                   </p>
                   <p className="mt-[18px]">
-                    <span className="text-black text-2xl font-semibold font-['Lato'] tracking-tight">
+                    <span className="text-black text-2xl font-semibold font-lato tracking-tight">
                       Amount :&nbsp;&nbsp;
                     </span>
-                    <span className="text-black text-lg font-light font-['Lato'] tracking-tight">
+                    <span className="text-black text-lg font-light font-lato tracking-tight">
                       ₹{isNaN(amount) ? 0 : amount}
                     </span>
                   </p>
@@ -174,7 +174,7 @@ const CouponModal = () => {
                 <div className="modal-action">
                   <form method="dialog">
                     <button className="btn bg-white w-[324px] h-11 pl-[111px] pr-[112.44px] py-2.5 rounded-xl border border-neutral-400 justify-center items-center inline-flex">
-                      <span className="w-[100.56px] h-6 text-center text-zinc-800 text-lg font-bold font-['Lato'] leading-snug">
+                      <span className="w-[100.56px] h-6 text-center text-zinc-800 text-lg font-bold font-lato leading-snug">
                         Close
                       </span>
                     </button>

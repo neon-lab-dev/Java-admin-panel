@@ -103,7 +103,7 @@ const Coupons = () => {
           >
             <div className="flex items-center justify-center">
               <img src={coupon} />
-              <p className="text-white text-sm font-semibold font-['Lato'] tracking-tight ml-[10px]">
+              <p className="text-white text-sm font-semibold font-lato tracking-tight ml-[10px]">
                 Create Coupon
               </p>
             </div>
@@ -143,16 +143,16 @@ const Coupons = () => {
 
                   <thead className="grid-col-5">
                     <tr className="h-[48px] bg-slate-100 rounded-xl w-full items-center">
-                      <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-start px-3 ">
+                      <th className=" text-neutral-800 text-sm font-bold font-lato text-start px-3 ">
                         ID
                       </th>
-                      <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3 ">
+                      <th className=" text-neutral-800 text-sm font-bold font-lato text-center px-3 ">
                         Coupon Code
                       </th>
-                      <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3">
+                      <th className=" text-neutral-800 text-sm font-bold font-lato text-center px-3">
                         Amount
                       </th>
-                      <th className=" text-neutral-800 text-sm font-bold font-['Lato'] text-center px-3">
+                      <th className=" text-neutral-800 text-sm font-bold font-lato text-center px-3">
                         Action
                       </th>
                     </tr>
