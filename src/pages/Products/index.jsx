@@ -30,10 +30,13 @@ const Products = () => {
   // mutation for delete product
   const { isSuccess: deleteProductSuccess, mutate, isPending } = useMutation({
     mutationFn: deleteProduct,
-    onSuccess: queryClient.invalidateQueries({ queryKey: ["products"] })
+    onSuccess: () => {
+      setallProducts(allProducts.filter(item => item._id !== productId))
+      queryClient.invalidateQueries(["products"])
+    }
   })
 
-
+  console.log(data);
 
   const [allProducts, setallProducts] = useState(data?.products)
   // 👇 for printing a data by filter or pagination 
@@ -41,6 +44,7 @@ const Products = () => {
   const [page, setPage] = useState(0)
   const [limit, setlimit] = useState(9)
   const [searchFilter, setSearchFilter] = useState()
+  const [productId, setProductId] = useState("")
 
 
   const deleteProductModal = (productId) => {
@@ -102,10 +106,10 @@ const Products = () => {
   }, [page, allProducts, data]);
 
   useEffect(() => {
-    if (isSuccess || deleteProductSuccess) {
+    if (isSuccess) {
       setallProducts(pre => data.products)
     }
-  }, [isSuccess, deleteProductSuccess])
+  }, [isSuccess])
 
   useEffect(() => {
     if (deleteProductSuccess) {
@@ -113,15 +117,14 @@ const Products = () => {
         title: "Deleted!",
         text: "Your product has been deleted.",
         icon: "success"
-      });
-      setallProducts(pre => data.products)
+      })
     }
   }, [deleteProductSuccess])
-
+  console.log(data);
 
   // return <UpdateProduct />
   return (
-    (isLoading || isPending || deleteProductSuccess || !allProducts) ? <div className="flex justify-center items-center h-[calc(100vh-70px)]">
+    (isLoading || !allProducts) ? <div className="flex justify-center items-center h-[calc(100vh-70px)]">
       <span className="loading loading-spinner loading-md text-red"></span>
     </div>
       : <div className='bg-lightgray h-full w-full p-6 pb-11'>
@@ -180,11 +183,18 @@ const Products = () => {
                         <td className='text-[14px] font-semibold text-black'>{item.stock}</td>
                         <td className='text-[14px] text-center font-semibold text-black'>
                           <div className="flex items-center justify-center gap-3">
-                            <button onClick={e => handleUpdateProductNavigate(item._id)} type="button" class="btn  h-[38px] min-h-[38px] max-h-[38px]  btn-primary btn-outline">View</button>
-                            <button onClick={e => {
-                              deleteProductModal(item._id)
-                              // mutate(item._id)
-                            }} ><img src={deleteIcon} alt="" /></button>
+                            <button onClick={e => handleUpdateProductNavigate(item._id)} type="button" class="btn  h-[38px] min-h-[38px] w-[64px] max-h-[38px]  btn-primary btn-outline">View</button>
+                            <div className="h-[38px] w-[38px]   ">
+
+                              {
+                                isPending && productId === item._id ? <div className='loading loading-spinner'>
+                                </div> : <button onClick={e => {
+                                  setProductId(item._id)
+                                  deleteProductModal(item._id)
+                                  // mutate(item._id)
+                                }} ><img src={deleteIcon} alt="" /></button>
+                              }
+                            </div>
                           </div>
                         </td>
                       </tr>)

@@ -16,6 +16,7 @@ export const API = {
   createProduct: BACKEND_BASE_URL + "/createproduct",  //to create Product
   deleteProduct: BACKEND_BASE_URL + "/product",  //to delete Product
   getProductDetail: BACKEND_BASE_URL + "/product",  //to get details of  Product
+  updateProduct: BACKEND_BASE_URL + "/product",  //to update  Product 
 
   //dashboard
   dashboard: BACKEND_BASE_URL + "/admin/dashboard", //to get dashboard details

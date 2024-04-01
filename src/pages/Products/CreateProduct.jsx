@@ -67,6 +67,7 @@ const CreateProduct = () => {
 
     // form submit
     const handleFormSubmit = (data) => {
+
         if (!selectedColor || selectedAvailableColor.length === 0 || selectedImages.length === 0) {
             return Swal.fire({
                 title: "Error",
@@ -316,22 +317,21 @@ const CreateProduct = () => {
                                     <div className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"}`}>
 
                                         <select
-                                            // disabled={!sub_category}
-                                            {...register((selectedCategory === "Gear" && selectedSubcategory === "Bags") ? "type" : "size", { value: true })}
                                             onChange={e => {
                                                 clearErrors("size")
                                                 clearErrors("type")
                                                 if (!e.target.value) {
-                                                    setError((selectedCategory === "Gear" && selectedSubcategory === "Bags") ? "type" : "size", { message: "Please Choose valid size" })
+                                                    setError("size", { message: "Please Choose valid size" })
                                                 }
-                                                setValue((selectedCategory === "Gear" && selectedSubcategory === "Bags") ? "type" : "size", e.target.value)
+                                                setValue("size", e.target.value)
                                             }}
                                             className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${(errors.size || errors.type) && " border-red"}`} name="" id="">
 
-                                            <option selected value={""} >Choose Size</option>
+                                            <option selected disabled value={""} >Choose Size</option>
                                             {/* category filter */}
                                             {
-                                                category && filterOptions(selectedCategory, selectedSubcategory, selectedSubSubcategory).map((item, i) => <option key={i} value={item}>{item}</option>)
+                                                category && filterOptions(selectedCategory, selectedSubcategory, selectedSubSubcategory).map((item, i) => <option key={i} value={item}>{item}</option>
+                                                )
                                             }
                                         </select>
                                     </div>
@@ -345,7 +345,10 @@ const CreateProduct = () => {
                                         <div className='flex items-center gap-2'>Choose color: <div style={{ backgroundColor: selectedColor }} className='h-6 w-6 rounded-full'></div> </div>
                                         <label className={`bg-gray-50  border cursor-pointer border-borderColor flex  rounded-full justify-center items-center h-6 w-6`} type='button' htmlFor="colorInput">
                                             +
-                                            <input onChange={e => setSelectedColor(e.target.value)} className=' opacity-0 w-0 h-0' type="color" name="" id="colorInput" />
+                                            <input onChange={e => {
+                                                setSelectedColor(e.target.value)
+                                                setSelectedAvailableColor([e.target.value])
+                                            }} className=' opacity-0 w-0 h-0' type="color" name="" id="colorInput" />
                                         </label>
                                     </div>
                                     {
@@ -373,12 +376,12 @@ const CreateProduct = () => {
                                         }
                                     </div>
 
-                                    <label style={{ backgroundColor: selectedColor }} className={`bg-gray-50  border ${selectedColor ? "cursor-pointer" : ""}  border-borderColor flex  rounded-full justify-center items-center h-6 w-6`} type='button' htmlFor="availableColorInput">
+                                    <label className={`bg-gray-50  border ${selectedColor ? "cursor-pointer" : ""}  border-borderColor flex  rounded-full justify-center items-center h-6 w-6`} type='button' htmlFor="availableColorInput">
                                         +
                                         <input
                                             disabled={!selectedColor}
-                                            color={selectedColor}
                                             value={selectedColor}
+
                                             onChange={e => setSelectedAvailableColor([...selectedAvailableColor, e.target.value])}
                                             className=' opacity-0 w-0 h-0' type="color" id="availableColorInput" />
                                     </label>

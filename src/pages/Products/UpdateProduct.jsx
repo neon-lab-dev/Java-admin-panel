@@ -1,18 +1,36 @@
 import { useNavigate, useParams } from "react-router-dom"
 import backIcon from "../../assets/icons/back.svg"
-import { useForm } from "react-hook-form"
+import { Form, useForm } from "react-hook-form"
 import { useEffect, useRef, useState } from "react"
 import { subSubcategoriesMap, subcategoriesMap, filterOptions } from "./data"
-import { useQuery } from "@tanstack/react-query"
-import { getProductDetail } from "../../api/product"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { getProductDetail, updateProduct } from "../../api/product"
+import Swal from "sweetalert2"
 
 const UpdateProduct = () => {
 
     const { productId } = useParams()
-    const { data, isLoading, isSuccess } = useQuery({ queryFn: () => getProductDetail(productId), })
+    const queryClient = useQueryClient();
+    // get product details query
+    const { data, isLoading, isSuccess } = useQuery({
+        queryFn: () => getProductDetail(productId),
+        queryKey: ["getProductDetails", productId]
+    })
+
+    // mutation for updating product detail
+    const { mutate, isPending } = useMutation({
+        mutationFn: updateProduct,
+        onSuccess: () => {
+            queryClient.invalidateQueries("products")
+            queryClient.invalidateQueries({ queryKey: ["products"] })
+        },
+        onError: () => { },
+    })
 
 
+    // hook form
     const { register, watch, handleSubmit, formState: { errors }, getValues, setValue, setError, clearErrors } = useForm()
+
     const { baseprice, discountedprice, category, name, description, features, stock, Availablecolor, specification, sub_category, size, color } = watch()
     const [categories] = useState(['Gear', 'Shoes', 'Helmets']);
     const [subcategories, setSubcategories] = useState([]);
@@ -23,8 +41,9 @@ const UpdateProduct = () => {
     const [selectedColor, setSelectedColor] = useState("")
     const [selectedAvailableColor, setSelectedAvailableColor] = useState([])
     const [selectedImages, setSelectedImages] = useState([])
+    const [newImage, setNewImage] = useState([])
 
-
+    const [toggle, setToggle] = useState(false)
 
     const navigate = useNavigate()
     const handleBackNagigate = () => {
@@ -32,15 +51,43 @@ const UpdateProduct = () => {
     }
 
     const handleFormSubmit = (data) => {
-        console.log(data);
+        const fd = new FormData()   // new fd
+
+        delete data.images
+        delete data.numOfReviews
+        delete data.reviews
+        delete data.Availablecolor
+        delete data.color
+
+        if (toggle) {
+            for (const item of newImage) {
+                fd.append("images", item)
+            }
+        }
+
+        if (!selectedColor || selectedAvailableColor.length === 0 || selectedImages.length === 0) {
+            return Swal.fire({
+                title: "Error",
+                text: "Please Fill All field",
+                icon: "error",
+            })
+        }
+
+        for (const item of Object.keys(data)) {
+            fd.append(item, data[item])
+        }
+
+        fd.append("Availablecolor", selectedAvailableColor.join())
+        fd.append("color", selectedColor)
+        mutate({ productId, productData: fd })
     }
 
     const inputRef = useRef()
 
     const handleImageChange = (event) => {
-        const { name, files } = event.target
+        const { files } = event.target
         if (files[0]) {
-            setSelectedImages([...selectedImages, files[0]])
+            setNewImage([...newImage, files[0]])
         }
     }
     const handleRemoveImage = (index) => {
@@ -50,8 +97,31 @@ const UpdateProduct = () => {
         inputRef.current.click()
     }
 
+    console.log(data?.product?.images);
 
-    const handleCategoryChange = category => {
+    useEffect(() => {
+        if (isSuccess) {
+            for (const item of Object.keys(data?.product)) {
+                setValue(item, data?.product[item])
+            }
+            for (const item of data?.product?.images) {
+                setSelectedImages([...selectedImages, item])
+            }
+            setSelectedCategory(data?.product?.category)
+            setSelectedSubcategory(data?.product?.sub_category)
+            setSelectedSubSubcategory(data?.product?.sub_category2)
+            setSelectedColor(data?.product?.color)
+            setSelectedAvailableColor(data?.product?.Availablecolor.split(","))
+            handleCategoryChange(data?.product?.category)
+            handleSubcategoryChange(data?.product?.sub_category)
+        }
+        return () => {
+            queryClient.invalidateQueries("getProductDetails")
+        }
+    }, [isSuccess])
+
+
+    const handleCategoryChange = (category) => {
         clearErrors("category")
         if (!category) {
             setError("category", { message: "Choose a valid category" })
@@ -61,50 +131,35 @@ const UpdateProduct = () => {
         setSubcategories(subcategoriesMap[category] || []);
         setSelectedSubcategory(''); // Reset selected subcategory when the category changes
         setSubSubcategories([]); // Reset subsubcategories when the category changes
-        setSelectedSubSubcategory(''); // Reset selected subsubcategory when the category changes
+        // setSelectedSubSubcategory(''); // Reset selected subsubcategory when the category changes
     };
 
 
-    const handleSubcategoryChange = subcategory => {
+    const handleSubcategoryChange = (subcategory) => {
         clearErrors("subcategory")
         if (!subcategory) {
             setError("subcategory", { message: "Choose a valid subcategory" })
         }
         setSelectedSubcategory(subcategory);
-        if (selectedCategory === 'Gear') {
+        if (selectedCategory === 'Gear' || data.product.category === "Gear") {
             setSubSubcategories(subSubcategoriesMap[subcategory] || []);
         } else {
             setSubSubcategories([]); // Reset subsubcategories if the category is not 'Gear'
         }
-        setSelectedSubSubcategory(''); // Reset selected subsubcategory when the subcategory changes
+        // setSelectedSubSubcategory(''); // Reset selected subsubcategory when the subcategory changes
     };
-
-
-    useEffect(() => {
-        if (isSuccess) {
-            for (const item of Object.keys(data?.product)) {
-                setValue(item, data?.product[item])
-            }
-            setSelectedCategory(data?.product?.category)
-            setSelectedSubcategory(data?.product?.sub_category)
-            setSelectedSubSubcategory(data?.product?.sub_category2)
-            setSelectedColor(data?.product?.color)
-            setSelectedAvailableColor(data?.product?.Availablecolor.split())
-        }
-    }, [isSuccess])
-
 
 
 
     return (
 
-        isLoading ? <div className="flex justify-center items-center h-[calc(100vh-70px)]">
+        (!isSuccess || isLoading) ? <div className="flex justify-center items-center h-[calc(100vh-70px)]">
             <span className="loading loading-spinner loading-md text-red"></span>
         </div>
 
             : <div>
 
-
+                <pre>{JSON.stringify(selectedImages, null, 2)}</pre>
                 <div className='bg-lightgray h-full w-full p-6 py-8'>
 
                     <div className="bg-white overflow-x-auto rounded-[16px] p-4  ps-10 ">
@@ -231,8 +286,13 @@ const UpdateProduct = () => {
                                             <div className="my-5 w-full ">
                                                 <div className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"}`}>
                                                     <select
-                                                        {...register("sub_category", { required: { value: true, message: "This field is required" } })}
                                                         value={selectedSubcategory}
+                                                        {...register("sub_category",
+                                                            {
+                                                                value: selectedSubcategory,
+                                                                required: { value: true, message: "This field is required" }
+                                                            })}
+
                                                         disabled={!category}
                                                         onChange={e => handleSubcategoryChange(e.target.value)}
                                                         className={` text-[16px] outline-none text-gray2 h-[45px] w-full`}
@@ -256,10 +316,12 @@ const UpdateProduct = () => {
 
                                                         <div className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"}`}>
                                                             <select
-                                                                {...register("sub_category2", { required: { value: selectedCategory === "Gear", message: "This field is required" } })}
+                                                                {...register("sub_category2", {
+                                                                    value: selectedSubSubcategory,
+                                                                    required: { value: selectedCategory === "Gear", message: "This field is required" }
+                                                                })}
 
                                                                 focusBorderColor="purple.500"
-                                                                value={selectedSubSubcategory}
                                                                 onChange={e => {
                                                                     clearErrors("sub_category2")
                                                                     if (!e.target.value) {
@@ -282,16 +344,7 @@ const UpdateProduct = () => {
                                                     </div>
                                                 )
                                             }
-                                            {/* size */}
-                                            {/* <div className="my-5">
-                                <input
-                                    {...register("size", {
-                                        required: { value: true, message: "This field is required" },
-                                    })}
-                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.size && "border-red"}`}
-                                    type="text" placeholder="Size/Type" />
-                                {errors.size && <span className='text-red ms-2'>{errors.size.message}</span>}
-                            </div> */}
+
 
                                             <div className="my-5 ">
 
@@ -299,7 +352,8 @@ const UpdateProduct = () => {
 
                                                     <select
                                                         // disabled={!sub_category}
-                                                        {...register("size", { value: true })}
+                                                        // {...register("size", { value: true })}
+                                                        value={size}
                                                         onChange={e => {
                                                             clearErrors("size")
                                                             if (!e.target.value) {
@@ -326,7 +380,10 @@ const UpdateProduct = () => {
                                                         <div className='flex items-center gap-2'>Choose color: <div style={{ backgroundColor: selectedColor }} className='h-6 w-6 rounded-full'></div> </div>
                                                         <label className={`bg-gray-50  border cursor-pointer border-borderColor flex  rounded-full justify-center items-center h-6 w-6`} type='button' htmlFor="colorInput">
                                                             +
-                                                            <input onChange={e => setSelectedColor(e.target.value)} className=' opacity-0 w-0 h-0' type="color" name="" id="colorInput" />
+                                                            <input onChange={e => {
+                                                                setSelectedColor(e.target.value)
+                                                                setSelectedAvailableColor([e.target.value])
+                                                            }} className=' opacity-0 w-0 h-0' type="color" name="" id="colorInput" />
                                                         </label>
                                                     </div>
                                                     {
@@ -346,7 +403,6 @@ const UpdateProduct = () => {
                                                     <div className="ps-4 flex-1 flex items-center gap-5 flex-wrap">
                                                         {
                                                             selectedAvailableColor.map((item, i) => <>
-
                                                                 <div style={{ backgroundColor: item }} className="relative h-6 w-6 border-borderColor rounded-full border">
                                                                     <button onClick={e => setSelectedAvailableColor(selectedAvailableColor.filter((col, ind) => ind !== i))} type='button' className='-top-3 text-red -right-2 absolute'>x</button>
                                                                 </div>
@@ -354,7 +410,7 @@ const UpdateProduct = () => {
                                                         }
                                                     </div>
 
-                                                    <label style={{ backgroundColor: selectedColor }} className={`bg-gray-50  border ${selectedColor ? "cursor-pointer" : ""}  border-borderColor flex  rounded-full justify-center items-center h-6 w-6`} type='button' htmlFor="availableColorInput">
+                                                    <label className={`bg-gray-50  border ${selectedColor ? "cursor-pointer" : ""}  border-borderColor flex  rounded-full justify-center items-center h-6 w-6`} type='button' htmlFor="availableColorInput">
                                                         +
                                                         <input
                                                             disabled={!selectedColor}
@@ -375,7 +431,7 @@ const UpdateProduct = () => {
                                             <div className="my-5">
                                                 <button type="submit" className="h-[54px] rounded-xl text-white bg-darkgreen w-full">
                                                     {
-                                                        false ? <>
+                                                        isPending ? <>
                                                             <div className="loading loading-spinner loading-md"></div>
                                                         </>
                                                             : "Create"
@@ -393,27 +449,48 @@ const UpdateProduct = () => {
 
                                     {/* choose image */}
                                     <div className="border-dashed border-l-2  ps-5 pe-3 flex flex-col  items-center  border-l-stone1">
+
+                                        {/* <pre>{JSON.stringify(selectedImages)}</pre> */}
                                         {/* product image */}
                                         <div className="h-[420px] md:min-w-[400px] min-w-[300px] rounded-xl mt-7  text-center flex flex-col justify-center items-center max-w-[453px] border border-stone2">
-                                            <input
-                                                type="file"
-                                                // {...register("url", { required: true })}
-                                                onChange={handleImageChange}
-                                                ref={inputRef}
-                                                className='hidden' name="" id="" />
-                                            <button disabled={selectedImages.length >= 4} onClick={handleChooseImage} type="button" className=" bg-gradient-to-t from-blackwhite text-white h-[55px] rounded-xl w-[253px] to-whiteblack">
-                                                Choose image</button>
+                                            {
+                                                !toggle &&
+                                                <img src={selectedImages && selectedImages[0]?.url} alt="" />
+                                            }
+                                            {
+                                                toggle &&
 
+                                                <div className="">
+                                                    <input
+                                                        type="file"
+                                                        // {...register("url", { required: true })}
+                                                        onChange={handleImageChange}
+                                                        ref={inputRef}
+                                                        className='hidden' name="" id="" />
+                                                    <button disabled={selectedImages.length >= 4} onClick={handleChooseImage} type="button" className=" bg-gradient-to-t from-blackwhite text-white h-[55px] rounded-xl w-[253px] to-whiteblack">
+                                                        Choose image</button>
+                                                </div>
+                                            }
                                             {selectedImages.length === 4 && <span className='text-red font-medium '>You can select only 4 image</span>}
 
                                         </div>
+                                        {
+                                            toggle ? <button onClick={e => setToggle(false)} >Cancel</button>
+                                                : <button onClick={e => setToggle(true)}>remove</button>
+                                        }
                                         {/* selected image */}
                                         <div className="flex flex-wrap mt-10 gap-6">
+
                                             {
-                                                selectedImages && selectedImages.map((item, index) => <div className='relative'>
-                                                    <button onClick={() => { handleRemoveImage(index) }} className='absolute -right-4 text-xl rounded-full   text-red top-0'>x</button>
-                                                    <img className='min-h-52 max-h-52 max-w-44 min-w-44 object-contain object-center rounded-lg' src={URL.createObjectURL(item)} alt="" />
-                                                </div>)
+                                                !toggle ?
+                                                    selectedImages && selectedImages.map((item, index) => <div className='relative'>
+                                                        <button onClick={() => { handleRemoveImage(index) }} className='absolute -right-4 text-xl rounded-full   text-red top-0'>x</button>
+                                                        <img className='min-h-52 max-h-52 max-w-44 min-w-44 object-contain object-center rounded-lg' src={item.url} alt="" />
+                                                    </div>)
+                                                    : newImage && newImage.map((item, index) => <div className='relative'>
+                                                        <button onClick={() => { handleRemoveImage(index) }} className='absolute -right-4 text-xl rounded-full   text-red top-0'>x</button>
+                                                        <img className='min-h-52 max-h-52 max-w-44 min-w-44 object-contain object-center rounded-lg' src={URL.createObjectURL(item)} alt="" />
+                                                    </div>)
                                             }
                                         </div>
 
@@ -475,8 +552,8 @@ const UpdateProduct = () => {
                                     {color ? <span className='text-base font-semibold'>{color}</span> : <span className='text-red text-base'>Please enter color!</span>}
                                 </div>
 
-                                {/* <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Available Color: {Availablecolor ? <span className='text-base font-semibold'>{Availablecolor.joint()}</span> : <span className='text-red text-base'>Please enter Availabecolor!</span>} */}
-                                {/* </div> */}
+                                <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Available Color: {Availablecolor ? <span className='text-base font-semibold'>{selectedAvailableColor.join()}</span> : <span className='text-red text-base'>Please enter Availablecolor!</span>}
+                                </div>
 
                                 <div className="text-center">
                                     <button type="submit" className="mt-3 bg-gray3 w-[285px] h-[54px] rounded-xl" >Close</button>
