@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import AppFormErrorLine from "../../components/AppFromErrorLine";
 
-const CouponModal = () => {
+const CreateCouponModal = () => {
   const queryClient = useQueryClient();
 
   const {
@@ -190,4 +190,4 @@ const CouponModal = () => {
   );
 };
 
-export default CouponModal;
+export default CreateCouponModal;

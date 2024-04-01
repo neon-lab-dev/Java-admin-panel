@@ -5,7 +5,6 @@ import downloadIcon from "../../assets/icon/download.svg";
 import coupon from "../../assets/icon/coupon.svg";
 import { getAllCoupon, deleteCoupon } from "../../api/coupon.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import CouponModal from "./CouponModal.jsx";
 import Swal from "sweetalert2";
 import AppLoading from "../../components/loaders/AppLoading.jsx";
 import SomeErrorOccurred from "../Error/SomeErrorOccurred.jsx";
@@ -16,6 +15,7 @@ import { searchObjects } from "../../utils/search.js";
 import { reversed } from "../../utils/reversed.js";
 import NoDataFound from "../../components/NoDataFound.jsx";
 import jsonToXlsx from "../../utils/jsonAsXlsx.js";
+import CreateCouponModal from "./CreateCouponModal.jsx";
 
 const Coupons = () => {
   const [startingIndex, setStartingIndex] = useState(0);
@@ -107,7 +107,7 @@ const Coupons = () => {
             </div>
           </button>
           {/* couponModal */}
-          <CouponModal />
+          <CreateCouponModal />
         </div>
         <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 px-5">
           <div className=" justify-between flex items-center ">
