@@ -11,23 +11,23 @@ export const getAllCoupon = () => {
         },
       })
       .then((res) => {
-        resolve(res.data);
+        resolve(res.data?.coupons || []);
       })
       .catch((err) => {
         reject(
           err?.response?.data?.message ||
             "Something went wrong, please try again"
         );
-    });
+      });
   });
 };
 
-export const createCoupon = ({code,amount }) => {
+export const createCoupon = ({ code, amount }) => {
   return new Promise((resolve, reject) => {
     axios
       .post(
         API.newCoupon,
-        { code,amount  },
+        { code, amount },
         {
           withCredentials: true,
           headers: {
@@ -47,21 +47,22 @@ export const createCoupon = ({code,amount }) => {
 };
 
 export const deleteCoupon = (id) => {
-    return new Promise((resolve, reject) => {
-      axios
-        .delete(`${API.coupon}/${id}`, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((res) => {
-          resolve(res.data);
-        })
-        .catch((err) => {
-          reject(
-            err?.response?.data?.message || "Error deleting coupon, please try again"
-          );
-        });
-    });
-  };
+  return new Promise((resolve, reject) => {
+    axios
+      .delete(`${API.coupon}/${id}`, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        resolve(res.data);
+      })
+      .catch((err) => {
+        reject(
+          err?.response?.data?.message ||
+            "Error deleting coupon, please try again"
+        );
+      });
+  });
+};

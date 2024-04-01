@@ -1,37 +1,42 @@
 import { useCallback, useEffect, useState } from "react";
-import helmetImg from "../../assets/icons/helmet.svg";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getSingleOrder, updateOrder } from "../../api/order";
 import AppLoading from "../../components/loaders/AppLoading";
 import Swal from "sweetalert2";
+import { ORDER_STATUS } from "../../assets/data/orderStatus";
 
 const OrderModal = ({ selectedOrderId }) => {
   const queryClient = useQueryClient();
+  const [updatedStatus, setUpdatedStatus] = useState(null);
 
-  const {
-    refetch,
-    data,
-    isLoading,
-    isSuccess: getOrderDetailSuccess,
-  } = useQuery({
-    enabled: false,
+  const { data, isLoading } = useQuery({
     queryFn: () => getSingleOrder(selectedOrderId),
-    queryKey: ["getSingle", selectedOrderId],
+    queryKey: ["getSingleOrder", selectedOrderId],
   });
 
-  const { isSuccess, error, mutate, isPending } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: () =>
       updateOrder({
         orderId: selectedOrderId,
         updatedData: { status: updatedStatus },
       }),
     onSuccess: () => {
+      setUpdatedStatus(null);
+      queryClient.invalidateQueries({ queryKey: ["getSingleOrder"] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });
       document.getElementById("orderDetailModal")?.close();
       Swal.fire({
         title: "Updated",
         text: `Order status has been updated successfully to ${updatedStatus}`,
         icon: "success",
+      });
+    },
+    onError: (error) => {
+      document.getElementById("orderDetailModal")?.close();
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error,
       });
     },
   });
@@ -55,30 +60,13 @@ const OrderModal = ({ selectedOrderId }) => {
     [isScrolling]
   );
 
-  const [updatedStatus, setUpdatedStatus] = useState(
-    data?.order?.orderStatus.toLowerCase()
-  );
-
   const handleUpdate = () => {
     mutate();
   };
 
-  useEffect(() => {
-    if (selectedOrderId || isSuccess) {
-      refetch();
-    }
-  }, [selectedOrderId, isSuccess]);
-
-  useEffect(() => {
-    if (getOrderDetailSuccess) {
-      setUpdatedStatus(data?.order?.orderStatus.toLowerCase());
-    }
-  }, [getOrderDetailSuccess]);
-
   // modal window close code
   useEffect(() => {
     const modal = document.getElementById("orderDetailModal");
-
     const handleClickOutsideModal = (event) => {
       if (event.target === modal) {
         modal.close();
@@ -107,11 +95,12 @@ const OrderModal = ({ selectedOrderId }) => {
               {isLoading ? <AppLoading /> : <></>}
               <div className="modal-overlay"></div>
               <div className="">
-                <div className="grid justify-center px-4 grid-cols-12 max-h-[880px]">
+                <div className="grid justify-center px-4 grid-cols-12 max-h-[880px] ">
                   <div
                     onScroll={() => handleScrollbar("left")}
-                    className={`col-span-4  scrollbar-width-sm h-[calc(100vh-80px)] max-h-[880px] overflow-y-auto ${!isScrolling.left && "hidden-scrollbar "
-                      }  lg:px-4 md:px-2 pb-4 `}
+                    className={`col-span-4  scrollbar-width-sm h-[calc(100vh-80px)] max-h-[880px] overflow-y-auto ${
+                      !isScrolling.left ? "hidden-scrollbar " : ""
+                    }  lg:px-4 md:px-2 pb-4 `}
                   >
                     <h1 className="font-lato  font-semibold text-center text-[24px]">
                       Order Item
@@ -160,8 +149,9 @@ const OrderModal = ({ selectedOrderId }) => {
                   <div
                     id="orderInfo"
                     onScroll={() => handleScrollbar("right")}
-                    className={`col-span-8  scrollbar-width-sm overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)] max-h-[880px] ${!isScrolling.right && "hidden-scrollbar"
-                      }`}
+                    className={`col-span-8  scrollbar-width-sm overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)] max-h-[880px] ${
+                      !isScrolling.right ? "hidden-scrollbar" : ""
+                    }`}
                   >
                     <h1 className="font-lato font-semibold text-center text-[24px]">
                       Order Information
@@ -268,22 +258,28 @@ const OrderModal = ({ selectedOrderId }) => {
                           {/* select box */}
                           <select
                             onChange={(e) => setUpdatedStatus(e.target.value)}
-                            value={updatedStatus}
-                            className=" px-3 pr-5 bg-darksmoke w-full   select-sm outline-none focus:outline-none"
+                            value={updatedStatus ?? data?.order?.orderStatus}
+                            className=" px-3 pr-5 cursor-pointer bg-darksmoke w-full   select-sm outline-none focus:outline-none"
                           >
                             <option disabled selected>
                               Choose Status
                             </option>
-                            <option value={"processing"}>Processing</option>
-                            <option value={"shipped"}>Shipped</option>
-                            <option value={"cancelled"}>Cancelled</option>
-                            <option value={"delivered"}>Delivered</option>
+                            {ORDER_STATUS.filter(
+                              (val) => val.toLowerCase() !== "all"
+                            ).map((item, i) => (
+                              <option key={i} value={item}>
+                                {item}
+                              </option>
+                            ))}
                           </select>
                         </div>
                         <div className="w-full bg-white  flex justify-center">
                           <div className="flex absolute bottom-5 justify-center gap-8 mt-3 items-center">
                             <button
                               type="button"
+                              disabled={
+                                isPending || isLoading || !updatedStatus
+                              }
                               onClick={handleUpdate}
                               className="w-[192px] h-[40px] border border-borderColor  rounded-[6px] bg-lightgreen text-white"
                             >
@@ -307,7 +303,6 @@ const OrderModal = ({ selectedOrderId }) => {
           </>
         )}
       </dialog>
-
       {/* Order detail modal end */}
     </>
   );
