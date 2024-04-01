@@ -56,7 +56,7 @@ const User = () => {
       </h1>
 
       <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 px-5">
-        <div className=" justify-between flex items-center ">
+        <div className=" justify-between flex items-center pr-2">
           {/* Searchbar */}
           <Searchbar
             placeholder="Search by ID, Name, Email, Mobile No"
@@ -65,20 +65,20 @@ const User = () => {
               setStartingIndex(0);
             }}
           />
-          <div className="flex items-center gap-6">
+          <div className="flex items-center justify-between gap-6">
             {/* downloadIcon */}
             <button
               onClick={() => setIsBirthdayTodayActive((prev) => !prev)}
-              class="btn btn-outline btn-secondary btn-sm"
+              className="btn btn-outline btn-secondary btn-sm"
             >
               {isBirthdayTodayActive ? "Show All Users" : "Birthday Today"}
             </button>
             <button
               disabled={isLoading || isError}
               onClick={() => jsonToXlsx(userData, "users")}
-              className=" bg-lightgray  rounded-[6px] disabled:opacity-50"
+              className=" bg-lightgray rounded-[6px] mr-5 disabled:opacity-50"
             >
-              <img src={downloadIcon} alt="" />
+              <img className="min-w-8 min-h-8" src={downloadIcon} alt="" />
             </button>
           </div>
         </div>
