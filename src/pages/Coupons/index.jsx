@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import iconDelete from "../../assets/icon/delete.svg";
 import Searchbar from "../../components/Searchbar";
 import downloadIcon from "../../assets/icon/download.svg";
-import leftCaret from "../../assets/icon/leftCaret.svg";
-import rightCaret from "../../assets/icon/rightCaret.svg";
 import coupon from "../../assets/icon/coupon.svg";
 import { getAllCoupon, deleteCoupon } from "../../api/coupon.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
