@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Searchbar from "../../components/Searchbar";
-import downloadIcon from "../../assets/icon/download.svg";
+import SearchBar from "../../components/SearchBar";
+import downloadIcon from "../../assets/icons/download.svg";
 import AppLoading from "../../components/loaders/AppLoading.jsx";
 import SomeErrorOccurred from "../Error/SomeErrorOccurred.jsx";
 import jsonToXlsx from "../../utils/jsonAsXlsx.js";
@@ -57,8 +57,8 @@ const User = () => {
 
       <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 px-5">
         <div className=" justify-between flex items-center ">
-          {/* Searchbar */}
-          <Searchbar
+          {/* SearchBar */}
+          <SearchBar
             placeholder="Search by ID, Name, Email, Mobile No"
             onChange={(e) => {
               setSearchQuery(e.target.value);

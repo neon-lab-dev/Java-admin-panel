@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Searchbar from "../../components/Searchbar";
+import SearchBar from "../../components/SearchBar";
 import downloadIcon from "../../assets/icons/download.svg";
 import createProductIcon from "../../assets/icons/createProduct.svg";
 import deleteIcon from "../../assets/icons/delete.svg";
@@ -100,7 +100,7 @@ const Products = () => {
       <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 px-5">
         {/* search bar and download btn */}
         <div className=" justify-between flex items-center ">
-          <Searchbar
+          <SearchBar
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={"Search products"}
           />

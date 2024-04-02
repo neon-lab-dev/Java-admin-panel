@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import logo from "../../assets/icon/logo.svg";
+import logo from "../../assets/icons/logo.svg";
 import { useForm } from "react-hook-form";
 import { EMAIL_REGEX } from "../../assets/data/regex";
 import AppFormErrorLine from "../../components/AppFromErrorLine";

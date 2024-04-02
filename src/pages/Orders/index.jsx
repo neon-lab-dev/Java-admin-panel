@@ -1,7 +1,7 @@
 import filterIcon from "../../assets/icons/filter.svg";
 import downCaret from "../../assets/icons/downCaret.svg";
 import downloadIcon from "../../assets/icons/download.svg";
-import Searchbar from "../../components/Searchbar";
+import SearchBar from "../../components/SearchBar";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllOrders } from "../../api/order";
@@ -52,8 +52,8 @@ const Orders = () => {
       </h1>
       <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 pb-12 px-5">
         <div className=" justify-between flex items-center ">
-          {/* Searchbar */}
-          <Searchbar
+          {/* SearchBar */}
+          <SearchBar
             placeholder={"Search by order id or Total  price"}
             onChange={(e) => {
               setSearchQuery(e.target.value);
