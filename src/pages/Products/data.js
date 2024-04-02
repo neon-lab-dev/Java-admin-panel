@@ -297,3 +297,22 @@ export const getFilters = (category, subcategory, subSubcategory) => {
   });
   return filters.length === 1 ? filters[0].filters : [];
 };
+
+export const filterOptions = (
+  category = "",
+  subcategory = "",
+  subSubcategory = ""
+) => {
+  const filter = allFilters.find((item) => {
+    if (category === "Gear") {
+      return (
+        item.category === category &&
+        (item.subcategory === "" || item.subcategory === subcategory) &&
+        (item.subSubcategory === "" || item.subSubcategory === subSubcategory)
+      );
+    } else {
+      return item.category === category;
+    }
+  });
+  return filter ? filter.filters : [];
+};

@@ -58,18 +58,32 @@ const CreateProduct = () => {
 
   // form submit
   const handleFormSubmit = (data) => {
-    const fd = new FormData();
-    for (const item of selectedImages) {
-      fd.append("images", item);
+    try {
+      if (selectedImages.length === 0) {
+        return Swal.fire({
+          title: "Error",
+          text: "Please select at least one image",
+          icon: "error",
+        });
+      } else {
+        const fd = new FormData();
+        for (const item of selectedImages) {
+          fd.append("images", item);
+        }
+        for (const item of Object.keys(data)) {
+          fd.append(item, data[item]);
+        }
+        const allColors = [data.color, ...availableColors];
+        fd.append("Availablecolor", allColors.join(","));
+        mutate(fd);
+      }
+    } catch (err) {
+      Swal.fire({
+        title: "Error",
+        text: err,
+        icon: "error",
+      });
     }
-    for (const item of Object.keys(data)) {
-      fd.append(item, data[item]);
-    }
-    fd.append(
-      "Availablecolor",
-      availableColors?.shift(watchedValues.color)?.join(",")
-    );
-    mutate(fd);
   };
 
   // handle image change
@@ -437,16 +451,15 @@ const CreateProduct = () => {
                           Choose Size/Type
                         </option>
                         {/* category filter */}
-                        {category &&
-                          getFilters(
-                            watchedValues.category,
-                            watchedValues.sub_category,
-                            watchedValues.sub_category2
-                          ).map((item, i) => (
-                            <option key={i} value={item}>
-                              {item}
-                            </option>
-                          ))}
+                        {getFilters(
+                          watchedValues.category,
+                          watchedValues.sub_category,
+                          watchedValues.sub_category2
+                        ).map((item, i) => (
+                          <option key={i} value={item}>
+                            {item}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
