@@ -1,525 +1,852 @@
-import React, { useRef, useState } from 'react'
-import backIcon from "../../assets/icons/back.svg"
-import { useNavigate } from 'react-router-dom'
-import { useForm } from 'react-hook-form'
-import { useMutation } from '@tanstack/react-query'
-import { createProduct } from '../../api/product'
-import Swal from 'sweetalert2'
-import { filterOptions, subSubcategoriesMap, subcategoriesMap } from './data'
+import React, { useEffect, useRef, useState } from "react";
+import backIcon from "../../assets/icons/back.svg";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm, useWatch } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import { createProduct } from "../../api/product";
+import AppFormErrorLine from "../../components/AppFormErrorLine";
+import Swal from "sweetalert2";
+import { filterOptions, subSubcategoriesMap, subcategoriesMap } from "./data";
 
 const CreateProduct = () => {
+  const [availableColors, setAvailableColors] = useState([]);
+  const { mutate, isPending, isSuccess } = useMutation({
+    mutationFn: createProduct,
+    onSuccess: () => {
+      Swal.fire({
+        title: "Product Add Success",
+        text: `${name} added to your store `,
+        icon: "success",
+      });
+      setSelectedAvailableColor([]);
+      setSelectedColor("");
+      setSelectedCategory("");
+      setSelectedSubcategory("");
+      setSelectedSubSubcategory("");
+      setSelectedImages([]);
+      reset();
+    },
+    onError: (err) => {
+      Swal.fire({
+        title: "Error",
+        text: err,
+        icon: "error",
+      });
+      reset();
+    },
+  });
 
-    // mutation for add product
+  // react hook form 👇
+  const {
+    control,
+    watch,
+    register,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+    setValue,
+    setError,
+    clearErrors,
+    reset,
+  } = useForm();
+  const watchedValues = watch();
+  const [categories] = useState(["Gear", "Shoes", "Helmets"]);
+  const [subcategories, setSubcategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedSubcategory, setSelectedSubcategory] = useState("");
+  const [subSubcategories, setSubSubcategories] = useState([]);
+  const [selectedSubSubcategory, setSelectedSubSubcategory] = useState("");
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedAvailableColor, setSelectedAvailableColor] = useState([]);
 
-    const { mutate, isPending, isSuccess } = useMutation({
-        mutationFn: createProduct,
-        onSuccess: () => {
-            Swal.fire({
-                title: "Product Add Success",
-                text: `${name} added to your store `,
-                icon: "success",
-            })
-            setSelectedAvailableColor([])
-            setSelectedColor("")
-            setSelectedCategory("")
-            setSelectedSubcategory("")
-            setSelectedSubSubcategory("")
-            setSelectedImages([])
-            reset()
-        },
-        onError: (err) => {
-            Swal.fire({
-                title: "Error",
-                text: err,
-                icon: "error",
-            })
-            reset()
-        }
-    })
+  const {
+    name,
+    description,
+    baseprice,
+    discountedprice,
+    stock,
+    category,
+    sub_category,
+    size,
+  } = watch();
+  // input ref
+  const inputRef = useRef();
 
+  const handleChooseImage = () => {
+    inputRef.current.click();
+  };
 
-
-    // react hook form 👇
-    const { control, watch, register, handleSubmit, formState: { errors }, getValues, setValue, setError, clearErrors, reset } = useForm()
-    const { baseprice, discountedprice, category, name, description, features, stock, Availablecolor, specification, sub_category, size, color } = watch()
-    const [categories] = useState(['Gear', 'Shoes', 'Helmets']);
-    const [subcategories, setSubcategories] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [selectedSubcategory, setSelectedSubcategory] = useState('');
-    const [subSubcategories, setSubSubcategories] = useState([]);
-    const [selectedSubSubcategory, setSelectedSubSubcategory] = useState('');
-    const [selectedImages, setSelectedImages] = useState([])
-    const [selectedColor, setSelectedColor] = useState("")
-    const [selectedAvailableColor, setSelectedAvailableColor] = useState([])
-
-    const navigate = useNavigate()
-
-    // input ref 
-    const inputRef = useRef()
-
-    const handleBackNavigate = () => {
-        navigate("/products")
+  useEffect(() => {
+    console.log(watchedValues);
+  }, [watchedValues]);
+  // form submit
+  const handleFormSubmit = (data) => {
+    if (
+      !selectedColor ||
+      selectedAvailableColor.length === 0 ||
+      selectedImages.length === 0
+    ) {
+      return Swal.fire({
+        title: "Error",
+        text: "Please Fill All field",
+        icon: "error",
+      });
     }
-
-    const handleChooseImage = () => {
-        inputRef.current.click()
+    const fd = new FormData();
+    for (const item of selectedImages) {
+      fd.append("images", item);
     }
-
-    // form submit
-    const handleFormSubmit = (data) => {
-
-        if (!selectedColor || selectedAvailableColor.length === 0 || selectedImages.length === 0) {
-            return Swal.fire({
-                title: "Error",
-                text: "Please Fill All field",
-                icon: "error",
-            })
-        }
-        const fd = new FormData()
-        for (const item of selectedImages) {
-            fd.append("images", item)
-        }
-        for (const item of Object.keys(data)) {
-            fd.append(item, data[item])
-        }
-        fd.append("Availablecolor", selectedAvailableColor.join())
-        fd.append("color", selectedColor)
-        mutate(fd)
-
-
+    for (const item of Object.keys(data)) {
+      fd.append(item, data[item]);
     }
+    fd.append("Availablecolor", selectedAvailableColor.join());
+    fd.append("color", selectedColor);
+    mutate(fd);
+  };
 
-
-
-
-
-
-    const handleCategoryChange = category => {
-        clearErrors("category")
-        if (!category) {
-            setError("category", { message: "Choose a valid category" })
-        }
-        setValue("category", category)
-        setSelectedCategory(category);
-        setSubcategories(subcategoriesMap[category] || []);
-        setSelectedSubcategory(''); // Reset selected subcategory when the category changes
-        setSubSubcategories([]); // Reset subsubcategories when the category changes
-        setSelectedSubSubcategory(''); // Reset selected subsubcategory when the category changes
-    };
-
-    const handleSubcategoryChange = subcategory => {
-        clearErrors("sub_category")
-        if (!subcategory) {
-            setError("sub_category", { message: "Choose a valid subcategory" })
-        }
-        setSelectedSubcategory(subcategory);
-        if (selectedCategory === 'Gear') {
-            setSubSubcategories(subSubcategoriesMap[subcategory] || []);
-        } else {
-            setSubSubcategories([]); // Reset subsubcategories if the category is not 'Gear'
-        }
-        setSelectedSubSubcategory(''); // Reset selected subsubcategory when the subcategory changes
-    };
-
-    // handle image change
-
-    const handleImageChange = (event) => {
-        const { name, files } = event.target
-        if (files[0]) {
-            setSelectedImages([...selectedImages, files[0]])
-        }
+  const handleCategoryChange = (category) => {
+    clearErrors("category");
+    if (!category) {
+      setError("category", { message: "Choose a valid category" });
     }
-    const handleRemoveImage = (index) => {
-        setSelectedImages(selectedImages.filter((item, i) => i !== index))
+    setValue("category", category);
+    setSelectedCategory(category);
+    setSubcategories(subcategoriesMap[category] || []);
+    setSelectedSubcategory(""); // Reset selected subcategory when the category changes
+    setSubSubcategories([]); // Reset subsubcategories when the category changes
+    setSelectedSubSubcategory(""); // Reset selected subsubcategory when the category changes
+  };
+
+  const handleSubcategoryChange = (subcategory) => {
+    clearErrors("sub_category");
+    if (!subcategory) {
+      setError("sub_category", { message: "Choose a valid subcategory" });
     }
+    setSelectedSubcategory(subcategory);
+    if (selectedCategory === "Gear") {
+      setSubSubcategories(subSubcategoriesMap[subcategory] || []);
+    } else {
+      setSubSubcategories([]); // Reset subsubcategories if the category is not 'Gear'
+    }
+    setSelectedSubSubcategory(""); // Reset selected subsubcategory when the subcategory changes
+  };
 
-    // color input ref
-    const colorInputRef = useRef()
+  // handle image change
 
-    return (<div>
+  const handleImageChange = (event) => {
+    const { files } = event.target;
+    if (files.length + selectedImages.length > 4) {
+      return Swal.fire({
+        title: "Error",
+        text: "You can select only 4 images for a product",
+        icon: "error",
+      });
+    } else {
+      setSelectedImages((prev) => [...prev, ...files]);
+    }
+  };
+  const handleRemoveImage = (index) => {
+    setSelectedImages(selectedImages.filter((item, i) => i !== index));
+  };
 
+  return (
+    <div>
+      <div className="bg-lightgray h-full w-full p-6 py-8">
+        <div className="bg-white overflow-x-auto rounded-[16px] p-4  ps-10 ">
+          <div className="flex items-center  justify-between">
+            <Link to="/products" className="">
+              <img src={backIcon} alt="" />
+            </Link>
+            <h1 className="text-[32px] text-black font-bold flex-1 me-6 text-center">
+              Create Product
+            </h1>
+          </div>
 
-        <div className='bg-lightgray h-full w-full p-6 py-8'>
-            <div className="bg-white overflow-x-auto rounded-[16px] p-4  ps-10 ">
-
-                <div className="flex items-center  justify-between">
-                    <button onClick={handleBackNavigate} className=""><img src={backIcon} alt="" /></button>
-                    <h1 className="text-[32px] text-black font-bold flex-1 me-6 text-center">Create Product</h1>
+          {/* form and side image */}
+          <div className="flex  gap-3 my-5 mt-10 flex-wrap md:flex-nowrap  w-full">
+            <div className="w-full">
+              {/* form */}
+              <form
+                onSubmit={handleSubmit(handleFormSubmit)}
+                className="max-w-[513px] md:min-w-[460px] min-w-[300px]"
+              >
+                {/* name  */}
+                <div className="">
+                  <input
+                    {...register("name", {
+                      required: {
+                        value: true,
+                        message: "This field is required",
+                      },
+                      minLength: {
+                        value: 3,
+                        message: "The title should be at least 3 characters",
+                      },
+                      maxLength: {
+                        value: 100,
+                        message: "The title should be less than 100 characters",
+                      },
+                    })}
+                    className={` h-[45px] w-full rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
+                      errors.name && "border-red"
+                    }`}
+                    type="text"
+                    placeholder="Product Name"
+                  />
+                  {errors.name && (
+                    <AppFormErrorLine message={errors.name.message} />
+                  )}
                 </div>
 
-                {/* form and side image */}
+                {/* desc */}
+                <div className="my-5">
+                  <textarea
+                    {...register("description", {
+                      required: {
+                        value: true,
+                        message: "Please enter description",
+                      },
+                      minLength: {
+                        value: 8,
+                        message: "Minimum length is 8 character",
+                      },
+                    })}
+                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${
+                      errors.description && "border-red"
+                    } ps-3 text-[16px] text-gray2 `}
+                    type="text"
+                    placeholder="Product Description"
+                  />
+                  {errors.description && (
+                    <AppFormErrorLine message={errors.description.message} />
+                  )}
+                </div>
 
-                <div className="flex  gap-3 my-5 mt-10 flex-wrap md:flex-nowrap  w-full">
-                    <div className="w-full">
-                        {/* form */}
-                        <form onSubmit={handleSubmit(handleFormSubmit)} className='max-w-[513px] md:min-w-[460px] min-w-[300px]'>
+                {/* features */}
+                <div className="my-5">
+                  <textarea
+                    {...register("keyFeatures", {
+                      required: {
+                        value: true,
+                        message: "Please enter key features",
+                      },
+                      minLength: {
+                        value: 8,
+                        message: "Minimum length is 8 characters",
+                      },
+                    })}
+                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none ${
+                      errors.keyFeatures && "border-red"
+                    } border ps-3 text-[16px] text-gray2 `}
+                    type="text"
+                    placeholder="Product key featured"
+                  />
+                  {errors.keyFeatures && (
+                    <AppFormErrorLine message={errors.keyFeatures.message} />
+                  )}
+                </div>
 
-                            {/* name  */}
-                            <div className="">
-                                <input {...register("name",
-                                    {
-                                        required: { value: true, message: "This field is required" },
-                                        minLength: { value: 3, message: "Minimum length is 3 character " },
-                                        maxLength: { value: 100, message: "Maximum length is 100 character" }
-                                    })} className={` h-[45px] w-full rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.name && "border-red"}`} type="text" placeholder="Product Name" />
+                {/* specification */}
+                <div className="my-5">
+                  <textarea
+                    {...register("specification", {
+                      required: {
+                        value: true,
+                        message: "This field is required",
+                      },
+                      minLength: {
+                        value: 8,
+                        message: "Minimum length is 8 character ",
+                      },
+                    })}
+                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${
+                      errors.specification && "border-red"
+                    } ps-3 text-[16px] text-gray2 `}
+                    type="text"
+                    placeholder="Product Specification"
+                  />
+                  {errors.specification && (
+                    <AppFormErrorLine message={errors.specification.message} />
+                  )}
+                </div>
 
-                                {errors.name && <span className='text-red ms-2'>{errors.name.message}</span>}
-                            </div>
+                {/* base price */}
+                <div className="my-5">
+                  <input
+                    {...register("baseprice", {
+                      required: {
+                        value: true,
+                        message: "This field is required",
+                      },
+                      min: {
+                        value: 10,
+                        message: "Minimum price is 10",
+                      },
+                    })}
+                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
+                      errors.baseprice && "border-red"
+                    }`}
+                    type="number"
+                    placeholder="Base Price"
+                    min={10}
+                  />
+                  {errors.baseprice && (
+                    <AppFormErrorLine message={errors.baseprice.message} />
+                  )}
+                </div>
 
-                            {/* desc */}
-                            <div className="my-5">
-                                <textarea
-                                    {...register("description", {
-                                        required: { value: true, message: "This field is required" },
-                                        minLength: { value: 8, message: "Minimum length is 8 character " },
-                                    })}
-                                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${errors.description && "border-red"} ps-3 text-[16px] text-gray2 `} type="text" placeholder="Product Description" />
-                                {errors.description && <span className='text-red ms-2'>{errors.description.message}</span>}
-                            </div>
+                {/* discount price */}
+                <div className="my-5">
+                  <input
+                    {...register("discountedprice", {
+                      required: {
+                        value: true,
+                        message: "This field is required",
+                      },
+                      min: {
+                        value: 0,
+                        message: "Minimum price is 0",
+                      },
+                      max: {
+                        value: watchedValues.baseprice - 1,
+                        message:
+                          "Discounted price should be less than base price",
+                      },
+                    })}
+                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
+                      errors.discountedprice && "border-red"
+                    }`}
+                    type="number"
+                    placeholder="Discounted Price"
+                    min={0}
+                    disabled={!watchedValues.baseprice}
+                    max={watchedValues.baseprice - 1} // Discounted price should be less than base price
+                  />
+                  {errors.discountedprice && (
+                    <AppFormErrorLine
+                      message={errors.discountedprice.message}
+                    />
+                  )}
+                </div>
 
-                            {/* featiures */}
-                            <div className="my-5">
-                                <textarea
-                                    {...register("keyFeatures", {
-                                        required: { value: true, message: "This field is required" },
-                                        minLength: { value: 8, message: "Minimun length is 8 character " },
-                                    })}
-                                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none ${errors.keyFeatures && "border-red"} border ps-3 text-[16px] text-gray2 `} type="text" placeholder="Product key featured" />
-                                {errors.keyFeatures && <span className='text-red ms-2'>{errors.keyFeatures.message}</span>}
-                            </div>
+                {/* stock */}
+                <div className="my-5">
+                  <input
+                    {...register("stock", {
+                      required: {
+                        value: true,
+                        message: "This field is required",
+                      },
+                      validate: (value) =>
+                        value > 0 || "Stock should be greater than 0",
+                    })}
+                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
+                      errors.stock && "border-red"
+                    }`}
+                    type="number"
+                    placeholder="Stock"
+                    min={1}
+                  />
+                  {errors.stock && (
+                    <AppFormErrorLine message={errors.stock.message} />
+                  )}
+                </div>
 
-                            {/* specification */}
-                            <div className="my-5">
-                                <textarea
-                                    {...register("specification", {
-                                        required: { value: true, message: "This field is required" },
-                                        minLength: { value: 8, message: "Minimun length is 8 character " },
-                                    })}
-                                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${errors.specification && "border-red"} ps-3 text-[16px] text-gray2 `} type="text" placeholder="Product Specification" />
-                                {errors.specification && <span className='text-red ms-2'>{errors.specification.message}</span>}
-                            </div>
+                {/* category */}
+                <div className="my-5 w-full ">
+                  <div
+                    className={`${
+                      errors.category && "border-red"
+                    } w-full  px-3 rounded-xl border-darkstone   border`}
+                  >
+                    <select
+                      {...register("category", {
+                        required: {
+                          value: true,
+                          message: "This field is required",
+                        },
+                      })}
+                      className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${
+                        errors.category && " border-red"
+                      }`}
+                    >
+                      <option disabled selected value="">
+                        Select a category
+                      </option>
+                      {categories.map((item) => (
+                        <option key={item} value={item}>
+                          {item}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {errors.category && (
+                    <AppFormErrorLine message={errors.category.message} />
+                  )}
+                </div>
 
-                            {/* baseprice */}
-                            <div className="my-5">
-                                <input
-                                    {...register("baseprice", {
-                                        required: { value: true, message: "This field is required" },
-                                    })}
-                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.baseprice && "border-red"}`} type="number" placeholder="Base Price" />
-                                {errors.baseprice && <span className='text-red ms-2'>{errors.baseprice.message}</span>}
-                            </div>
+                {/* sub category */}
+                {subcategoriesMap[watchedValues.category] && (
+                  <div className="my-5 w-full ">
+                    <div
+                      className={`w-full  px-3 rounded-xl border-darkstone  border ${
+                        errors.sub_category && " border-red"
+                      }`}
+                    >
+                      <select
+                        {...register("sub_category", {
+                          required: {
+                            value: true,
+                            message: "This field is required",
+                          },
+                          validate: (value) =>
+                            subcategoriesMap[watchedValues.category]?.includes(
+                              value
+                            ) || "Choose valid subcategory",
+                        })}
+                        className={` text-[16px] outline-none text-gray2 h-[45px] w-full`}
+                      >
+                        <option value="" selected disabled>
+                          Select a sub category
+                        </option>
+                        {subcategoriesMap[watchedValues.category].map(
+                          (item) => (
+                            <option key={item} value={item}>
+                              {item}
+                            </option>
+                          )
+                        )}
+                      </select>
+                    </div>
+                    {errors.sub_category && (
+                      <AppFormErrorLine message={errors.sub_category.message} />
+                    )}
+                  </div>
+                )}
+                {/* sub sub category */}
+                {watchedValues.sub_category &&
+                  subSubcategoriesMap[watchedValues.sub_category] && (
+                    <div className="my-5 ">
+                      <div
+                        className={`w-full  px-3 rounded-xl border-darkstone  border ${
+                          errors.sub_category && " border-red"
+                        }`}
+                      >
+                        <select
+                          {...register("sub_category2", {
+                            required: {
+                              value:
+                                watchedValues.sub_category &&
+                                subSubcategoriesMap[watchedValues.sub_category],
+                              message: "This field is required",
+                            },
+                            validate: (value) =>
+                              subSubcategoriesMap[
+                                watchedValues.sub_category
+                              ]?.includes(value) ||
+                              "Choose valid sub category 2",
+                          })}
+                          className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${
+                            errors.sub_category2 && " border-red"
+                          }`}
+                        >
+                          <option value="" selected disabled>
+                            Select a sub category2
+                          </option>
+                          {subSubcategoriesMap[watchedValues.sub_category].map(
+                            (item) => (
+                              <option key={item} value={item}>
+                                {item}
+                              </option>
+                            )
+                          )}
+                        </select>
+                      </div>
+                      {errors.sub_category2 && (
+                        <span className="text-red ms-2">
+                          {errors.sub_category2.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
 
-                            {/* discountprice */}
-                            <div className="my-5">
-                                <input
-                                    {...register("discountedprice", {
-                                        required: { value: true, message: "This field is required", },
-                                    })}
-                                    onChange={e => {
-                                        clearErrors("discountedprice")
-                                        if (baseprice < +e.target.value) {
-                                            setError("discountedprice", { message: "Discount price should be less than the base price" })
-                                        }
-                                    }}
-                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.discountedprice && "border-red"}`} type="number" placeholder="Discounted Price" />
-                                {errors.discountedprice && <span className='text-red ms-2'>{errors.discountedprice.message}</span>}
-                            </div>
+                {/* size */}
+                {(selectedCategory === "Gear"
+                  ? selectedSubSubcategory
+                  : selectedCategory && selectedSubcategory) && (
+                  <div className="my-5 ">
+                    <div
+                      className={`w-full  px-3 rounded-xl border-darkstone  border ${
+                        errors.sub_category && " border-red"
+                      }`}
+                    >
+                      <select
+                        onChange={(e) => {
+                          clearErrors("size");
+                          clearErrors("type");
+                          if (!e.target.value) {
+                            setError("size", {
+                              message: "Please Choose valid size",
+                            });
+                          }
+                          setValue("size", e.target.value);
+                        }}
+                        className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${
+                          (errors.size || errors.type) && " border-red"
+                        }`}
+                        name=""
+                        id=""
+                      >
+                        <option selected disabled value={""}>
+                          Choose Size
+                        </option>
+                        {/* category filter */}
+                        {category &&
+                          filterOptions(
+                            selectedCategory,
+                            selectedSubcategory,
+                            selectedSubSubcategory
+                          ).map((item, i) => (
+                            <option key={i} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
 
-                            {/* stock */}
-                            <div className="my-5">
-                                <input
-                                    {...register("stock", {
-                                        required: { value: true, message: "This field is required" },
-                                    })}
-                                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.stock && "border-red"}`} type="number" placeholder="Stock" />
-                                {errors.stock && <span className='text-red ms-2'>{errors.stock.message}</span>}
-                            </div>
+                {/* choose color */}
+                <div className="my-5 px-3">
+                  <div className="">
+                    <div className="flex justify-between">
+                      <div className="flex items-center gap-2">
+                        Choose color:{" "}
+                        {watchedValues.color && (
+                          <div
+                            style={{ backgroundColor: watchedValues.color }}
+                            className="h-6 w-6 rounded-full"
+                          />
+                        )}
+                      </div>
+                      <label
+                        className={`bg-gray-50  border cursor-pointer border-borderColor flex  rounded-full justify-center items-center h-6 w-6`}
+                        type="button"
+                        htmlFor="color"
+                      >
+                        +
+                        <input
+                          className=" opacity-0 w-0 h-0"
+                          type="color"
+                          id="color"
+                          {...register("color", {
+                            required: {
+                              value: true,
+                              message: "Please select color",
+                            },
+                          })}
+                        />
+                      </label>
+                    </div>
+                    {errors.color && (
+                      <AppFormErrorLine message={errors.color.message} />
+                    )}
+                  </div>
+                </div>
 
-                            {/* category */}
-                            <div className="my-5 w-full ">
-                                <div className={`${errors.category && "border-red"} w-full  px-3 rounded-xl border-darkstone   border`}>
-                                    <select
-                                        {...register("category", { required: { value: true, message: "This field is required" } })}
-                                        value={selectedCategory}
-                                        onChange={e => handleCategoryChange(e.target.value)}
-                                        className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${errors.category && " border-red"}`}
-                                    >
-                                        <option value="">Category</option>
-                                        {categories.map(item => (
-                                            <option key={item} value={item}>
-                                                {item}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                {errors.category && <span className='text-red ms-2'>{errors.category.message}</span>}
-                            </div>
-
-
-                            <div className="my-5 w-full ">
-                                <div className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"}`}>
-                                    <select
-                                        {...register("sub_category", { required: { value: true, message: "This field is required" } })}
-                                        value={selectedSubcategory}
-                                        disabled={!category}
-                                        onChange={e => handleSubcategoryChange(e.target.value)}
-                                        className={` text-[16px] outline-none text-gray2 h-[45px] w-full`}
-                                    >
-                                        <option value="">Subcategory</option>
-                                        {subcategories.map(item => (
-                                            <option key={item} value={item}>
-                                                {item}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                                {errors.sub_category && <span className='text-red ms-2'>{errors.sub_category.message}</span>}
-                            </div>
-
-                            {/* sub sub category */}
-
-                            {
-                                selectedCategory === "Gear" && (
-                                    <div className="my-5 ">
-
-                                        <div className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"}`}>
-                                            <select
-                                                {...register("sub_category2", { required: { value: selectedCategory === "Gear", message: "This field is required" } })}
-
-                                                focusBorderColor="purple.500"
-                                                value={selectedSubSubcategory}
-                                                onChange={e => {
-                                                    clearErrors("sub_category2")
-                                                    if (!e.target.value) {
-                                                        setError("sub_category2", { message: "Choose valid Subsubcategory" })
-                                                    }
-                                                    setSelectedSubSubcategory(e.target.value)
-                                                }}
-                                                className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${errors.sub_category2 && " border-red"}`}
-                                                disabled={!selectedSubcategory} // Disable the subsubcategory select until a subcategory is selected
-                                            >
-                                                <option value="">SubSubcategory</option>
-                                                {subSubcategories.map(item => (
-                                                    <option key={item} value={item}>
-                                                        {item}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        {errors.sub_category2 && <span className='text-red ms-2'>{errors.sub_category2.message}</span>}
-                                    </div>
+                {/* Available color s*/}
+                <div className="px-3">
+                  <div className="flex justify-between">
+                    Available color:
+                    <div className="ps-4 flex-1 flex items-center gap-5 flex-wrap">
+                      {watchedValues.color && (
+                        <div
+                          style={{ backgroundColor: watchedValues.color }}
+                          className="h-6 w-6 rounded-full"
+                        />
+                      )}
+                      {availableColors?.map((item, i) => (
+                        <div
+                          style={{ backgroundColor: item }}
+                          className="relative h-6 w-6 border-borderColor rounded-full border"
+                        >
+                          <button
+                            onClick={() =>
+                              setAvailableColors(
+                                availableColors.filter(
+                                  (color) => color !== item
                                 )
+                              )
                             }
-                            {/* size */}
-                            {
-                                (selectedCategory === "Gear" ? selectedSubSubcategory : selectedCategory && selectedSubcategory) && <div className="my-5 ">
-
-                                    <div className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"}`}>
-
-                                        <select
-                                            onChange={e => {
-                                                clearErrors("size")
-                                                clearErrors("type")
-                                                if (!e.target.value) {
-                                                    setError("size", { message: "Please Choose valid size" })
-                                                }
-                                                setValue("size", e.target.value)
-                                            }}
-                                            className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${(errors.size || errors.type) && " border-red"}`} name="" id="">
-
-                                            <option selected disabled value={""} >Choose Size</option>
-                                            {/* category filter */}
-                                            {
-                                                category && filterOptions(selectedCategory, selectedSubcategory, selectedSubSubcategory).map((item, i) => <option key={i} value={item}>{item}</option>
-                                                )
-                                            }
-                                        </select>
-                                    </div>
-                                </div>
-                            }
-
-                            {/* choose color */}
-                            <div className="my-5 px-3">
-                                <div className="">
-                                    <div className='flex justify-between'>
-                                        <div className='flex items-center gap-2'>Choose color: <div style={{ backgroundColor: selectedColor }} className='h-6 w-6 rounded-full'></div> </div>
-                                        <label className={`bg-gray-50  border cursor-pointer border-borderColor flex  rounded-full justify-center items-center h-6 w-6`} type='button' htmlFor="colorInput">
-                                            +
-                                            <input onChange={e => {
-                                                setSelectedColor(e.target.value)
-                                                setSelectedAvailableColor([e.target.value])
-                                            }} className=' opacity-0 w-0 h-0' type="color" name="" id="colorInput" />
-                                        </label>
-                                    </div>
-                                    {
-                                        size && !selectedColor && <span className='text-red'>Please select color</span>
-                                    }
-
-                                </div>
-                            </div>
-
-
-
-
-                            {/* Available color */}
-                            <div className="px-3">
-                                <div className='flex justify-between'>
-                                    Available color:
-                                    <div className="ps-4 flex-1 flex items-center gap-5 flex-wrap">
-                                        {
-                                            selectedAvailableColor.map((item, i) => <>
-
-                                                <div style={{ backgroundColor: item }} className="relative h-6 w-6 border-borderColor rounded-full border">
-                                                    <button onClick={e => setSelectedAvailableColor(selectedAvailableColor.filter((col, ind) => ind !== i))} type='button' className='-top-3 text-red -right-2 absolute'>x</button>
-                                                </div>
-                                            </>)
-                                        }
-                                    </div>
-
-                                    <label className={`bg-gray-50  border ${selectedColor ? "cursor-pointer" : ""}  border-borderColor flex  rounded-full justify-center items-center h-6 w-6`} type='button' htmlFor="availableColorInput">
-                                        +
-                                        <input
-                                            disabled={!selectedColor}
-                                            value={selectedColor}
-
-                                            onBlur={e => setSelectedAvailableColor([...selectedAvailableColor, e.target.value])}
-                                            className=' opacity-0 w-0 h-0' type="color" id="availableColorInput" />
-                                    </label>
-                                </div>
-                            </div>
-                            {selectedColor && selectedAvailableColor && selectedAvailableColor.length === 0 && <span className='text-red ms-2'>Please select color</span>}
-                            {/* <input type="text" placeholder="" /> */}
-
-
-
-
-                            {/* buttons */}
-                            <div className="my-5">
-                                <button type="submit" className="h-[54px] rounded-xl text-white bg-darkgreen w-full">
-                                    {
-                                        isPending ? <>
-                                            <div className="loading loading-spinner loading-md"></div>
-                                        </>
-                                            : "Create"
-                                    }
-                                </button>
-                            </div>
-                            <div className="my-5">
-                                <button
-                                    type='button'
-                                    onClick={e => window.verificationModal.showModal()}
-                                    className="h-[54px] rounded-xl btn btn-neutral btn-outline w-full">Verify</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    {/* choose image */}
-                    <div className="border-dashed border-l-2  ps-5 pe-3 flex flex-col  items-center  border-l-stone1">
-                        {/* product image */}
-                        <div className="h-[420px] md:min-w-[400px] min-w-[300px] rounded-xl mt-7  text-center flex flex-col justify-center items-center max-w-[453px] border border-stone2">
-                            <input
-                                type="file"
-                                // {...register("url", { required: true })}
-                                onChange={handleImageChange}
-                                ref={inputRef}
-                                className='hidden' name="" id="" />
-                            <button disabled={selectedImages.length >= 4} onClick={handleChooseImage} type="button" className=" bg-gradient-to-t from-blackwhite text-white h-[55px] rounded-xl w-[253px] to-whiteblack">
-                                Choose image</button>
-
-                            {selectedImages.length === 4 && <span className='text-red font-medium '>You can select only 4 image</span>}
-
+                            type="button"
+                            className="-top-3 text-red -right-2 absolute"
+                          >
+                            x
+                          </button>
                         </div>
-                        {/* selected image */}
-                        <div className="flex flex-wrap mt-10 gap-6">
-                            {
-                                selectedImages && selectedImages.map((item, index) => <div className='relative'>
-                                    <button onClick={() => { handleRemoveImage(index) }} className='absolute -right-4 text-xl rounded-full   text-red top-0'>x</button>
-                                    <img className='min-h-52 max-h-52 max-w-44 min-w-44 object-contain object-center rounded-lg' src={URL.createObjectURL(item)} alt="" />
-                                </div>)
-                            }
-                        </div>
-
+                      ))}
                     </div>
-
-
+                    <label
+                      className={`bg-gray-50  border ${
+                        watchedValues.color ? "cursor-pointer" : ""
+                      }  border-borderColor flex  rounded-full justify-center items-center h-6 w-6`}
+                      type="button"
+                      htmlFor="availableColorInput"
+                    >
+                      +
+                      <input
+                        disabled={!watchedValues.color}
+                        onBlur={(e) =>
+                          setAvailableColors((prev) => [
+                            ...prev,
+                            e.target.value,
+                          ])
+                        }
+                        className=" opacity-0 w-0 h-0"
+                        type="color"
+                        id="availableColorInput"
+                      />
+                    </label>
+                  </div>
                 </div>
 
+                {/* buttons */}
+                <div className="my-5">
+                  <button
+                    type="submit"
+                    className="h-[54px] rounded-xl text-white bg-darkgreen w-full"
+                  >
+                    {isPending ? (
+                      <>
+                        <div className="loading loading-spinner loading-md"></div>
+                      </>
+                    ) : (
+                      "Create"
+                    )}
+                  </button>
+                </div>
+                <div className="my-5">
+                  <button
+                    type="button"
+                    onClick={(e) => window.verificationModal.showModal()}
+                    className="h-[54px] rounded-xl btn btn-neutral btn-outline w-full"
+                  >
+                    Verify
+                  </button>
+                </div>
+              </form>
             </div>
-        </div >
 
+            {/* choose image */}
+            <div className="border-dashed border-l-2  ps-5 pe-3 flex flex-col  items-center  border-l-stone1">
+              {/* product image */}
+              <div className="h-[420px] md:min-w-[400px] min-w-[300px] rounded-xl mt-7  text-center flex flex-col justify-center items-center max-w-[453px] border border-stone2">
+                <input
+                  type="file"
+                  onChange={handleImageChange}
+                  ref={inputRef}
+                  className="hidden"
+                  multiple
+                  max={4}
+                  accept="image/*"
+                />
+                <button
+                  disabled={selectedImages.length >= 4}
+                  onClick={handleChooseImage}
+                  type="button"
+                  className=" bg-gradient-to-t from-blackwhite text-white h-[55px] rounded-xl w-[253px] to-whiteblack disabled:opacity-50"
+                >
+                  Choose image
+                </button>
 
-
-
-
-
-
-
-
-        {/* verification modal */}
-
-        <dialog id="verificationModal" className="modal " >
-            <form method="dialog" className="modal-box  max-h-[777px] w-[656px]">
-                <h3 className="font-bold text-lg text-[24px] text-center pb-4 border-b gap-16 border-dashed border-b-black  ">Verification Details</h3>
-                <div className="mt-5 font-semibold px-2">
-
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Product Name:
-                        {name ? <span className='text-base font-semibold'>{name}</span> : <span className='text-red text-base'>Please enter Name!</span>}
+                {selectedImages.length === 4 && (
+                  <span className="text-red font-medium ">
+                    You can select only 4 image
+                  </span>
+                )}
+              </div>
+              {/* selected image */}
+              <div className="flex flex-wrap mt-10 gap-4">
+                {selectedImages &&
+                  selectedImages.map((item, index) => (
+                    <div className="relative min-h-52 max-h-52 max-w-44 min-w-44 rounded-lg border-neutral-300 border">
+                      <button
+                        onClick={() => {
+                          handleRemoveImage(index);
+                        }}
+                        className="absolute right-4 text-xl rounded-full text-red top-0"
+                      >
+                        x
+                      </button>
+                      <img
+                        className="w-full h-full object-contain object-center"
+                        src={URL.createObjectURL(item)}
+                        alt=""
+                      />
                     </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Desciption:
-                        {description ? <span className='text-base font-semibold'>{description}</span> : <span className='text-red text-base'>Please enter Description!</span>}
-                    </div>
+      {/* verification modal */}
 
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Base Price:
-                        {baseprice ? <span className='text-base font-semibold'>{baseprice}</span> : <span className='text-red text-base'>Please enter Baseprice!</span>}
-                    </div>
+      <dialog id="verificationModal" className="modal ">
+        <form method="dialog" className="modal-box  max-h-[777px] w-[656px]">
+          <h3 className="font-bold text-lg text-[24px] text-center pb-4 border-b gap-16 border-dashed border-b-black  ">
+            Verification Details
+          </h3>
+          <div className="mt-5 font-semibold px-2">
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Product Name:
+              {watchedValues.name ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.name}
+                </span>
+              ) : (
+                <span className="text-red text-base">Please enter Name!</span>
+              )}
+            </div>
 
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Discount Price:
-                        {discountedprice ? <span className='text-base font-semibold'>{discountedprice}</span> : <span className='text-red text-base'>Please enter Discountprice!</span>}
-                    </div>
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Description:
+              {watchedValues.description ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.description}
+                </span>
+              ) : (
+                <span className="text-red text-base">
+                  Please enter Description!
+                </span>
+              )}
+            </div>
 
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Stock:
-                        {stock ? <span className='text-base font-semibold'>{stock}</span> : <span className='text-red text-base'>Please enter Stock!</span>}
-                    </div>
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Base Price:
+              {watchedValues.baseprice ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.baseprice}
+                </span>
+              ) : (
+                <span className="text-red text-base">
+                  Please enter Base price!
+                </span>
+              )}
+            </div>
 
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Category:
-                        {category ? <span className='text-base font-semibold'>{category}</span> : <span className='text-red text-base'>Please enter Category!</span>}
-                    </div>
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Discount Price:
+              {watchedValues.discountedprice ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.discountedprice}
+                </span>
+              ) : (
+                <span className="text-red text-base">
+                  Please enter Discounted price!
+                </span>
+              )}
+            </div>
 
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Sub Category:
-                        {sub_category ? <span className='text-base font-semibold'>{sub_category}</span> : <span className='text-red text-base'>Please enter Subcategory!</span>}
-                    </div>
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Stock:
+              {watchedValues.stock ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.stock}
+                </span>
+              ) : (
+                <span className="text-red text-base">Please enter Stock!</span>
+              )}
+            </div>
 
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Size/Type:
-                        {size ? <span className='text-base font-semibold'>{size}</span> : <span className='text-red text-base'>Please enter size!</span>}
-                    </div>
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Category:
+              {watchedValues.category ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.category}
+                </span>
+              ) : (
+                <span className="text-red text-base">
+                  Please enter Category!
+                </span>
+              )}
+            </div>
 
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Color:
-                        {selectedColor ? <div style={{ backgroundColor: selectedColor }} className='text-base font-semibold h-5 w-5 rounded-full'></div> : <span className='text-red text-base'>Please enter color!</span>}
-                    </div>
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Sub Category:
+              {watchedValues.sub_category ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.sub_category}
+                </span>
+              ) : (
+                <span className="text-red text-base">
+                  Please enter Subcategory!
+                </span>
+              )}
+            </div>
 
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Available Color: {selectedAvailableColor ? selectedAvailableColor.map(item => <div style={{ backgroundColor: item }} className='text-base font-semibold h-5 w-5 rounded-full'></div>) : <span className='text-red text-base'>Please enter Availablecolor!</span>}
-                    </div>
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Size/Type:
+              {watchedValues.size ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.size}
+                </span>
+              ) : (
+                <span className="text-red text-base">Please enter size!</span>
+              )}
+            </div>
 
-                    <div className="text-center">
-                        <button type="submit" className="mt-3 bg-gray3 w-[285px] h-[54px] rounded-xl" >Close</button>
-                    </div>
-                </div>
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Color:
+              {watchedValues.color ? (
+                <div
+                  style={{ backgroundColor: watchedValues.color }}
+                  className="text-base font-semibold h-5 w-5 rounded-full"
+                ></div>
+              ) : (
+                <span className="text-red text-base">Please enter color!</span>
+              )}
+            </div>
 
-            </form>
-        </dialog>
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Available Color:{" "}
+              {availableColors || watchedValues.color ? (
+                <>
+                  {watchedValues.color && (
+                    <div
+                      style={{ backgroundColor: watchedValues.color }}
+                      className="text-base font-semibold h-5 w-5 rounded-full"
+                    ></div>
+                  )}
+                  {availableColors.map((item) => (
+                    <div
+                      style={{ backgroundColor: item }}
+                      className="text-base font-semibold h-5 w-5 rounded-full"
+                    ></div>
+                  ))}
+                </>
+              ) : (
+                <span className="text-red text-base">
+                  Please enter Available Color!
+                </span>
+              )}
+            </div>
 
+            <div className="text-center">
+              <button
+                type="submit"
+                className="mt-3 bg-gray3 w-[285px] h-[54px] rounded-xl"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </form>
+      </dialog>
+    </div>
+  );
+};
 
-
-
-
-
-
-
-
-
-    </div >
-    )
-}
-
-export default CreateProduct
+export default CreateProduct;
