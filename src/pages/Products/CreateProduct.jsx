@@ -1,30 +1,34 @@
 import React, { useEffect, useRef, useState } from "react";
 import backIcon from "../../assets/icons/back.svg";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm, useWatch } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct } from "../../api/product";
 import AppFormErrorLine from "../../components/AppFormErrorLine";
 import Swal from "sweetalert2";
-import { filterOptions, subSubcategoriesMap, subcategoriesMap } from "./data";
+import { getFilters, subSubcategoriesMap, subcategoriesMap } from "./data";
 
 const CreateProduct = () => {
   const [availableColors, setAvailableColors] = useState([]);
-  const { mutate, isPending, isSuccess } = useMutation({
+  const [categories] = useState(["Gear", "Shoes", "Helmets"]);
+  const [selectedImages, setSelectedImages] = useState([]);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const { mutate, isPending } = useMutation({
     mutationFn: createProduct,
     onSuccess: () => {
       Swal.fire({
         title: "Product Add Success",
-        text: `${name} added to your store `,
+        text: `${watchedValues.name} added to your store `,
         icon: "success",
       });
-      setSelectedAvailableColor([]);
-      setSelectedColor("");
-      setSelectedCategory("");
-      setSelectedSubcategory("");
-      setSelectedSubSubcategory("");
-      setSelectedImages([]);
+      queryClient.invalidateQueries({
+        queryKey: ["products"],
+      });
       reset();
+      setAvailableColors([]);
+      setSelectedImages([]);
+      navigate("/products");
     },
     onError: (err) => {
       Swal.fire({
@@ -38,61 +42,22 @@ const CreateProduct = () => {
 
   // react hook form 👇
   const {
-    control,
     watch,
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
-    setValue,
-    setError,
-    clearErrors,
     reset,
   } = useForm();
   const watchedValues = watch();
-  const [categories] = useState(["Gear", "Shoes", "Helmets"]);
-  const [subcategories, setSubcategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("");
-  const [subSubcategories, setSubSubcategories] = useState([]);
-  const [selectedSubSubcategory, setSelectedSubSubcategory] = useState("");
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [selectedColor, setSelectedColor] = useState("");
-  const [selectedAvailableColor, setSelectedAvailableColor] = useState([]);
 
-  const {
-    name,
-    description,
-    baseprice,
-    discountedprice,
-    stock,
-    category,
-    sub_category,
-    size,
-  } = watch();
-  // input ref
   const inputRef = useRef();
 
   const handleChooseImage = () => {
     inputRef.current.click();
   };
 
-  useEffect(() => {
-    console.log(watchedValues);
-  }, [watchedValues]);
   // form submit
   const handleFormSubmit = (data) => {
-    if (
-      !selectedColor ||
-      selectedAvailableColor.length === 0 ||
-      selectedImages.length === 0
-    ) {
-      return Swal.fire({
-        title: "Error",
-        text: "Please Fill All field",
-        icon: "error",
-      });
-    }
     const fd = new FormData();
     for (const item of selectedImages) {
       fd.append("images", item);
@@ -100,40 +65,14 @@ const CreateProduct = () => {
     for (const item of Object.keys(data)) {
       fd.append(item, data[item]);
     }
-    fd.append("Availablecolor", selectedAvailableColor.join());
-    fd.append("color", selectedColor);
+    fd.append(
+      "Availablecolor",
+      availableColors?.shift(watchedValues.color)?.join(",")
+    );
     mutate(fd);
   };
 
-  const handleCategoryChange = (category) => {
-    clearErrors("category");
-    if (!category) {
-      setError("category", { message: "Choose a valid category" });
-    }
-    setValue("category", category);
-    setSelectedCategory(category);
-    setSubcategories(subcategoriesMap[category] || []);
-    setSelectedSubcategory(""); // Reset selected subcategory when the category changes
-    setSubSubcategories([]); // Reset subsubcategories when the category changes
-    setSelectedSubSubcategory(""); // Reset selected subsubcategory when the category changes
-  };
-
-  const handleSubcategoryChange = (subcategory) => {
-    clearErrors("sub_category");
-    if (!subcategory) {
-      setError("sub_category", { message: "Choose a valid subcategory" });
-    }
-    setSelectedSubcategory(subcategory);
-    if (selectedCategory === "Gear") {
-      setSubSubcategories(subSubcategoriesMap[subcategory] || []);
-    } else {
-      setSubSubcategories([]); // Reset subsubcategories if the category is not 'Gear'
-    }
-    setSelectedSubSubcategory(""); // Reset selected subsubcategory when the subcategory changes
-  };
-
   // handle image change
-
   const handleImageChange = (event) => {
     const { files } = event.target;
     if (files.length + selectedImages.length > 4) {
@@ -472,9 +411,11 @@ const CreateProduct = () => {
                   )}
 
                 {/* size */}
-                {(selectedCategory === "Gear"
-                  ? selectedSubSubcategory
-                  : selectedCategory && selectedSubcategory) && (
+                {getFilters(
+                  watchedValues.category,
+                  watchedValues.sub_category,
+                  watchedValues.sub_category2
+                )?.length > 0 && (
                   <div className="my-5 ">
                     <div
                       className={`w-full  px-3 rounded-xl border-darkstone  border ${
@@ -482,31 +423,25 @@ const CreateProduct = () => {
                       }`}
                     >
                       <select
-                        onChange={(e) => {
-                          clearErrors("size");
-                          clearErrors("type");
-                          if (!e.target.value) {
-                            setError("size", {
-                              message: "Please Choose valid size",
-                            });
-                          }
-                          setValue("size", e.target.value);
-                        }}
+                        {...register("size", {
+                          required: {
+                            value: true,
+                            message: "This field is required",
+                          },
+                        })}
                         className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${
                           (errors.size || errors.type) && " border-red"
                         }`}
-                        name=""
-                        id=""
                       >
-                        <option selected disabled value={""}>
-                          Choose Size
+                        <option selected disabled value="">
+                          Choose Size/Type
                         </option>
                         {/* category filter */}
                         {category &&
-                          filterOptions(
-                            selectedCategory,
-                            selectedSubcategory,
-                            selectedSubSubcategory
+                          getFilters(
+                            watchedValues.category,
+                            watchedValues.sub_category,
+                            watchedValues.sub_category2
                           ).map((item, i) => (
                             <option key={i} value={item}>
                               {item}

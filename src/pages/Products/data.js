@@ -37,18 +37,14 @@ export const subSubcategoriesMap = {
   Accessories: ["Ball", "SunGlass", "Bat Grips", "Bat Care", "Stumps", "Other"],
 };
 
-// size and types arrays
-
 export const allFilters = [
   {
     category: "Shoes",
     filters: ["6", "7", "8", "9", "10", "11", "12"],
-    type: "size",
   },
   {
     category: "Helmets",
     filters: ["XS", "Small", "Medium", "Large", "XL", "XXL"],
-    type: "size",
   },
   // bat
   {
@@ -56,28 +52,24 @@ export const allFilters = [
     subcategory: "Bat",
     subSubcategory: "English Willow",
     filters: ["1", "2", "3", "4", "5", "6", "Harrow", "Mens", "Compact"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Bat",
     subSubcategory: "Kashmir Willow",
     filters: ["1", "2", "3", "4", "5", "6", "Harrow", "Mens", "Compact"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Bat",
     subSubcategory: "Tennis",
     filters: ["1", "2", "3", "4", "5", "6", "Harrow", "Mens", "Compact"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Bat",
     subSubcategory: "Player Edition",
     filters: ["1", "2", "3", "4", "5", "6", "Harrow", "Mens", "Compact"],
-    type: "size",
   },
 
   // batting gear
@@ -86,21 +78,18 @@ export const allFilters = [
     subcategory: "Batting Gear",
     subSubcategory: "Gloves",
     filters: ["Boys", "Youth", "Mens", "Compact", "Junior"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Batting Gear",
     subSubcategory: "Leg Guard",
     filters: ["Boys", "Youth", "Mens", "Compact", "Junior"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Batting Gear",
     subSubcategory: "LInner Gloves",
     filters: ["Boys", "Youth", "Mens", "Compact", "Junior"],
-    type: "size",
   },
 
   // wicket keeping
@@ -110,21 +99,18 @@ export const allFilters = [
     subcategory: "WicketKeeping",
     subSubcategory: "WGloves",
     filters: ["Boys", "Youth", "Mens", "Compact", "Junior"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "WicketKeeping",
     subSubcategory: "WLeg Guard",
     filters: ["Boys", "Youth", "Mens", "Compact", "Junior"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "WicketKeeping",
     subSubcategory: "WInner Gloves",
     filters: ["Boys", "Youth", "Mens", "Compact", "Junior"],
-    type: "size",
   },
 
   // protection
@@ -134,35 +120,30 @@ export const allFilters = [
     subcategory: "Protection",
     subSubcategory: "Thigh Pad",
     filters: ["Boys", "Youth", "Mens", "XL", "Standard"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Protection",
     subSubcategory: "Chest Guard",
     filters: ["Boys", "Youth", "Mens", "XL", "Standard"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Protection",
     subSubcategory: "Inner ThighPad",
     filters: ["Boys", "Youth", "Mens", "XL", "Standard"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Protection",
     subSubcategory: "Abdominal Guard",
     filters: ["Boys", "Youth", "Mens", "XL", "Standard"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Protection",
     subSubcategory: "Arm Guard",
     filters: ["Boys", "Youth", "Mens", "XL", "Standard"],
-    type: "size",
   },
 
   // bags
@@ -171,28 +152,24 @@ export const allFilters = [
     subcategory: "Bags",
     subSubcategory: "Kitbags",
     filters: ["Children", "Mens"],
-    type: "type",
   },
   {
     category: "Gear",
     subcategory: "Bags",
     subSubcategory: "Wheelie",
     filters: ["Children", "Mens"],
-    type: "type",
   },
   {
     category: "Gear",
     subcategory: "Bags",
     subSubcategory: "Backpack",
     filters: ["Children", "Mens"],
-    type: "type",
   },
   {
     category: "Gear",
     subcategory: "Bags",
     subSubcategory: "Bat Cover",
     filters: ["Children", "Mens"],
-    type: "type",
   },
 
   // clothing
@@ -213,42 +190,36 @@ export const allFilters = [
       "XXXL",
       "XXXXL",
     ],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Clothing",
     subSubcategory: "Base Layer",
     filters: ["XS", "Small", "Medium", "Large", "XL", "XXL", "XXXL", "XXXXL"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Clothing",
     subSubcategory: "Athletic Supporter",
     filters: ["XS", "Small", "Medium", "Large", "XL", "XXL", "XXXL", "XXXXL"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Clothing",
     subSubcategory: "Socks",
     filters: [],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Clothing",
     subSubcategory: "Caps & Hats",
     filters: ["Small", "Medium", "Large", "XL", "XXL", "XXXL", "XXXXL"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Clothing",
     subSubcategory: "WristBand",
     filters: ["2.5 in (6.5 cm)", "5 in (12.7 cm)"],
-    type: "size",
   },
   // Cricket Sets 👇👇👇
   // {
@@ -256,7 +227,6 @@ export const allFilters = [
   //     subcategory: "Cricket Sets",
   //     subSubcategory: "English Willow Kit",
   //     filters: [],
-  //     type: "size"
   // },
 
   {
@@ -264,60 +234,66 @@ export const allFilters = [
     subcategory: "Accessories",
     subSubcategory: "Ball",
     filters: ["Leather", "Tennis", "Training"],
-    type: "type",
   },
   {
     category: "Gear",
     subcategory: "Accessories",
     subSubcategory: "SunGlass",
     filters: ["2.5 in (6.5 cm)", "5 in (12.7 cm)"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Accessories",
     subSubcategory: "Bat Grips",
     filters: ["2.5 in (6.5 cm)", "5 in (12.7 cm)"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Accessories",
     subSubcategory: "Other",
     filters: ["2.5 in (6.5 cm)", "5 in (12.7 cm)"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Accessories",
     subSubcategory: "Stumps",
     filters: ["2.5 in (6.5 cm)", "5 in (12.7 cm)"],
-    type: "size",
   },
   {
     category: "Gear",
     subcategory: "Accessories",
     subSubcategory: "Bat Care",
     filters: ["2.5 in (6.5 cm)", "5 in (12.7 cm)"],
-    type: "size",
   },
 ];
 
-export const filterOptions = (
-  category = "",
-  subcategory = "",
-  subSubcategory = ""
-) => {
-  const filter = allFilters.find((item) => {
-    if (category === "Gear") {
-      return (
-        item.category === category &&
-        (item.subcategory === "" || item.subcategory === subcategory) &&
-        (item.subSubcategory === "" || item.subSubcategory === subSubcategory)
-      );
-    } else {
-      return item.category === category;
+export const getFilters = (category, subcategory, subSubcategory) => {
+  if (category !== "Gear") {
+    const filters = allFilters.filter((item) => {
+      if (item.category === category) {
+        return true;
+      }
+      return false;
+    });
+    return filters.length === 1 ? filters[0].filters : [];
+  }
+  const filters = allFilters.filter((item) => {
+    if (item.category === category) {
+      if (subcategory) {
+        if (item.subcategory === subcategory) {
+          if (subSubcategory) {
+            if (item.subSubcategory === subSubcategory) {
+              return true;
+            }
+          } else {
+            return true;
+          }
+        }
+      } else {
+        return true;
+      }
     }
+    return false;
   });
-  return filter ? filter.filters : [];
+  return filters.length === 1 ? filters[0].filters : [];
 };
