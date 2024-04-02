@@ -3,14 +3,13 @@ import backIcon from "../../assets/icons/back.svg";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  createProduct,
-  getProductDetail,
-  updateProduct,
-} from "../../api/product";
+import { getProductDetail, updateProduct } from "../../api/product";
 import AppFormErrorLine from "../../components/AppFormErrorLine";
 import Swal from "sweetalert2";
-import { subSubcategoriesMap, subcategoriesMap } from "../../assets/data/productFilters";
+import {
+  subSubcategoriesMap,
+  subcategoriesMap,
+} from "../../assets/data/productFilters";
 import getFilters from "../../utils/getFilters";
 
 const UpdateProduct = () => {
@@ -18,6 +17,8 @@ const UpdateProduct = () => {
   const [categories] = useState(["Gear", "Shoes", "Helmets"]);
   const [selectedImages, setSelectedImages] = useState([]);
   const queryClient = useQueryClient();
+  const [isRan, setIsRan] = useState(false);
+  const [isWarningShown, setIsWarningShown] = useState(false);
 
   const { productId } = useParams();
   // get product details query
@@ -36,7 +37,10 @@ const UpdateProduct = () => {
         icon: "success",
       });
       queryClient.invalidateQueries({
-        queryKey: ["products", productId],
+        queryKey: ["products"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["getProductDetails", productId],
       });
       reset();
       setAvailableColors([]);
@@ -94,7 +98,9 @@ const UpdateProduct = () => {
         for (const item of Object.keys(data)) {
           fd.append(item, data[item]);
         }
-        const allColors = [data.color, ...availableColors];
+        const allColors = [...new Set([data.color, ...availableColors])];
+        console.log(allColors);
+
         fd.append("Availablecolor", allColors.join(","));
         mutate({ productId: productId, productData: fd });
       }
@@ -109,6 +115,28 @@ const UpdateProduct = () => {
 
   // handle image change
   const handleImageChange = (event) => {
+    if (!isWarningShown) {
+      Swal.fire({
+        title: "Warning",
+        text: "When you add new images, the previous uploaded images will be deleted",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete them!",
+      }).then((result) => {
+        setSelectedImages([]);
+        if (result.isConfirmed) {
+          addImage(event);
+        }
+        setIsWarningShown(true);
+      });
+    } else {
+      addImage(event);
+    }
+  };
+
+  const addImage = (event) => {
     const { files } = event.target;
     if (files.length + selectedImages.length > 4) {
       return Swal.fire({
@@ -120,27 +148,25 @@ const UpdateProduct = () => {
       setSelectedImages((prev) => [...prev, ...files]);
     }
   };
+
   const handleRemoveImage = (index) => {
     setSelectedImages(selectedImages.filter((item, i) => i !== index));
   };
 
-  console.log(isSuccess);
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data && !isRan) {
+      setIsRan(true);
       for (const item of Object.keys(data?.product)) {
         setValue(item, data?.product[item]);
       }
       for (const item of data?.product?.images) {
         setSelectedImages([...selectedImages, item]);
       }
-      setAvailableColors(data?.product?.Availablecolor.split(","));
-      // setSelectedCategory(data?.product?.category)
-      // setSelectedSubcategory(data?.product?.sub_category)
-      // setSelectedSubSubcategory(data?.product?.sub_category2)
-      // setSelectedColor(data?.product?.color)
-      // setSelectedAvailableColor(data?.product?.Availablecolor.split(","))
-      // handleCategoryChange(data?.product?.category)
-      // handleSubcategoryChange(data?.product?.sub_category)
+      setAvailableColors(
+        data?.product?.Availablecolor.split(",")?.filter(
+          (val) => val !== data?.product?.color
+        )
+      );
     }
     return () => {
       queryClient.invalidateQueries({
@@ -148,7 +174,7 @@ const UpdateProduct = () => {
       });
       queryClient.invalidateQueries("getProductDetails");
     };
-  }, [isSuccess]);
+  }, [data]);
 
   return (
     <div>
