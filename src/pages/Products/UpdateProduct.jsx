@@ -21,8 +21,12 @@ const UpdateProduct = () => {
     const { mutate, isPending } = useMutation({
         mutationFn: updateProduct,
         onSuccess: () => {
-            queryClient.invalidateQueries("products")
             queryClient.invalidateQueries({ queryKey: ["products"] })
+            Swal.fire({
+                title: "Product Update Success",
+                text: `${name} update successfully `,
+                icon: "success",
+            })
         },
         onError: () => { },
     })
@@ -91,7 +95,7 @@ const UpdateProduct = () => {
         }
     }
     const handleRemoveImage = (index) => {
-        setSelectedImages(selectedImages.filter((item, i) => i !== index))
+        setNewImage(newImage.filter((item, i) => i !== index))
     }
     const handleChooseImage = () => {
         inputRef.current.click()
@@ -116,6 +120,7 @@ const UpdateProduct = () => {
             handleSubcategoryChange(data?.product?.sub_category)
         }
         return () => {
+            queryClient.invalidateQueries({ queryKey: ["products", "getProductDetails", productId] })
             queryClient.invalidateQueries("getProductDetails")
         }
     }, [isSuccess])
@@ -159,7 +164,6 @@ const UpdateProduct = () => {
 
             : <div>
 
-                <pre>{JSON.stringify(selectedImages, null, 2)}</pre>
                 <div className='bg-lightgray h-full w-full p-6 py-8'>
 
                     <div className="bg-white overflow-x-auto rounded-[16px] p-4  ps-10 ">
@@ -185,7 +189,7 @@ const UpdateProduct = () => {
 
                                                         required: { value: true, message: "This field is required" },
                                                         minLength: { value: 3, message: "Minimum length is 3 character " },
-                                                        maxLength: { value: 15, message: "Minimum length is 15 character" }
+                                                        maxLength: { value: 100, message: "Minimum length is 100 character" }
                                                     })}
 
                                                     className={` h-[45px] w-full rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.name && "border-red"}`} type="text" placeholder="Product Name" />
@@ -416,7 +420,7 @@ const UpdateProduct = () => {
                                                             disabled={!selectedColor}
                                                             color={selectedColor}
                                                             value={selectedColor}
-                                                            onChange={e => setSelectedAvailableColor([...selectedAvailableColor, e.target.value])}
+                                                            onBlur={e => setSelectedAvailableColor([...selectedAvailableColor, e.target.value])}
                                                             className=' opacity-0 w-0 h-0' type="color" id="availableColorInput" />
                                                     </label>
                                                 </div>
@@ -434,7 +438,7 @@ const UpdateProduct = () => {
                                                         isPending ? <>
                                                             <div className="loading loading-spinner loading-md"></div>
                                                         </>
-                                                            : "Create"
+                                                            : "Update"
                                                     }
                                                 </button>
                                             </div>
@@ -471,20 +475,21 @@ const UpdateProduct = () => {
                                                         Choose image</button>
                                                 </div>
                                             }
-                                            {selectedImages.length === 4 && <span className='text-red font-medium '>You can select only 4 image</span>}
+                                            {(selectedImages.length === 4 || newImage.length === 4) && <span className='text-red font-medium '>You can select only 4 image</span>}
 
                                         </div>
-                                        {
-                                            toggle ? <button onClick={e => setToggle(false)} >Cancel</button>
-                                                : <button onClick={e => setToggle(true)}>remove</button>
-                                        }
+                                        <div className="mt-2">
+                                            {
+                                                toggle ? <button className="btn btn-neutral btn-outline btn-sm rounded-md" onClick={e => setToggle(false)} >Cancel</button>
+                                                    : <button className="btn btn-error btn-outline btn-sm rounded-md" onClick={e => setToggle(true)}>Change Images</button>
+                                            }
+                                        </div>
                                         {/* selected image */}
                                         <div className="flex flex-wrap mt-10 gap-6">
 
                                             {
                                                 !toggle ?
                                                     selectedImages && selectedImages.map((item, index) => <div className='relative'>
-                                                        <button onClick={() => { handleRemoveImage(index) }} className='absolute -right-4 text-xl rounded-full   text-red top-0'>x</button>
                                                         <img className='min-h-52 max-h-52 max-w-44 min-w-44 object-contain object-center rounded-lg' src={item.url} alt="" />
                                                     </div>)
                                                     : newImage && newImage.map((item, index) => <div className='relative'>
@@ -549,12 +554,11 @@ const UpdateProduct = () => {
                                 </div>
 
                                 <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Color:
-                                    {color ? <span className='text-base font-semibold'>{color}</span> : <span className='text-red text-base'>Please enter color!</span>}
+                                    {color ? <div style={{ backgroundColor: selectedColor }} className='text-base font-semibold h-5 w-5 rounded-full'></div> : <span className='text-red text-base'>Please enter color!</span>}
                                 </div>
 
-                                <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Available Color: {Availablecolor ? <span className='text-base font-semibold'>{selectedAvailableColor.join()}</span> : <span className='text-red text-base'>Please enter Availablecolor!</span>}
+                                <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Available Color: {Availablecolor ? selectedAvailableColor.map(item => <div style={{ backgroundColor: item }} className='text-base font-semibold h-5 w-5 rounded-full'></div>) : <span className='text-red text-base'>Please enter Availablecolor!</span>}
                                 </div>
-
                                 <div className="text-center">
                                     <button type="submit" className="mt-3 bg-gray3 w-[285px] h-[54px] rounded-xl" >Close</button>
                                 </div>

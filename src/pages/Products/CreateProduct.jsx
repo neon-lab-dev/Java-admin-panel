@@ -160,7 +160,7 @@ const CreateProduct = () => {
                                     {
                                         required: { value: true, message: "This field is required" },
                                         minLength: { value: 3, message: "Minimum length is 3 character " },
-                                        maxLength: { value: 15, message: "Minimum length is 15 character" }
+                                        maxLength: { value: 100, message: "Maximum length is 100 character" }
                                     })} className={` h-[45px] w-full rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.name && "border-red"}`} type="text" placeholder="Product Name" />
 
                                 {errors.name && <span className='text-red ms-2'>{errors.name.message}</span>}
@@ -382,7 +382,7 @@ const CreateProduct = () => {
                                             disabled={!selectedColor}
                                             value={selectedColor}
 
-                                            onChange={e => setSelectedAvailableColor([...selectedAvailableColor, e.target.value])}
+                                            onBlur={e => setSelectedAvailableColor([...selectedAvailableColor, e.target.value])}
                                             className=' opacity-0 w-0 h-0' type="color" id="availableColorInput" />
                                     </label>
                                 </div>
@@ -495,10 +495,10 @@ const CreateProduct = () => {
                     </div>
 
                     <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Color:
-                        {selectedColor ? <span className='text-base font-semibold'>{selectedColor}</span> : <span className='text-red text-base'>Please enter color!</span>}
+                        {selectedColor ? <div style={{ backgroundColor: selectedColor }} className='text-base font-semibold h-5 w-5 rounded-full'></div> : <span className='text-red text-base'>Please enter color!</span>}
                     </div>
 
-                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Available Color: {selectedAvailableColor.length !== 0 ? <span className='text-base font-semibold'>{selectedAvailableColor.join()}</span> : <span className='text-red text-base'>Please enter Availabecolor!</span>}
+                    <div className='my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]'>Available Color: {selectedAvailableColor ? selectedAvailableColor.map(item => <div style={{ backgroundColor: item }} className='text-base font-semibold h-5 w-5 rounded-full'></div>) : <span className='text-red text-base'>Please enter Availablecolor!</span>}
                     </div>
 
                     <div className="text-center">

@@ -298,8 +298,8 @@ export const allFilters = [
         category: "Gear",
         subcategory: "Accessories",
         subSubcategory: "Ball",
-        filters: ["2.5 in (6.5 cm)", "5 in (12.7 cm)"],
-        type: "size"
+        filters: ["Leather", "Tennis", "Training"],
+        type: "type"
     },
     {
         category: "Gear",

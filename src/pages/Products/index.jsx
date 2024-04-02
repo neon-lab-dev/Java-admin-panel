@@ -33,10 +33,21 @@ const Products = () => {
     onSuccess: () => {
       setallProducts(allProducts.filter(item => item._id !== productId))
       queryClient.invalidateQueries(["products"])
+      Swal.fire({
+        title: "Deleted!",
+        text: "Your product has been deleted.",
+        icon: "success"
+      })
+    },
+    onError: (err) => {
+      Swal.fire({
+        title: "Error",
+        text: err,
+        icon: "error",
+      })
     }
   })
 
-  console.log(data);
 
   const [allProducts, setallProducts] = useState(data?.products)
   // 👇 for printing a data by filter or pagination 
@@ -84,7 +95,6 @@ const Products = () => {
 
   // 👇 filter data hook call 
   const filteredProductData = useFilter({ AllData: data?.products, filterFrom: ["_id", "name", "category", "discountedprice", "stock"], inpValue: searchFilter })
-
   useEffect(() => {
     if (searchFilter) {
       setallProducts(filteredProductData)
@@ -93,7 +103,6 @@ const Products = () => {
     }
     setPage(0)
   }, [searchFilter])
-
   // 👇 for pagination 
   useEffect(() => {
     const temp = [];
@@ -106,21 +115,11 @@ const Products = () => {
   }, [page, allProducts, data]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess || data) {
       setallProducts(pre => data.products)
     }
-  }, [isSuccess])
+  }, [isSuccess, data])
 
-  useEffect(() => {
-    if (deleteProductSuccess) {
-      Swal.fire({
-        title: "Deleted!",
-        text: "Your product has been deleted.",
-        icon: "success"
-      })
-    }
-  }, [deleteProductSuccess])
-  console.log(data);
 
   // return <UpdateProduct />
   return (
@@ -137,7 +136,7 @@ const Products = () => {
           {/* searchbar and download btn */}
           <div className=" justify-between flex items-center ">
             {/* Searchbar */}
-            <Searchbar setSerchFilter={setSearchFilter} placeholder={"Search products"} />
+            <Searchbar onChange={(e) => setSearchFilter(e.target.value)} placeholder={"Search products"} />
 
             <div className="flex items-center gap-3">
 
