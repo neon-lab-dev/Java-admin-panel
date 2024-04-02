@@ -6,7 +6,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProduct } from "../../api/product";
 import AppFormErrorLine from "../../components/AppFormErrorLine";
 import Swal from "sweetalert2";
-import { getFilters, subSubcategoriesMap, subcategoriesMap } from "./data";
+import {
+  subSubcategoriesMap,
+  subcategoriesMap,
+} from "../../assets/data/productFilters";
+import getFilters from "../../utils/getFilters";
 
 const CreateProduct = () => {
   const [availableColors, setAvailableColors] = useState([]);

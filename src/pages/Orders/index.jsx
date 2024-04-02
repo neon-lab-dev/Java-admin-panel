@@ -201,12 +201,6 @@ const Orders = () => {
               filteredDataLength={filteredData.length}
               setStartingIndex={setStartingIndex}
               startingIndex={startingIndex}
-              displayDataLength={
-                filteredData?.slice(
-                  startingIndex,
-                  startingIndex + MAX_ROWS_PER_PAGE
-                ).length
-              }
             />
           )}
         </div>
