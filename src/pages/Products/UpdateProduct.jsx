@@ -8,7 +8,6 @@ import { getProductDetail, updateProduct } from "../../api/product"
 import Swal from "sweetalert2"
 
 const UpdateProduct = () => {
-
     const { productId } = useParams()
     const queryClient = useQueryClient();
     // get product details query
@@ -27,6 +26,7 @@ const UpdateProduct = () => {
                 text: `${name} update successfully `,
                 icon: "success",
             })
+            navigate("/products")
         },
         onError: () => { },
     })
