@@ -1,12 +1,12 @@
-import icon1 from "../../assets/icon/Icon1.svg";
-import icon2 from "../../assets/icon/Icon2.svg";
-import icon3 from "../../assets/icon/Icon3.svg";
-import icon4 from "../../assets/icon/Icon4.svg";
-import icon5 from "../../assets/icon/Icon5.svg";
-import icon6 from "../../assets/icon/Icon6.svg";
-import icon7 from "../../assets/icon/Icon7.svg";
-import icon8 from "../../assets/icon/Icon8.svg";
-import icon9 from "../../assets/icon/Icon9.svg";
+import icon1 from "../../assets/icons/Icon1.svg";
+import icon2 from "../../assets/icons/Icon2.svg";
+import icon3 from "../../assets/icons/Icon3.svg";
+import icon4 from "../../assets/icons/Icon4.svg";
+import icon5 from "../../assets/icons/Icon5.svg";
+import icon6 from "../../assets/icons/Icon6.svg";
+import icon7 from "../../assets/icons/Icon7.svg";
+import icon8 from "../../assets/icons/Icon8.svg";
+import icon9 from "../../assets/icons/Icon9.svg";
 
 const DASHBOARD_CARDS = [
   {

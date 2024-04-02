@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import logo from "../../assets/icon/logo.svg";
+import logo from "../../assets/icons/logo.svg";
 import { useForm } from "react-hook-form";
 import { EMAIL_REGEX } from "../../assets/data/regex";
-import AppFormErrorLine from "../../components/AppFromErrorLine";
+import AppFormErrorLine from "../../components/AppFormErrorLine";
 import { login } from "../../api/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

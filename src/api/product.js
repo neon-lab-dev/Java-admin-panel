@@ -21,10 +21,7 @@ export const getAllProducts = () => {
                     "Something went wrong, please try again"
                 )
             })
-
     })
-
-
 }
 
 export const createProduct = (productData) => {
@@ -44,10 +41,7 @@ export const createProduct = (productData) => {
                     "Something went wrong, please try again"
                 )
             })
-
     })
-
-
 }
 
 
@@ -68,10 +62,7 @@ export const deleteProduct = (productId) => {
                     "Something went wrong, please try again"
                 )
             })
-
     })
-
-
 }
 
 export const getProductDetail = (productId) => {
@@ -93,6 +84,24 @@ export const getProductDetail = (productId) => {
             })
 
     })
+}
 
-
+export const updateProduct = ({ productId, productData }) => {
+    return new Promise((resolve, reject) => {
+        axios.put(`${API.updateProduct}/${productId}`, productData, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
+            .then((res) => {
+                resolve(res.data)
+            })
+            .catch((err) => {
+                reject(
+                    err?.response?.data?.message ||
+                    "Something went wrong, please try again"
+                )
+            })
+    })
 }

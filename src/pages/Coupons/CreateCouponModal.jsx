@@ -1,9 +1,9 @@
-import createCouponImg from "../../assets/icon/createCoupon.svg";
+import createCouponImg from "../../assets/icons/createCoupon.svg";
 import { createCoupon } from "../../api/coupon";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
-import AppFormErrorLine from "../../components/AppFromErrorLine";
+import AppFormErrorLine from "../../components/AppFormErrorLine";
 
 const CreateCouponModal = () => {
   const queryClient = useQueryClient();

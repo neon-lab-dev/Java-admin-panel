@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import logo from "../../assets/icon/logo.svg";
+import logo from "../../assets/icons/logo.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { logout } from "../../api/auth";
 import { useDispatch } from "react-redux";
@@ -69,7 +69,6 @@ const Sidebar = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         mutate();
-        
       }
     });
   };

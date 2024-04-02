@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import iconDelete from "../../assets/icon/delete.svg";
-import Searchbar from "../../components/Searchbar";
-import downloadIcon from "../../assets/icon/download.svg";
-import coupon from "../../assets/icon/coupon.svg";
+import iconDelete from "../../assets/icons/delete.svg";
+import SearchBar from "../../components/SearchBar";
+import downloadIcon from "../../assets/icons/download.svg";
+import coupon from "../../assets/icons/coupon.svg";
 import { getAllCoupon, deleteCoupon } from "../../api/coupon.js";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
@@ -111,8 +111,8 @@ const Coupons = () => {
         </div>
         <div className="bg-white overflow-x-auto mt-3 rounded-[16px] p-4 px-5">
           <div className=" justify-between flex items-center ">
-            {/* Searchbar */}
-            <Searchbar
+            {/* SearchBar */}
+            <SearchBar
               placeholder="Search by Coupon code or ID"
               onChange={(e) => {
                 setSearchQuery(e.target.value);

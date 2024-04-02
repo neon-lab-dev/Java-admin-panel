@@ -6,7 +6,6 @@ const TableEntriesPrevNextButtons = ({
   startingIndex,
   setStartingIndex,
   filteredDataLength,
-  displayDataLength,
 }) => {
   const handlePrevNext = (type) => {
     if (type === "prev") {
@@ -29,14 +28,14 @@ const TableEntriesPrevNextButtons = ({
         <button
           disabled={startingIndex === 0}
           className="border-[0.6px] rounded-l-lg  p-2  px-3 bg-smoke opacity-90 disabled:opacity-40"
-          onClick={() => setStartingIndex((prev) => prev - MAX_ROWS_PER_PAGE)}
+          onClick={() => handlePrevNext("prev")}
         >
           <img src={leftCaret} />
         </button>
         <button
           disabled={startingIndex + MAX_ROWS_PER_PAGE >= filteredDataLength}
           className="border-[0.6px] rounded-r-lg p-2 px-3 bg-smoke opacity-90 disabled:opacity-40"
-          onClick={() => setStartingIndex((prev) => prev + MAX_ROWS_PER_PAGE)}
+          onClick={() => handlePrevNext("next")}
         >
           <img src={rightCaret} alt="" />
         </button>
