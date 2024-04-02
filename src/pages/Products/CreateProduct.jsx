@@ -18,6 +18,7 @@ const CreateProduct = () => {
   const [selectedImages, setSelectedImages] = useState([]);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
   const { mutate, isPending } = useMutation({
     mutationFn: createProduct,
     onSuccess: () => {
