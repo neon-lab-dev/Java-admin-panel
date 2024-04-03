@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import backIcon from "../../assets/icons/back.svg";
+import crossIcon from "../../assets/icons/crossSvg.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -146,9 +147,8 @@ const CreateProduct = () => {
                         message: "The title should be less than 100 characters",
                       },
                     })}
-                    className={` h-[45px] w-full rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
-                      errors.name && "border-red"
-                    }`}
+                    className={` h-[45px] w-full rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.name && "border-red"
+                      }`}
                     type="text"
                     placeholder="Product Name"
                   />
@@ -170,9 +170,8 @@ const CreateProduct = () => {
                         message: "Minimum length is 8 character",
                       },
                     })}
-                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${
-                      errors.description && "border-red"
-                    } ps-3 text-[16px] text-gray2 `}
+                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${errors.description && "border-red"
+                      } ps-3 text-[16px] text-gray2 `}
                     type="text"
                     placeholder="Product Description"
                   />
@@ -194,9 +193,8 @@ const CreateProduct = () => {
                         message: "Minimum length is 8 characters",
                       },
                     })}
-                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none ${
-                      errors.keyFeatures && "border-red"
-                    } border ps-3 text-[16px] text-gray2 `}
+                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none ${errors.keyFeatures && "border-red"
+                      } border ps-3 text-[16px] text-gray2 `}
                     type="text"
                     placeholder="Product key featured"
                   />
@@ -218,9 +216,8 @@ const CreateProduct = () => {
                         message: "Minimum length is 8 character ",
                       },
                     })}
-                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${
-                      errors.specification && "border-red"
-                    } ps-3 text-[16px] text-gray2 `}
+                    className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${errors.specification && "border-red"
+                      } ps-3 text-[16px] text-gray2 `}
                     type="text"
                     placeholder="Product Specification"
                   />
@@ -242,9 +239,8 @@ const CreateProduct = () => {
                         message: "Minimum price is 10",
                       },
                     })}
-                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
-                      errors.baseprice && "border-red"
-                    }`}
+                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.baseprice && "border-red"
+                      }`}
                     type="number"
                     placeholder="Base Price"
                     min={10}
@@ -272,9 +268,8 @@ const CreateProduct = () => {
                           "Discounted price should be less than base price",
                       },
                     })}
-                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
-                      errors.discountedprice && "border-red"
-                    }`}
+                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.discountedprice && "border-red"
+                      }`}
                     type="number"
                     placeholder="Discounted Price"
                     min={0}
@@ -299,9 +294,8 @@ const CreateProduct = () => {
                       validate: (value) =>
                         value > 0 || "Stock should be greater than 0",
                     })}
-                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
-                      errors.stock && "border-red"
-                    }`}
+                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.stock && "border-red"
+                      }`}
                     type="number"
                     placeholder="Stock"
                     min={1}
@@ -314,9 +308,8 @@ const CreateProduct = () => {
                 {/* category */}
                 <div className="my-5 w-full ">
                   <div
-                    className={`${
-                      errors.category && "border-red"
-                    } w-full  px-3 rounded-xl border-darkstone   border`}
+                    className={`${errors.category && "border-red"
+                      } w-full  px-3 rounded-xl border-darkstone   border`}
                   >
                     <select
                       {...register("category", {
@@ -325,9 +318,8 @@ const CreateProduct = () => {
                           message: "This field is required",
                         },
                       })}
-                      className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${
-                        errors.category && " border-red"
-                      }`}
+                      className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${errors.category && " border-red"
+                        }`}
                     >
                       <option disabled selected value="">
                         Select a category
@@ -348,9 +340,8 @@ const CreateProduct = () => {
                 {subcategoriesMap[watchedValues.category] && (
                   <div className="my-5 w-full ">
                     <div
-                      className={`w-full  px-3 rounded-xl border-darkstone  border ${
-                        errors.sub_category && " border-red"
-                      }`}
+                      className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"
+                        }`}
                     >
                       <select
                         {...register("sub_category", {
@@ -387,9 +378,8 @@ const CreateProduct = () => {
                   subSubcategoriesMap[watchedValues.sub_category] && (
                     <div className="my-5 ">
                       <div
-                        className={`w-full  px-3 rounded-xl border-darkstone  border ${
-                          errors.sub_category && " border-red"
-                        }`}
+                        className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"
+                          }`}
                       >
                         <select
                           {...register("sub_category2", {
@@ -405,9 +395,8 @@ const CreateProduct = () => {
                               ]?.includes(value) ||
                               "Choose valid sub category 2",
                           })}
-                          className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${
-                            errors.sub_category2 && " border-red"
-                          }`}
+                          className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${errors.sub_category2 && " border-red"
+                            }`}
                         >
                           <option value="" selected disabled>
                             Select a sub category2
@@ -435,40 +424,38 @@ const CreateProduct = () => {
                   watchedValues.sub_category,
                   watchedValues.sub_category2
                 )?.length > 0 && (
-                  <div className="my-5 ">
-                    <div
-                      className={`w-full  px-3 rounded-xl border-darkstone  border ${
-                        errors.sub_category && " border-red"
-                      }`}
-                    >
-                      <select
-                        {...register("size", {
-                          required: {
-                            value: true,
-                            message: "This field is required",
-                          },
-                        })}
-                        className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${
-                          (errors.size || errors.type) && " border-red"
-                        }`}
+                    <div className="my-5 ">
+                      <div
+                        className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"
+                          }`}
                       >
-                        <option selected disabled value="">
-                          Choose Size/Type
-                        </option>
-                        {/* category filter */}
-                        {getFilters(
-                          watchedValues.category,
-                          watchedValues.sub_category,
-                          watchedValues.sub_category2
-                        ).map((item, i) => (
-                          <option key={i} value={item}>
-                            {item}
+                        <select
+                          {...register("size", {
+                            required: {
+                              value: true,
+                              message: "This field is required",
+                            },
+                          })}
+                          className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${(errors.size || errors.type) && " border-red"
+                            }`}
+                        >
+                          <option selected disabled value="">
+                            Choose Size/Type
                           </option>
-                        ))}
-                      </select>
+                          {/* category filter */}
+                          {getFilters(
+                            watchedValues.category,
+                            watchedValues.sub_category,
+                            watchedValues.sub_category2
+                          ).map((item, i) => (
+                            <option key={i} value={item}>
+                              {item}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
                 {/* choose color */}
                 <div className="my-5 px-3">
@@ -541,9 +528,8 @@ const CreateProduct = () => {
                       ))}
                     </div>
                     <label
-                      className={`bg-gray-50  border ${
-                        watchedValues.color ? "cursor-pointer" : ""
-                      }  border-borderColor flex  rounded-full justify-center items-center h-6 w-6`}
+                      className={`bg-gray-50  border ${watchedValues.color ? "cursor-pointer" : ""
+                        }  border-borderColor flex  rounded-full justify-center items-center h-6 w-6`}
                       type="button"
                       htmlFor="availableColorInput"
                     >
@@ -628,9 +614,9 @@ const CreateProduct = () => {
                         onClick={() => {
                           handleRemoveImage(index);
                         }}
-                        className="absolute right-4 text-xl rounded-full text-red top-0"
+                        className="absolute right-1 top-1 text-xl rounded-full text-red "
                       >
-                        x
+                        <img className="h-5 w-5" src={crossIcon} alt="" />
                       </button>
                       <img
                         className="w-full h-full object-contain object-center"

@@ -98,9 +98,8 @@ const OrderModal = ({ selectedOrderId }) => {
                 <div className="grid justify-center px-4 grid-cols-12 max-h-[880px] ">
                   <div
                     onScroll={() => handleScrollbar("left")}
-                    className={`col-span-4  scrollbar-width-sm h-[calc(100vh-80px)] max-h-[880px] overflow-y-auto ${
-                      !isScrolling.left ? "hidden-scrollbar " : ""
-                    }  lg:px-4 md:px-2 pb-4 `}
+                    className={`col-span-4  scrollbar-width-sm h-[calc(100vh-80px)] max-h-[880px] overflow-y-auto ${!isScrolling.left ? "hidden-scrollbar " : ""
+                      }  lg:px-4 md:px-2 pb-4 `}
                   >
                     <h1 className="font-lato  font-semibold text-center text-[24px]">
                       Order Item
@@ -149,9 +148,8 @@ const OrderModal = ({ selectedOrderId }) => {
                   <div
                     id="orderInfo"
                     onScroll={() => handleScrollbar("right")}
-                    className={`col-span-8  scrollbar-width-sm overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)] max-h-[880px] ${
-                      !isScrolling.right ? "hidden-scrollbar" : ""
-                    }`}
+                    className={`col-span-8  scrollbar-width-sm overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)] max-h-[880px] ${!isScrolling.right ? "hidden-scrollbar" : ""
+                      }`}
                   >
                     <h1 className="font-lato font-semibold text-center text-[24px]">
                       Order Information
@@ -257,6 +255,7 @@ const OrderModal = ({ selectedOrderId }) => {
                         <div className="px-1 pr-5 rounded-lg border-borderColor border-[0.6px] bg-darksmoke w-full mb-28">
                           {/* select box */}
                           <select
+                            // disabled={data?.order?.orderStatus === "Delivered"}
                             onChange={(e) => setUpdatedStatus(e.target.value)}
                             value={updatedStatus ?? data?.order?.orderStatus}
                             className=" px-3 pr-5 cursor-pointer bg-darksmoke w-full   select-sm outline-none focus:outline-none"
@@ -264,13 +263,9 @@ const OrderModal = ({ selectedOrderId }) => {
                             <option disabled selected>
                               Choose Status
                             </option>
-                            {ORDER_STATUS.filter(
-                              (val) => val.toLowerCase() !== "all"
-                            ).map((item, i) => (
-                              <option key={i} value={item}>
-                                {item}
-                              </option>
-                            ))}
+                            <option disabled={data?.order?.orderStatus === "Shipped" ? false : true} value="Delivered">Delivered</option>
+                            <option disabled={data?.order?.orderStatus === "Processing" ? false : true} value="Shipped">Shipped</option>
+                            <option disabled={true} value="Processing">Processing</option>
                           </select>
                         </div>
                         <div className="w-full bg-white  flex justify-center">
