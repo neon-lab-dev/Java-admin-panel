@@ -498,44 +498,61 @@ const UpdateProduct = () => {
                       </div>
                     )}
 
-                  {/* size */}
-                  {getFilters(
-                    watchedValues.category,
-                    watchedValues.sub_category,
-                    watchedValues.sub_category2
-                  )?.length > 0 && (
-                      <div className="my-5 ">
-                        <div
-                          className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"
-                            }`}
-                        >
-                          <select
-                            {...register("size", {
-                              required: {
-                                value: true,
-                                message: "This field is required",
-                              },
-                            })}
-                            className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${(errors.size || errors.type) && " border-red"
-                              }`}
-                          >
-                            <option selected disabled value="">
-                              Choose Size/Type
-                            </option>
-                            {/* category filter */}
-                            {getFilters(
-                              watchedValues.category,
-                              watchedValues.sub_category,
-                              watchedValues.sub_category2
-                            ).map((item, i) => (
-                              <option key={i} value={item}>
-                                {item}
-                              </option>
-                            ))}
-                          </select>
+                  {watchedValues.sub_category2 === "Gloves" && (
+                    <div className="my-5">
+                      <select
+                        {...register("glovesOption", {
+                          required: "Please select a side",
+                        })}
+                        className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.glovesOption && "border-red"
+                          }`}
+                      >
+                        <option value="" disabled selected>
+                          Select Side
+                        </option>
+                        <option value="Left">Left</option>
+                        <option value="Right">Right</option>
+                      </select>
+                      {errors.glovesOption && (
+                        <AppFormErrorLine message={errors.glovesOption.message} />
+                      )}
+                    </div>
+                  )}
+
+
+{getFilters(
+                  watchedValues.category,
+                  watchedValues.sub_category,
+                  watchedValues.sub_category2
+                )?.length > 0 && (
+                    <div className="my-5 ">
+                      <div
+                        className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"
+                          }`}
+                      >
+                        <div className="flex flex-col">
+                          {/* Placeholder option */}
+                          <label className="text-[16px] text-gray2 mb-1">Choose Size/Type</label>
+                          {/* Render options based on filters */}
+                          {getFilters(
+                            watchedValues.category,
+                            watchedValues.sub_category,
+                            watchedValues.sub_category2
+                          ).map((item, i) => (
+                            <label key={i} className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                value={item}
+                                {...register("size")}
+                                className="form-checkbox h-5 w-5 text-gray-600"
+                              />
+                              <span>{item}</span>
+                            </label>
+                          ))}
                         </div>
                       </div>
-                    )}
+                    </div>
+                  )}
 
                   {/* choose color */}
                   <div className="my-5 px-3">
@@ -805,6 +822,17 @@ const UpdateProduct = () => {
                 <span className="text-red text-base">
                   Please enter Subcategory!
                 </span>
+              )}
+            </div>
+
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Side:
+              {watchedValues.sub_category === "Gloves" && watchedValues.glovesOption ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.glovesOption}
+                </span>
+              ) : (
+                <span className="text-base font-semibold">N/A</span>
               )}
             </div>
 

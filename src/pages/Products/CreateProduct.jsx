@@ -72,6 +72,7 @@ const CreateProduct = () => {
           icon: "error",
         });
       } else {
+        data.size = data.size.join(",")
         const fd = new FormData();
         for (const item of selectedImages) {
           fd.append("images", item);
@@ -250,31 +251,31 @@ const CreateProduct = () => {
                   )}
                 </div>
 
-                {/* discount price */}
+                {/* discount percentage */}
                 <div className="my-5">
                   <input
-                    {...register("discountedprice", {
+                    {...register("discountedpercentage", {
                       required: {
                         value: true,
                         message: "This field is required",
                       },
                       min: {
-                        value: 0,
-                        message: "Minimum price is 0",
+                        value: 1,
+                        message: "Minimum price is 1",
                       },
                       max: {
-                        value: watchedValues.baseprice - 1,
+                        value:100,
                         message:
-                          "Discounted price should be less than base price",
+                          "Discounted percentage should be 1 to 100",
                       },
                     })}
                     className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.discountedprice && "border-red"
                       }`}
                     type="number"
-                    placeholder="Discounted Price"
+                    placeholder="Discounted Percentage"
                     min={0}
                     disabled={!watchedValues.baseprice}
-                    max={watchedValues.baseprice - 1} // Discounted price should be less than base price
+                    max={100} // Discounted price should be less than base price
                   />
                   {errors.discountedprice && (
                     <AppFormErrorLine
@@ -418,7 +419,31 @@ const CreateProduct = () => {
                     </div>
                   )}
 
+                {/* Additional select field for Gloves subcategory */}
+                {watchedValues.sub_category2 === "Gloves" && (
+                  <div className="my-5">
+                    <select
+                      {...register("glovesOption", {
+                        required: "Please select a side",
+                      })}
+                      className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.glovesOption && "border-red"
+                        }`}
+                    >
+                      <option value="" disabled selected>
+                        Select Side
+                      </option>
+                      <option value="Left">Left</option>
+                      <option value="Right">Right</option>
+                    </select>
+                    {errors.glovesOption && (
+                      <AppFormErrorLine message={errors.glovesOption.message} />
+                    )}
+                  </div>
+                )}
+
+
                 {/* size */}
+                {/* Size */}
                 {getFilters(
                   watchedValues.category,
                   watchedValues.sub_category,
@@ -429,30 +454,26 @@ const CreateProduct = () => {
                         className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"
                           }`}
                       >
-                        <select
-                          {...register("size", {
-                            required: {
-                              value: true,
-                              message: "This field is required",
-                            },
-                          })}
-                          className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${(errors.size || errors.type) && " border-red"
-                            }`}
-                        >
-                          <option selected disabled value="">
-                            Choose Size/Type
-                          </option>
-                          {/* category filter */}
+                        <div className="flex flex-col">
+                          {/* Placeholder option */}
+                          <label className="text-[16px] text-gray2 mb-1">Choose Size/Type</label>
+                          {/* Render options based on filters */}
                           {getFilters(
                             watchedValues.category,
                             watchedValues.sub_category,
                             watchedValues.sub_category2
                           ).map((item, i) => (
-                            <option key={i} value={item}>
-                              {item}
-                            </option>
+                            <label key={i} className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                value={item}
+                                {...register("size")}
+                                className="form-checkbox h-5 w-5 text-gray-600"
+                              />
+                              <span>{item}</span>
+                            </label>
                           ))}
-                        </select>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -677,8 +698,8 @@ const CreateProduct = () => {
             </div>
 
             <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
-              Discount Price:
-              {watchedValues.discountedprice ? (
+              Discount Percentage:
+              {watchedValues.discountedpre ? (
                 <span className="text-base font-semibold">
                   {watchedValues.discountedprice}
                 </span>
@@ -723,6 +744,17 @@ const CreateProduct = () => {
                 <span className="text-red text-base">
                   Please enter Subcategory!
                 </span>
+              )}
+            </div>
+
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Side:
+              {watchedValues.sub_category === "Gloves" && watchedValues.glovesOption ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.glovesOption}
+                </span>
+              ) : (
+                <span className="text-base font-semibold">N/A</span>
               )}
             </div>
 
