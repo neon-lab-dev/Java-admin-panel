@@ -160,6 +160,7 @@ const UpdateProduct = () => {
       for (const item of Object.keys(data?.product)) {
         setValue(item, data?.product[item]);
       }
+      setValue("size", data?.product?.size.split(","));
       for (const item of data?.product?.images) {
         setSelectedImages([...selectedImages, item]);
       }
@@ -221,8 +222,9 @@ const UpdateProduct = () => {
                             "The title should be less than 100 characters",
                         },
                       })}
-                      className={` h-[45px] w-full rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.name && "border-red"
-                        }`}
+                      className={` h-[45px] w-full rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
+                        errors.name && "border-red"
+                      }`}
                       type="text"
                       placeholder="Product Name"
                     />
@@ -244,8 +246,9 @@ const UpdateProduct = () => {
                           message: "Minimum length is 8 character",
                         },
                       })}
-                      className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${errors.description && "border-red"
-                        } ps-3 text-[16px] text-gray2 `}
+                      className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${
+                        errors.description && "border-red"
+                      } ps-3 text-[16px] text-gray2 `}
                       type="text"
                       placeholder="Product Description"
                     />
@@ -267,8 +270,9 @@ const UpdateProduct = () => {
                           message: "Minimum length is 8 characters",
                         },
                       })}
-                      className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none ${errors.keyFeatures && "border-red"
-                        } border ps-3 text-[16px] text-gray2 `}
+                      className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none ${
+                        errors.keyFeatures && "border-red"
+                      } border ps-3 text-[16px] text-gray2 `}
                       type="text"
                       placeholder="Product key featured"
                     />
@@ -290,8 +294,9 @@ const UpdateProduct = () => {
                           message: "Minimum length is 8 character ",
                         },
                       })}
-                      className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${errors.specification && "border-red"
-                        } ps-3 text-[16px] text-gray2 `}
+                      className={`w-full resize-none pt-3 h-[112px] rounded-xl border-darkstone outline-none border ${
+                        errors.specification && "border-red"
+                      } ps-3 text-[16px] text-gray2 `}
                       type="text"
                       placeholder="Product Specification"
                     />
@@ -315,8 +320,9 @@ const UpdateProduct = () => {
                           message: "Minimum price is 10",
                         },
                       })}
-                      className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.baseprice && "border-red"
-                        }`}
+                      className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
+                        errors.baseprice && "border-red"
+                      }`}
                       type="number"
                       placeholder="Base Price"
                       min={10}
@@ -344,8 +350,9 @@ const UpdateProduct = () => {
                             "Discounted price should be less than base price",
                         },
                       })}
-                      className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.discountedprice && "border-red"
-                        }`}
+                      className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
+                        errors.discountedprice && "border-red"
+                      }`}
                       type="number"
                       placeholder="Discounted Price"
                       min={0}
@@ -370,8 +377,9 @@ const UpdateProduct = () => {
                         validate: (value) =>
                           value > 0 || "Stock should be greater than 0",
                       })}
-                      className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.stock && "border-red"
-                        }`}
+                      className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
+                        errors.stock && "border-red"
+                      }`}
                       type="number"
                       placeholder="Stock"
                       min={1}
@@ -384,8 +392,9 @@ const UpdateProduct = () => {
                   {/* category */}
                   <div className="my-5 w-full ">
                     <div
-                      className={`${errors.category && "border-red"
-                        } w-full  px-3 rounded-xl border-darkstone   border`}
+                      className={`${
+                        errors.category && "border-red"
+                      } w-full  px-3 rounded-xl border-darkstone   border`}
                     >
                       <select
                         {...register("category", {
@@ -394,8 +403,9 @@ const UpdateProduct = () => {
                             message: "This field is required",
                           },
                         })}
-                        className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${errors.category && " border-red"
-                          }`}
+                        className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${
+                          errors.category && " border-red"
+                        }`}
                       >
                         <option disabled selected value="">
                           Select a category
@@ -416,8 +426,9 @@ const UpdateProduct = () => {
                   {subcategoriesMap[watchedValues.category] && (
                     <div className="my-5 w-full ">
                       <div
-                        className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"
-                          }`}
+                        className={`w-full  px-3 rounded-xl border-darkstone  border ${
+                          errors.sub_category && " border-red"
+                        }`}
                       >
                         <select
                           {...register("sub_category", {
@@ -456,8 +467,9 @@ const UpdateProduct = () => {
                     subSubcategoriesMap[watchedValues.sub_category] && (
                       <div className="my-5 ">
                         <div
-                          className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"
-                            }`}
+                          className={`w-full  px-3 rounded-xl border-darkstone  border ${
+                            errors.sub_category && " border-red"
+                          }`}
                         >
                           <select
                             {...register("sub_category2", {
@@ -465,7 +477,7 @@ const UpdateProduct = () => {
                                 value:
                                   watchedValues.sub_category &&
                                   subSubcategoriesMap[
-                                  watchedValues.sub_category
+                                    watchedValues.sub_category
                                   ],
                                 message: "This field is required",
                               },
@@ -475,8 +487,9 @@ const UpdateProduct = () => {
                                 ]?.includes(value) ||
                                 "Choose valid sub category 2",
                             })}
-                            className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${errors.sub_category2 && " border-red"
-                              }`}
+                            className={` text-[16px] outline-none text-gray2 h-[45px] w-full ${
+                              errors.sub_category2 && " border-red"
+                            }`}
                           >
                             <option value="" selected disabled>
                               Select a sub category2
@@ -504,8 +517,9 @@ const UpdateProduct = () => {
                         {...register("glovesOption", {
                           required: "Please select a side",
                         })}
-                        className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${errors.glovesOption && "border-red"
-                          }`}
+                        className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
+                          errors.glovesOption && "border-red"
+                        }`}
                       >
                         <option value="" disabled selected>
                           Select Side
@@ -514,32 +528,39 @@ const UpdateProduct = () => {
                         <option value="Right">Right</option>
                       </select>
                       {errors.glovesOption && (
-                        <AppFormErrorLine message={errors.glovesOption.message} />
+                        <AppFormErrorLine
+                          message={errors.glovesOption.message}
+                        />
                       )}
                     </div>
                   )}
 
-
-{getFilters(
-                  watchedValues.category,
-                  watchedValues.sub_category,
-                  watchedValues.sub_category2
-                )?.length > 0 && (
+                  {getFilters(
+                    watchedValues.category,
+                    watchedValues.sub_category,
+                    watchedValues.sub_category2
+                  )?.length > 0 && (
                     <div className="my-5 ">
                       <div
-                        className={`w-full  px-3 rounded-xl border-darkstone  border ${errors.sub_category && " border-red"
-                          }`}
+                        className={`w-full  px-3 rounded-xl border-darkstone  border ${
+                          errors.sub_category && " border-red"
+                        }`}
                       >
                         <div className="flex flex-col">
                           {/* Placeholder option */}
-                          <label className="text-[16px] text-gray2 mb-1">Choose Size/Type</label>
+                          <label className="text-[16px] text-gray2 mb-1">
+                            Choose Size/Type
+                          </label>
                           {/* Render options based on filters */}
                           {getFilters(
                             watchedValues.category,
                             watchedValues.sub_category,
                             watchedValues.sub_category2
                           ).map((item, i) => (
-                            <label key={i} className="flex items-center space-x-2">
+                            <label
+                              key={i}
+                              className="flex items-center space-x-2"
+                            >
                               <input
                                 type="checkbox"
                                 value={item}
@@ -625,8 +646,9 @@ const UpdateProduct = () => {
                         ))}
                       </div>
                       <label
-                        className={`bg-gray-50  border ${watchedValues.color ? "cursor-pointer" : ""
-                          }  border-borderColor flex  rounded-full justify-center items-center h-6 w-6`}
+                        className={`bg-gray-50  border ${
+                          watchedValues.color ? "cursor-pointer" : ""
+                        }  border-borderColor flex  rounded-full justify-center items-center h-6 w-6`}
                         type="button"
                         htmlFor="availableColorInput"
                       >
@@ -825,22 +847,25 @@ const UpdateProduct = () => {
               )}
             </div>
 
-            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
-              Side:
-              {watchedValues.sub_category === "Gloves" && watchedValues.glovesOption ? (
-                <span className="text-base font-semibold">
-                  {watchedValues.glovesOption}
-                </span>
-              ) : (
-                <span className="text-base font-semibold">N/A</span>
-              )}
-            </div>
+            {watchedValues.sub_category2 === "Gloves" && (
+              <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+                Side:
+                {watchedValues.sub_category === "Gloves" &&
+                watchedValues.glovesOption ? (
+                  <span className="text-base font-semibold">
+                    {watchedValues.glovesOption}
+                  </span>
+                ) : (
+                  <span className="text-base font-semibold">N/A</span>
+                )}
+              </div>
+            )}
 
             <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
               Size/Type:
               {watchedValues.size ? (
                 <span className="text-base font-semibold">
-                  {watchedValues.size}
+                  {watchedValues.size.join(", ")}
                 </span>
               ) : (
                 <span className="text-red text-base">Please enter size!</span>
