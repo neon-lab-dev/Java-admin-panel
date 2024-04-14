@@ -98,8 +98,9 @@ const OrderModal = ({ selectedOrderId }) => {
                 <div className="grid justify-center px-4 grid-cols-12 max-h-[880px] ">
                   <div
                     onScroll={() => handleScrollbar("left")}
-                    className={`col-span-4  scrollbar-width-sm h-[calc(100vh-80px)] max-h-[880px] overflow-y-auto ${!isScrolling.left ? "hidden-scrollbar " : ""
-                      }  lg:px-4 md:px-2 pb-4 `}
+                    className={`col-span-4  scrollbar-width-sm h-[calc(100vh-80px)] max-h-[880px] overflow-y-auto ${
+                      !isScrolling.left ? "hidden-scrollbar " : ""
+                    }  lg:px-4 md:px-2 pb-4 `}
                   >
                     <h1 className="font-lato  font-semibold text-center text-[24px]">
                       Order Item
@@ -116,18 +117,58 @@ const OrderModal = ({ selectedOrderId }) => {
                               <h2 className="font-semibold text-[18px] font-lato text-black">
                                 {item.name}
                               </h2>
-                              <div className="flex justify-between my-2  items-center">
-                                <div className="font-semibold  flex items-center gap-1">
-                                  <h3 className="text-black">Price:</h3>{" "}
-                                  <span className="text-stone font-medium">
-                                    ₹{item.price}
-                                  </span>{" "}
+
+                              <div className="flex flex-col">
+                                <div className="flex justify-between my-2  items-center">
+                                  <div className="font-semibold  flex items-center gap-1">
+                                    <h3 className="text-black">Price:</h3>{" "}
+                                    <span className="text-stone font-medium">
+                                      ₹{item.price}
+                                    </span>{" "}
+                                  </div>
+                                  <div className="font-semibold  flex items-center gap-1">
+                                    <h3 className="text-black">Qty:</h3>{" "}
+                                    <span className="text-stone font-medium">
+                                      {item.quantity}
+                                    </span>{" "}
+                                  </div>
                                 </div>
-                                <div className="font-semibold  flex items-center gap-1">
-                                  <h3 className="text-black">Qty:</h3>{" "}
-                                  <span className="text-stone font-medium">
-                                    {item.quantity}
-                                  </span>{" "}
+                                <div className="flex flex-col">
+                                  <div className="flex justify-between items-center">
+                                    <div className="font-semibold  flex items-center gap-1">
+                                      <h3 className="text-black">Size:</h3>{" "}
+                                      <span className="text-stone font-medium">
+                                        {item.size}
+                                      </span>{" "}
+                                    </div>
+                                    <div className="font-semibold  flex items-center gap-3">
+                                      <h3 className="text-black">Color:</h3>{" "}
+                                      <div
+                                        className="text-stone font-medium h-6 w-6 rounded-full"
+                                        style={{
+                                          backgroundColor: item.color,
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="flex justify-between my-2  items-center">
+                                    <div className="font-semibold  flex items-center gap-1">
+                                      <h3 className="text-black">Code:</h3>{" "}
+                                      <span className="text-stone font-medium">
+                                        {item.productCode}
+                                      </span>{" "}
+                                    </div>
+                                    {item.side && (
+                                      <>
+                                        <div className="font-semibold  flex items-center gap-1">
+                                          <h3 className="text-black">Side:</h3>{" "}
+                                        </div>
+                                        <span className="text-stone font-medium">
+                                          {item.side}
+                                        </span>{" "}
+                                      </>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -148,8 +189,9 @@ const OrderModal = ({ selectedOrderId }) => {
                   <div
                     id="orderInfo"
                     onScroll={() => handleScrollbar("right")}
-                    className={`col-span-8  scrollbar-width-sm overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)] max-h-[880px] ${!isScrolling.right ? "hidden-scrollbar" : ""
-                      }`}
+                    className={`col-span-8  scrollbar-width-sm overflow-y-auto  border-l-2 border-dashed h-[calc(100vh-80px)] max-h-[880px] ${
+                      !isScrolling.right ? "hidden-scrollbar" : ""
+                    }`}
                   >
                     <h1 className="font-lato font-semibold text-center text-[24px]">
                       Order Information
@@ -263,9 +305,29 @@ const OrderModal = ({ selectedOrderId }) => {
                             <option disabled selected>
                               Choose Status
                             </option>
-                            <option disabled={data?.order?.orderStatus === "Shipped" ? false : true} value="Delivered">Delivered</option>
-                            <option disabled={data?.order?.orderStatus === "Processing" ? false : true} value="Shipped">Shipped</option>
-                            <option disabled={true} value="Processing">Processing</option>
+                            <option
+                              disabled={
+                                data?.order?.orderStatus === "Shipped"
+                                  ? false
+                                  : true
+                              }
+                              value="Delivered"
+                            >
+                              Delivered
+                            </option>
+                            <option
+                              disabled={
+                                data?.order?.orderStatus === "Processing"
+                                  ? false
+                                  : true
+                              }
+                              value="Shipped"
+                            >
+                              Shipped
+                            </option>
+                            <option disabled={true} value="Processing">
+                              Processing
+                            </option>
                           </select>
                         </div>
                         <div className="w-full bg-white  flex justify-center">
