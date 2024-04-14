@@ -74,7 +74,7 @@ const Products = () => {
         "_id",
         "name",
         "category",
-        "discountedprice",
+        "discountedpercent",
         "stock",
       ]);
       setFilteredData(filteredData);
@@ -131,9 +131,7 @@ const Products = () => {
                   <th className="text-[14px] font-bold text-black ">
                     Category
                   </th>
-                  <th className="text-[14px] font-bold text-black">
-                    Discount price
-                  </th>
+                  <th className="text-[14px] font-bold text-black">Discount</th>
                   <th className="text-[14px] font-bold text-black">Stock</th>
                   <th className="text-[14px] font-bold text-black text-center">
                     Action
@@ -165,7 +163,7 @@ const Products = () => {
                           {item.category}
                         </td>
                         <td className="text-[14px] font-semibold text-black">
-                          ₹{item.discountedprice}
+                          {item.discountedpercent}%
                         </td>
                         <td className="text-[14px] font-semibold text-black">
                           {item.stock}

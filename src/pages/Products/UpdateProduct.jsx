@@ -306,7 +306,26 @@ const UpdateProduct = () => {
                       />
                     )}
                   </div>
-
+                  {/* productCode */}
+                  <div className="my-5">
+                    <input
+                      {...register("productCode", {
+                        required: {
+                          value: true,
+                          message: "This field is required",
+                        },
+                      })}
+                      className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
+                        errors.baseprice && "border-red"
+                      }`}
+                      type="text"
+                      placeholder="Enter Product Code"
+                      min={10}
+                    />
+                    {errors.productCode && (
+                      <AppFormErrorLine message={errors.productCode.message} />
+                    )}
+                  </div>
                   {/* base price */}
                   <div className="my-5">
                     <input
@@ -335,7 +354,7 @@ const UpdateProduct = () => {
                   {/* discount price */}
                   <div className="my-5">
                     <input
-                      {...register("discountedprice", {
+                      {...register("discountedpercent", {
                         required: {
                           value: true,
                           message: "This field is required",
@@ -351,7 +370,7 @@ const UpdateProduct = () => {
                         },
                       })}
                       className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
-                        errors.discountedprice && "border-red"
+                        errors.discountedpercent && "border-red"
                       }`}
                       type="number"
                       placeholder="Discounted Price"
@@ -359,9 +378,9 @@ const UpdateProduct = () => {
                       disabled={!watchedValues.baseprice}
                       max={watchedValues.baseprice - 1} // Discounted price should be less than base price
                     />
-                    {errors.discountedprice && (
+                    {errors.discountedpercent && (
                       <AppFormErrorLine
-                        message={errors.discountedprice.message}
+                        message={errors.discountedpercent.message}
                       />
                     )}
                   </div>
@@ -783,7 +802,18 @@ const UpdateProduct = () => {
                 </span>
               )}
             </div>
-
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Product Code:
+              {watchedValues.productCode ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.productCode}
+                </span>
+              ) : (
+                <span className="text-red text-base">
+                  Please enter Product Code!
+                </span>
+              )}
+            </div>
             <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
               Base Price:
               {watchedValues.baseprice ? (
@@ -799,9 +829,9 @@ const UpdateProduct = () => {
 
             <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
               Discount Price:
-              {watchedValues.discountedprice ? (
+              {watchedValues.discountedpercent ? (
                 <span className="text-base font-semibold">
-                  {watchedValues.discountedprice}
+                  {watchedValues.discountedpercent}
                 </span>
               ) : (
                 <span className="text-red text-base">
