@@ -4,7 +4,8 @@ import { getSingleOrder, updateOrder } from "../../api/order";
 import AppLoading from "../../components/loaders/AppLoading";
 import Swal from "sweetalert2";
 import { ORDER_STATUS } from "../../assets/data/orderStatus";
-
+import InvoicePdf from "../../components/InvoicePdf";
+import { PDFDownloadLink } from "@react-pdf/renderer";
 const OrderModal = ({ selectedOrderId }) => {
   const queryClient = useQueryClient();
   const [updatedStatus, setUpdatedStatus] = useState(null);
@@ -347,7 +348,15 @@ const OrderModal = ({ selectedOrderId }) => {
                               )}
                             </button>
                             <button className="  w-[192px] h-[40px] border border-borderColor rounded-[6px] bg-white outline-double outline-1 text-black  hover:bg-black hover:text-white">
-                              Download Invoice
+                              {/* //pdf download button form @react-pdf/renderer */}
+                              <PDFDownloadLink
+                                document={<InvoicePdf data={data} />}
+                                fileName={`invoice-${data?.order._id}.pdf`}
+                              >
+                                {({ loading }) =>
+                                  loading ? "Preparing..." : "Download Invoice"
+                                }
+                              </PDFDownloadLink>
                             </button>
                           </div>
                         </div>

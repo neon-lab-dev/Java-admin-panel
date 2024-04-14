@@ -15,7 +15,6 @@ import TableEntriesPrevNextButtons from "../../components/TableEntriesPrevNextBu
 import { MAX_ROWS_PER_PAGE } from "../../assets/data/constants";
 import NoDataFound from "../../components/NoDataFound";
 import { getOrderStatusLength } from "../../utils/getOrderStatusLength";
-import jsonToXlsx from "../../utils/jsonAsXlsx";
 
 const Orders = () => {
   const [searchQuery, setSearchQuery] = useState("");
