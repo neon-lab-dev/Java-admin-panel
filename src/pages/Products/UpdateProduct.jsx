@@ -361,12 +361,12 @@ const UpdateProduct = () => {
                         },
                         min: {
                           value: 0,
-                          message: "Minimum price is 0",
+                          message:
+                            "Discounted percent should be greater than 0",
                         },
                         max: {
-                          value: watchedValues.baseprice - 1,
-                          message:
-                            "Discounted price should be less than base price",
+                          value: 100,
+                          message: "Discounted percent should be less than 100",
                         },
                       })}
                       className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
@@ -376,7 +376,7 @@ const UpdateProduct = () => {
                       placeholder="Discounted Price"
                       min={0}
                       disabled={!watchedValues.baseprice}
-                      max={watchedValues.baseprice - 1} // Discounted price should be less than base price
+                      max={100} // Discounted price should be less than base price
                     />
                     {errors.discountedpercent && (
                       <AppFormErrorLine
