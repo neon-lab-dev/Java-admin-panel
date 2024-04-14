@@ -230,6 +230,26 @@ const CreateProduct = () => {
                   )}
                 </div>
 
+                {/* productCode */}
+                <div className="my-5">
+                  <input
+                    {...register("productCode", {
+                      required: {
+                        value: true,
+                        message: "This field is required",
+                      },
+                    })}
+                    className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
+                      errors.baseprice && "border-red"
+                    }`}
+                    type="text"
+                    placeholder="Enter Product Code"
+                    min={10}
+                  />
+                  {errors.productCode && (
+                    <AppFormErrorLine message={errors.productCode.message} />
+                  )}
+                </div>
                 {/* base price */}
                 <div className="my-5">
                   <input
@@ -699,7 +719,18 @@ const CreateProduct = () => {
                 </span>
               )}
             </div>
-
+            <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
+              Product Code:
+              {watchedValues.productCode ? (
+                <span className="text-base font-semibold">
+                  {watchedValues.productCode}
+                </span>
+              ) : (
+                <span className="text-red text-base">
+                  Please enter Product Code!
+                </span>
+              )}
+            </div>
             <div className="my-[15px] flex items-center gap-2 flex-wrap lg:text-[16px] max-xl:text-[18px]">
               Base Price:
               {watchedValues.baseprice ? (
