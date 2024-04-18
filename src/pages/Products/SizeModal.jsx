@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import AppFormErrorLine from "../../components/AppFormErrorLine";
+import { useEffect } from "react";
 
-const SizeModal = ({ setData, options }) => {
+const SizeModal = ({ setData, options, defaultValue = undefined }) => {
   const {
     register,
     handleSubmit,
@@ -18,11 +19,20 @@ const SizeModal = ({ setData, options }) => {
       });
       return;
     }
-    setData(data);
+    if (defaultValue) {
+      setData({ id: defaultValue.id, ...data });
+    } else {
+      setData(data);
+    }
     reset();
     document.getElementById("sizeModal").close();
   };
 
+  useEffect(() => {
+    if (defaultValue) {
+      reset(defaultValue);
+    }
+  }, [defaultValue]);
   return (
     <dialog id="sizeModal" className="modal">
       <div className="modal-box">
@@ -43,24 +53,32 @@ const SizeModal = ({ setData, options }) => {
                   {/* Placeholder option */}
 
                   {/* Render options based on filters */}
-                  <select
-                    {...register("size")}
-                    className="form-select h-full outline:none w-full text-gray-600"
-                  >
-                    <option
-                      disabled
-                      selected
-                      value={""}
-                      className="text-[16px] text-gray2 mb-1"
+                  {!defaultValue ? (
+                    <select
+                      {...register("size")}
+                      className="form-select h-full outline:none w-full text-gray-600"
                     >
-                      Choose Size/Type
-                    </option>
-                    {options.map((item, i) => (
-                      <option key={i} value={item}>
-                        {item}
+                      <option
+                        disabled
+                        selected
+                        value={""}
+                        className="text-[16px] text-gray2 mb-1"
+                      >
+                        Choose Size/Type
                       </option>
-                    ))}
-                  </select>
+                      {options.map((item, i) => (
+                        <option key={i} value={item}>
+                          {item}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="flex items-center justify-between cursor-not-allowed">
+                      <span className="text-gray2 text-[16px]">
+                        {defaultValue.size}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
               {errors.size && (
@@ -131,14 +149,14 @@ const SizeModal = ({ setData, options }) => {
                     message: "This field is required",
                   },
                   validate: (value) =>
-                    value > 0 || "Stock should be greater than 0",
+                    value >= 0 || "Stock should be positive number",
                 })}
                 className={`w-full h-[45px] rounded-xl border-darkstone outline-none border ps-3 text-[16px] text-gray2 ${
                   errors.stock && "border-red"
                 }`}
                 type="number"
                 placeholder="Stock"
-                min={1}
+                min={0}
               />
               {errors.stock && (
                 <AppFormErrorLine message={errors.stock.message} />
@@ -149,7 +167,10 @@ const SizeModal = ({ setData, options }) => {
                 disabled={Object.keys(errors).length > 0}
                 className="btn btn-success btn-md px-12"
               >
-                Add
+                {
+                  // If there is a default value, change the button text to "Update"
+                  defaultValue ? "Update" : "Add"
+                }
               </button>
               <button
                 onClick={() => {

@@ -13,6 +13,7 @@ import {
 } from "../../assets/data/productFilters";
 import getFilters from "../../utils/getFilters";
 import SizeModal from "./SizeModal";
+import editIcon from "../../assets/icons/edit-svgrepo-com.svg";
 
 const UpdateProduct = () => {
   const [availableColors, setAvailableColors] = useState([]);
@@ -22,6 +23,7 @@ const UpdateProduct = () => {
   const queryClient = useQueryClient();
   const [isRan, setIsRan] = useState(false);
   const [isWarningShown, setIsWarningShown] = useState(false);
+  const [editingValue, setEditingValue] = useState(undefined);
 
   const { productId } = useParams();
   // get product details query
@@ -205,8 +207,17 @@ const UpdateProduct = () => {
           watchedValues.sub_category2
         ).filter((item) => !sizes.find((size) => size.size === item))}
         setData={(data) => {
-          setSizes((prev) => [...prev, data]);
+          if (!editingValue) {
+            setSizes((prev) => [...prev, data]);
+          } else {
+            setSizes((prev) =>
+              prev.map((item) =>
+                item === editingValue ? { ...item, ...data } : item
+              )
+            );
+          }
         }}
+        defaultValue={editingValue}
       />
       <div className="bg-lightgray h-full w-full p-6 py-8">
         <div className="bg-white overflow-x-auto rounded-[16px] p-4  ps-10 ">
@@ -452,7 +463,10 @@ const UpdateProduct = () => {
                           watchedValues.sub_category2
                         ).length === sizes.length
                       }
-                      onClick={() => window.sizeModal.showModal()}
+                      onClick={() => {
+                        setEditingValue(undefined);
+                        window.sizeModal.showModal();
+                      }}
                       className="btn btn-outline btn-md btn-primary w-full"
                     >
                       Add Size
@@ -472,29 +486,49 @@ const UpdateProduct = () => {
                             <span>Base Price: ₹{item.basePrice}</span>
                             <span>Stock: {item.stock}</span>
                             <span>Discount: {item.discountedPercent}%</span>
-                            <button
-                              onClick={() =>
-                                setSizes(sizes.filter((size) => size !== item))
-                              }
-                              type="button"
-                              role="button"
-                              className="p-1 bg-red rounded-full opacity-80 absolute top-1/2 -translate-y-1/2 right-2"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-3 w-3"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
+                            <div className="opacity-80 absolute top-1/2 -translate-y-1/2 right-2 flex gap-3">
+                              <button
+                                onClick={() => {
+                                  setEditingValue(item);
+                                  window.sizeModal.showModal();
+                                }}
+                                type="button"
+                                role="button"
+                                className="p-1 bg-neutral-200 rounded-full"
                               >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M6 18L18 6M6 6l12 12"
+                                <img
+                                  className="h-3 w-3"
+                                  src={editIcon}
+                                  alt=""
                                 />
-                              </svg>
-                            </button>
+                              </button>
+
+                              <button
+                                onClick={() =>
+                                  setSizes(
+                                    sizes.filter((size) => size !== item)
+                                  )
+                                }
+                                type="button"
+                                role="button"
+                                className="p-1 bg-red rounded-full"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="h-3 w-3"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
+                                    d="M6 18L18 6M6 6l12 12"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
                           </div>
                         ))}
                       </div>
