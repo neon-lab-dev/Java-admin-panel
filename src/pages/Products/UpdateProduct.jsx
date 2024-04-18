@@ -456,13 +456,14 @@ const UpdateProduct = () => {
                     <button
                       type="button"
                       role="button"
-                      disabled={
-                        getFilters(
-                          watchedValues.category,
-                          watchedValues.sub_category,
-                          watchedValues.sub_category2
-                        ).length === sizes.length
-                      }
+                      // disabled={
+                      //   getFilters(
+                      //     watchedValues.category,
+                      //     watchedValues.sub_category,
+                      //     watchedValues.sub_category2
+                      //   ).length === sizes.length
+                      // }
+                      disabled // for now user can only add size while creating product
                       onClick={() => {
                         setEditingValue(undefined);
                         window.sizeModal.showModal();
