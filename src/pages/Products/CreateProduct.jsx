@@ -388,9 +388,9 @@ const CreateProduct = () => {
                           className="flex items-center gap-3 border border-borderColor rounded-xl p-2 relative"
                         >
                           <span>Size: {item.size}</span>
-                          <span>Base Price: ₹{item.baseprice}</span>
+                          <span>Base Price: ₹{item.basePrice}</span>
                           <span>Stock: {item.stock}</span>
-                          <span>Discount: {item.discountedpercent}%</span>
+                          <span>Discount: {item.discountedPercent}%</span>
                           <button
                             onClick={() =>
                               setSizes(sizes.filter((size) => size !== item))
