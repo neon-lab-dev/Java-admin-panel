@@ -29,7 +29,6 @@ const Login = () => {
     mutationKey: ["user"],
     mutationFn: ({ email, password }) => login({ email, password }),
     onError: (error) => {
-      console.log(error);
       Swal.fire({
         icon: "error",
         title: "Oops...",

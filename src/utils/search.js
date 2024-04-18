@@ -37,7 +37,6 @@ export function searchObjects(array, queryString, keys) {
     // Return the filtered array
     return filteredArray;
   } catch (error) {
-    console.error("Error in searchObjects: ", error);
     return [];
   }
 }

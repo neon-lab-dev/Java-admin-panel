@@ -56,7 +56,6 @@ export const updateOrder = ({ orderId, updatedData }) => {
         resolve(res.data);
       })
       .catch((err) => {
-        console.log(err);
         reject(
           err?.response?.data?.message ||
             "Something went wrong, please try again"

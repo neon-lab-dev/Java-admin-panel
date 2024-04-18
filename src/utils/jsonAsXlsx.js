@@ -30,7 +30,6 @@ export default function jsonToXlsx(data, name) {
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
     XLSX.writeFile(wb, `${name}.xlsx`);
   } catch (error) {
-    console.error(error);
     Swal.fire("Error", "Something went wrong while exporting data", "error");
   }
 }
