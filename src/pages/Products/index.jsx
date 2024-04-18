@@ -163,10 +163,10 @@ const Products = () => {
                           {item.category}
                         </td>
                         <td className="text-[14px] font-semibold text-black">
-                          {item.discountedpercent}%
+                          {item.sizes[0].discountedPercent}%
                         </td>
                         <td className="text-[14px] font-semibold text-black">
-                          {item.stock}
+                          {item.sizes[0].stock}
                         </td>
                         <td className="text-[14px] text-center font-semibold text-black">
                           <div className="flex items-center justify-center gap-3">
