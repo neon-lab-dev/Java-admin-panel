@@ -120,7 +120,6 @@ const UpdateProduct = () => {
           }
         }
         const allColors = [...new Set([data.color, ...availableColors])];
-        console.log(allColors);
 
         fd.append("Availablecolor", allColors.join(","));
         mutate({ productId: productId, productData: fd });
