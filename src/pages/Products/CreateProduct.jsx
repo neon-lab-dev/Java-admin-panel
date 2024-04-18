@@ -429,7 +429,7 @@ const CreateProduct = () => {
                         {watchedValues.color && (
                           <div
                             style={{ backgroundColor: watchedValues.color }}
-                            className="h-6 w-6 rounded-full"
+                            className="h-6 w-6 rounded-full border border-gray-400"
                           />
                         )}
                       </div>
@@ -466,13 +466,13 @@ const CreateProduct = () => {
                       {watchedValues.color && (
                         <div
                           style={{ backgroundColor: watchedValues.color }}
-                          className="h-6 w-6 rounded-full"
+                          className="h-6 w-6 rounded-full border border-gray-400"
                         />
                       )}
                       {availableColors?.map((item, i) => (
                         <div
                           style={{ backgroundColor: item }}
-                          className="relative h-6 w-6 border-borderColor rounded-full border"
+                          className="relative h-6 w-6 border border-gray-400 rounded-full"
                         >
                           <button
                             onClick={() =>
